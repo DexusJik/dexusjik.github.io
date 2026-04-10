@@ -374,8 +374,8 @@
 
                 <!-- Honeypot Field -->
                 <div class="honeypot-field">
-                    <label for="website">Leave this empty</label>
-                    <input type="text" id="website" name="website">
+                    <label for="_gotcha">Leave this empty</label>
+                    <input type="text" id="_gotcha" name="_gotcha">
                 </div>
 
                 <div class="text-center">
@@ -461,7 +461,7 @@
 
             const quizSection = document.getElementById('quiz-section');
             const strategySessionForm = document.getElementById('strategy-session-form');
-            const honeypotField = document.getElementById('website');
+            const honeypotField = document.getElementById('_gotcha');
 
             // --- Utility Functions ---
             function updateProgressBar() {
@@ -613,7 +613,7 @@
             if (strategySessionForm) {
                 strategySessionForm.addEventListener('submit', async (event) => {
                     event.preventDefault();
-                    const honeypot = document.getElementById('website').value;
+                    const honeypot = document.getElementById('_gotcha').value;
                     if (honeypot) {
                         alert('Spam detected. Please try again.');
                         return;
