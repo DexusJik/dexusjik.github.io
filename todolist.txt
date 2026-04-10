@@ -1,4 +1,0 @@
-1. Add a Blog/Resources Section - Demonstrate expertise with free content (tips, case studies)
-2. Video Introduction - A 30-second intro video could significantly increase trust
-3. Booking Calendar Integration - Direct calendar booking would reduce friction vs. contact form
-4. FAQ Section - Address common objections (time commitment, online vs in-person, refund policy)
