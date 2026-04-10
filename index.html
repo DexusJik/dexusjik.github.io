@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://dexusjik.github.io; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://dexusjik.github.io; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://formspree.io;">
     <title>Javier Perez | Inglés Sin Guion</title>
     
     <link rel="icon" type="image/jpg" href="https://dexusjik.github.io/image5.jpg">
@@ -20,140 +20,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:wght@700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        html {
-            scroll-behavior: smooth;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F3F4F6; /* Pale Gray */
-            color: #0f172a; /* Slate-900 */
-        }
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Fraunces', serif;
-            color: #003580; /* Deep Navy Blue */
-            letter-spacing: -0.02em;
-        }
-        /* Animation Classes */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .fade-up {
-            opacity: 0;
-            animation: fadeUp 0.8s ease-out forwards;
-        }
-        .delay-1 { animation-delay: 0.2s; }
-        .delay-2 { animation-delay: 0.4s; }
-        .delay-3 { animation-delay: 0.6s; }
-
-        .section-padding {
-            padding: 5rem 1.5rem;
-        }
-        .card {
-            background-color: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .btn {
-            display: inline-block;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            text-align: center;
-            border-radius: 9999px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            outline: none;
-            position: relative;
-            z-index: 50;
-        }
-        .btn:hover {
-            transform: scale(1.05);
-        }
-        .btn-primary {
-            background-color: #003580; /* Deep Navy Blue */
-            color: white;
-            border: none;
-        }
-        .btn-primary:hover {
-            background-color: #002766;
-        }
-        .btn-secondary {
-            background-color: rgba(255, 255, 255, 0.8);
-            color: #003580; /* Deep Navy Blue */
-            border: 1px solid #003580;
-        }
-        .btn-secondary:hover {
-            background-color: #f3f4f6;
-        }
-        .quiz-option-button {
-            background-color: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 53, 128, 0.2);
-            color: #003580;
-            font-weight: 600;
-            padding: 1rem 1.5rem;
-            text-align: center;
-            border-radius: 1rem;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
-        .quiz-option-button:hover {
-            background-color: #dbeafe; /* Light blue */
-            transform: scale(1.02);
-        }
-        .quiz-option-button.selected {
-            background-color: #003580; /* Deep Navy */
-            color: white;
-            border: 2px solid #003580;
-            box-shadow: 0 0 10px rgba(0, 53, 128, 0.3);
-        }
-        .progress-bar-container {
-            background-color: rgba(0, 53, 128, 0.1);
-            border-radius: 9999px;
-            overflow: hidden;
-            height: 16px;
-        }
-        .progress-bar {
-            background-color: #003580; /* Deep Navy */
-            height: 100%;
-            transition: width 0.3s ease-in-out;
-            border-radius: 9999px;
-        }
-        .honeypot-field { display: none; }
-        .consultant-profile {
-            background-color: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            text-align: center;
-        }
-        .profile-photo {
-            border: 5px solid #003580;
-            background-color: #e0e7ff; /* Light Indigo */
-        }
-        .quiz-step {
-            transition: all 0.3s ease-in-out;
-        }
-        .quiz-step.hidden {
-            opacity: 0;
-            transform: translateX(20px);
-            pointer-events: none;
-        }
-        .quiz-step.active {
-            opacity: 1;
-            transform: translateX(0);
-            pointer-events: auto;
-        }
-    </style>
+    <link rel="stylesheet" href="src/style.css">
+    <script src="src/main.js" defer type="module"></script>
 </head>
 <body>
     <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-100/50 rounded-full blur-3xl -z-10"></div>
