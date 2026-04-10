@@ -29,6 +29,7 @@
             font-family: 'Inter', sans-serif;
             background-color: #F3F4F6; /* Pale Gray */
             color: #0f172a; /* Slate-900 */
+            -webkit-font-smoothing: antialiased;
         }
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Fraunces', serif;
@@ -162,7 +163,7 @@
     <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div class="flex items-center justify-between p-4 max-w-6xl mx-auto">
             <div class="flex items-center gap-4">
-                <img src='./image4.jpg' class='w-12 h-12 rounded-full object-cover border-2 border-deep-navy'>
+                <img src='./image4.jpg' class='w-12 h-12 rounded-[2rem] object-cover border-2 border-deep-navy'>
                 <span class="font-serif font-bold text-deep-navy text-xl hidden sm:block">Inglés Sin Guion</span>
             </div>
             <nav class="hidden md:flex gap-8 text-sm font-semibold text-slate-600">
@@ -188,9 +189,9 @@
                 </p>
                 
                 <div class="flex flex-wrap gap-4 mb-10 fade-up delay-2">
-                    <span class="bg-blue-50 text-deep-navy px-3 py-1 rounded-full text-xs font-bold border border-blue-100">💼 Business English</span>
-                    <span class="bg-blue-50 text-deep-navy px-3 py-1 rounded-full text-xs font-bold border border-blue-100">🎓 Foco Académico</span>
-                    <span class="bg-blue-50 text-deep-navy px-3 py-1 rounded-full text-xs font-bold border border-blue-100">🗣️ Fluidez Real</span>
+                    <span class="bg-blue-50 text-deep-navy px-3 py-1 rounded-full text-xs font-bold border border-blue-100">Business English</span>
+                    <span class="bg-blue-50 text-deep-navy px-3 py-1 rounded-full text-xs font-bold border border-blue-100">Foco Académico</span>
+                    <span class="bg-blue-50 text-deep-navy px-3 py-1 rounded-full text-xs font-bold border border-blue-100">Fluidez Real</span>
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-4 fade-up delay-3">
@@ -203,7 +204,7 @@
                 <div class="absolute -top-10 -right-10 w-64 h-64 bg-blue-200/30 rounded-full blur-3xl -z-10"></div>
                 
                 <div class="consultant-profile p-6 w-full max-w-sm card !rounded-[2rem] border-white/40 shadow-professional">
-                    <img id="profile-pic" src="./image5.jpg" alt="Javier Perez" class="w-full aspect-square rounded-2xl mb-6 object-cover profile-photo hover:scale-[1.02] transition-all duration-500">
+                    <img id="profile-pic" src="./image5.jpg" alt="Javier Perez" class="w-full aspect-square rounded-[2rem] mb-6 object-cover profile-photo hover:scale-[1.02] transition-all duration-500">
                     <div class="text-left">
                         <p class="text-2xl font-serif font-bold text-deep-navy">Javier Perez</p>
                         <p class="text-sm font-semibold text-blue-600 mb-3 uppercase tracking-wider">Consultor Principal</p>
@@ -274,17 +275,19 @@
         </div>
     </section>
 
-    <section id="about-section" class="py-24 px-6 bg-pale-gray">
+    <div class="h-16 bg-gradient-to-b from-[#F3F4F6] to-[#0f172a]"></div>
+    <section id="about-section" class="py-24 px-6 bg-gradient-to-b from-[#0f172a] via-[#1e293b] to-[#0f172a]">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12">
             <div class="md:w-1/2">
-                <img src="image2.jpg" alt="Javier Perez" class="rounded-3xl shadow-professional object-cover w-full h-[500px]">
+                <img src="image2.jpg" alt="Javier Perez" class="rounded-[2rem] shadow-[0_20px_50px_-10px_rgba(0,31,63,0.4)] border border-white/5 object-cover w-full h-[500px]">
             </div>
             <div class="md:w-1/2">
-                <h2 class="text-4xl font-serif font-bold mb-6 text-deep-navy">Más que solo gramática</h2>
-                <p class="text-lg text-slate-900 leading-relaxed mb-6">Me titulé como Profesor de Inglés, adquiriendo una base técnica sólida, pero rápidamente comprobé que el sistema tradicional escolar rara vez genera hablantes fluidos. 'Inglés Sin Guion' nace de esa ruptura. Tomé el rigor de la academia y eliminé la fricción del aula para ofrecer consultoría directa, práctica y adaptada a la vida real.</p>
+                <h2 class="text-4xl font-serif font-bold mb-6 text-[#BAE6FD] tracking-[-0.01em]">Más que solo gramática</h2>
+                <p class="text-[1.1rem] text-[#E2E8F0] font-light leading-[1.8] mb-6">Me titulé como Profesor de Inglés, adquiriendo una base técnica sólida, pero rápidamente comprobé que el sistema tradicional escolar rara vez genera hablantes fluidos. 'Inglés Sin Guion' nace de esa ruptura. Tomé el rigor de la academia y eliminé la fricción del aula para ofrecer consultoría directa, práctica y adaptada a la vida real.</p>
             </div>
         </div>
     </section>
+    <div class="h-16 bg-gradient-to-t from-white to-[#0f172a]"></div>
 
     <section id="metodologia-section" class="py-24 px-6 bg-white">
         <div class="max-w-6xl mx-auto">
@@ -326,6 +329,7 @@
 
     <section class="relative h-[450px] flex items-center justify-center overflow-hidden my-12">
         <img src="image3.jpg" class="absolute w-full h-full object-cover brightness-75 -z-10">
+        <div class="absolute w-full h-full -z-10 backdrop-blur-[2px] bg-black/20"></div>
         <div class="text-center text-white px-6">
             <p class="text-xl font-medium">Rompe las barreras lingüísticas y alcanza tus metas globales.</p>
         </div>
