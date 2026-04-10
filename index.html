@@ -364,6 +364,10 @@
                     <input type="email" id="email" name="email" required class="w-full py-4 px-6 border-2 border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#003580] focus:border-transparent shadow-inner">
                 </div>
                 <div class="mb-8">
+                    <label for="numero" class="block text-xl font-medium text-slate-900 mb-3">Número de Teléfono</label>
+                    <input type="tel" id="numero" name="numero" required class="w-full py-4 px-6 border-2 border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#003580] focus:border-transparent shadow-inner">
+                </div>
+                <div class="mb-8">
                     <label for="message" class="block text-xl font-medium text-slate-900 mb-3">¿Cómo puedo ayudarte?</label>
                     <textarea id="message" name="message" rows="5" required class="w-full py-4 px-6 border-2 border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#003580] focus:border-transparent shadow-inner"></textarea>
                 </div>
@@ -456,7 +460,7 @@
             const whatsappRedirectBtn = document.getElementById('whatsapp-redirect-btn');
 
             const quizSection = document.getElementById('quiz-section');
-            const strategySessionForm = document.getElementById('strategy-form-section');
+            const strategySessionForm = document.getElementById('strategy-session-form');
             const honeypotField = document.getElementById('website');
 
             // --- Utility Functions ---
@@ -607,7 +611,7 @@
 
             // Strategy Session Form Submission
             if (strategySessionForm) {
-                strategySessionForm.addEventListener('submit', (event) => {
+                strategySessionForm.addEventListener('submit', async (event) => {
                     event.preventDefault();
                     const honeypot = document.getElementById('website').value;
                     if (honeypot) {
@@ -615,19 +619,30 @@
                         return;
                     }
 
-                    const name = document.getElementById('name').value;
-                    const email = document.getElementById('email').value;
-                    const message = document.getElementById('message').value;
-                    const level = cefrLevelSpan.innerText;
-                    const goal = quizAnswers.goal ? quizAnswers.goal.charAt(0).toUpperCase() + quizAnswers.goal.slice(1) : 'No especificado';
+                    const formData = new FormData(strategySessionForm);
+                    // Add quiz info to formData if needed
+                    formData.append('level', cefrLevelSpan.innerText || 'No realizado');
+                    formData.append('goal', quizAnswers.goal || 'No especificado');
 
-                    const whatsAppMessage = `Hola Javier, hice el quiz y mi nivel estimado es ${level}. Me interesa la consultoría para ${goal}.\n\nNombre: ${name}\nEmail: ${email}\nMensaje: ${message}`;
+                    try {
+                        const response = await fetch('https://formspree.io/f/xzdklrdv', {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
 
-                    // Placeholder for WhatsApp redirect
-                    // const whatsappUrl = `https://wa.me/{{YOUR_PHONE_NUMBER}}?text=${encodeURIComponent(whatsAppMessage)}`;
-                    // window.location.href = whatsappUrl;
-                    alert(`Solicitud enviada a ${name}. ¡Gracias!\nWhatsApp Message Preview: ${whatsAppMessage}`);
-                    strategySessionForm.reset();
+                        if (response.ok) {
+                            alert('¡Gracias! Tu solicitud ha sido enviada con éxito.');
+                            strategySessionForm.reset();
+                        } else {
+                            throw new Error('Error al enviar el formulario.');
+                        }
+                    } catch (error) {
+                        alert('Hubo un error al enviar el formulario. Por favor, intenta de nuevo más tarde.');
+                        console.error('Error:', error);
+                    }
                 });
             }
         };
