@@ -12,9 +12,8 @@ function selectPlan(planName) {
     messageTextarea.focus();
 }
 
-window.onload = function() {
-    // --- Global Variables & Quiz Config ---
-    const quizQuestionsData = [
+// --- Global Variables & Quiz Config ---
+const quizQuestionsData = [
         {
             id: 'goal',
             text: 'Paso 1: ¿Cuál es tu objetivo principal?',
@@ -211,4 +210,3 @@ window.onload = function() {
             }
         });
     }
-};
