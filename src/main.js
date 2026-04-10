@@ -130,6 +130,31 @@ const quizQuestionsData = [
     // Quiz Initialization
     showStep(currentStep);
 
+    // Global Event Listener for data-action
+    document.addEventListener('click', (event) => {
+        const target = event.target.closest('[data-action]');
+        if (!target) return;
+
+        const action = target.dataset.action;
+        switch (action) {
+            case 'scroll-to':
+                scrollToSection(target.dataset.target);
+                break;
+            case 'select-plan':
+                selectPlan(target.dataset.plan);
+                break;
+            case 'scroll-to-quiz':
+                scrollToSection('quiz-section');
+                break;
+            case 'scroll-to-strategy':
+                scrollToSection('strategy-form-section');
+                break;
+            case 'scroll-to-methodology':
+                scrollToSection('metodologia-section');
+                break;
+        }
+    });
+
     // Quiz Navigation
     nextStepBtn.addEventListener('click', () => {
         const currentQuestionDiv = quizQuestionsContainer.querySelector('.quiz-step.active');

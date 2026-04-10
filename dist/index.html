@@ -20,8 +20,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:wght@700&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="/assets/index-BEl_e3GU.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-BN-PQ7e9.css">
+  <script type="module" crossorigin src="./assets/index-BeJDjmgT.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BN-PQ7e9.css">
 </head>
 <body>
     <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-100/50 rounded-full blur-3xl -z-10"></div>
@@ -30,7 +30,7 @@
     <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div class="flex items-center justify-between p-4 max-w-6xl mx-auto">
             <div class="flex items-center gap-4">
-                <img src='/assets/image4-CZ7JasEM-CZ7JasEM.jpg' class='w-12 h-12 rounded-full object-cover border-2 border-deep-navy'>
+                <img src='./assets/image4-CZ7JasEM-CZ7JasEM-CZ7JasEM.jpg' class='w-12 h-12 rounded-full object-cover border-2 border-deep-navy'>
                 <span class="font-serif font-bold text-deep-navy text-xl hidden sm:block">Inglés Sin Guion</span>
             </div>
             <nav class="hidden md:flex gap-8 text-sm font-semibold text-slate-600">
@@ -39,8 +39,8 @@
                 <a href="#about-section" class="hover:text-deep-navy transition-colors">Sobre mí</a>
             </nav>
             <div class="flex gap-3">
-                <button onclick="scrollToSection('quiz-section')" class="btn btn-secondary !py-2 !px-4 text-sm">Quiz de Nivel</button>
-                <button onclick="scrollToSection('strategy-form-section')" class="btn btn-primary !py-2 !px-4 text-sm">Reservar</button>
+                <button data-action="scroll-to-quiz" class="btn btn-secondary !py-2 !px-4 text-sm">Quiz de Nivel</button>
+                <button data-action="scroll-to-strategy" class="btn btn-primary !py-2 !px-4 text-sm">Reservar</button>
             </div>
         </div>
     </header>
@@ -62,8 +62,8 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-4 fade-up delay-3">
-                    <button onclick="scrollToSection('quiz-section')" class="btn btn-primary px-8">Comenzar Evaluación</button>
-                    <button onclick="scrollToSection('metodologia-section')" class="btn btn-secondary px-8">Ver Metodología</button>
+                    <button data-action="scroll-to-quiz" class="btn btn-primary px-8">Comenzar Evaluación</button>
+                    <button data-action="scroll-to-methodology" class="btn btn-secondary px-8">Ver Metodología</button>
                 </div>
             </div>
 
@@ -71,7 +71,7 @@
                 <div class="absolute -top-10 -right-10 w-64 h-64 bg-blue-200/30 rounded-full blur-3xl -z-10"></div>
                 
                 <div class="consultant-profile p-6 w-full max-w-sm card !rounded-[2rem] border-white/40 shadow-professional">
-                    <img id="profile-pic" src="/assets/image5-BJ_BYCLX-BJ_BYCLX.jpg" alt="Javier Perez" class="w-full aspect-square rounded-2xl mb-6 object-cover profile-photo hover:scale-[1.02] transition-all duration-500">
+                    <img id="profile-pic" src="./assets/image5-BJ_BYCLX-BJ_BYCLX-BJ_BYCLX.jpg" alt="Javier Perez" class="w-full aspect-square rounded-2xl mb-6 object-cover profile-photo hover:scale-[1.02] transition-all duration-500">
                     <div class="text-left">
                         <p class="text-2xl font-serif font-bold text-deep-navy">Javier Perez</p>
                         <p class="text-sm font-semibold text-blue-600 mb-3 uppercase tracking-wider">Consultor Principal</p>
@@ -145,7 +145,7 @@
     <section id="about-section" class="py-24 px-6 bg-pale-gray">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12">
             <div class="md:w-1/2">
-                <img src="/assets/image2-BXdnnH7G-BXdnnH7G.jpg" alt="Javier Perez" class="rounded-3xl shadow-professional object-cover w-full h-[500px]">
+                <img src="./assets/image2-BXdnnH7G-BXdnnH7G-BXdnnH7G.jpg" alt="Javier Perez" class="rounded-3xl shadow-professional object-cover w-full h-[500px]">
             </div>
             <div class="md:w-1/2">
                 <h2 class="text-4xl font-serif font-bold mb-6 text-deep-navy">Más que solo gramática</h2>
@@ -193,7 +193,7 @@
     </section>
 
     <section class="relative h-[450px] flex items-center justify-center overflow-hidden my-12">
-        <img src="/assets/image3-kp98An8x-kp98An8x.jpg" class="absolute w-full h-full object-cover brightness-75 -z-10">
+        <img src="./assets/image3-kp98An8x-kp98An8x-kp98An8x.jpg" class="absolute w-full h-full object-cover brightness-75 -z-10">
         <div class="text-center text-white px-6">
             <p class="text-xl font-medium">Rompe las barreras lingüísticas y alcanza tus metas globales.</p>
         </div>
@@ -211,7 +211,7 @@
                         <li>Material de estudio personalizado</li>
                     </ul>
                     <p class="text-sm text-gray-600 mb-6 italic">Ideal para iniciar tu camino hacia la fluidez.</p>
-                    <button onclick="selectPlan('Pack Inicial')" class="btn btn-secondary w-full hover:scale-105 transition-transform">Elegir Plan</button>
+                    <button data-action="select-plan" data-plan="Pack Inicial" class="btn btn-secondary w-full hover:scale-105 transition-transform">Elegir Plan</button>
                 </div>
                 <div class="card p-8 flex flex-col border border-deep-navy/30 transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
                     <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff] mb-4">Plan Consultoría</h3>
@@ -221,7 +221,7 @@
                         <li>Soporte prioritario por WhatsApp para dudas rápidas</li>
                     </ul>
                     <p class="text-sm text-gray-600 mb-6 italic">Avanza rápido con sesiones enfocadas en tus metas.</p>
-                    <button onclick="selectPlan('Plan Consultoría')" class="btn btn-primary w-full hover:scale-105 transition-transform">Elegir Plan</button>
+                    <button data-action="select-plan" data-plan="Plan Consultoría" class="btn btn-primary w-full hover:scale-105 transition-transform">Elegir Plan</button>
                 </div>
                 <div class="card p-8 flex flex-col transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
                     <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff] mb-4">Business English</h3>
@@ -232,7 +232,7 @@
                         <li>Presentaciones o business</li>
                     </ul>
                     <p class="text-sm text-gray-600 mb-6 italic">Preparación personalizada para desafíos corporativos.</p>
-                    <button onclick="selectPlan('Business English')" class="btn btn-secondary w-full hover:scale-105 transition-transform">Elegir Plan</button>
+                    <button data-action="select-plan" data-plan="Business English" class="btn btn-secondary w-full hover:scale-105 transition-transform">Elegir Plan</button>
                 </div>
             </div>
         </div>
