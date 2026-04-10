@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Javier | InglÇs Sin Guion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Fraunces', 'serif']
+                    },
+                    colors: {
+                        'deep-navy': '#003580',
+                        'snow-white': '#ffffff',
+                        'pale-gray': '#F3F4F6',
+                        'darker-navy': '#002766'
+                    },
+                    boxShadow: {
+                        'professional': '0 10px 25px rgba(0, 0, 0, 0.1)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F3F4F6; /* Pale Gray */
+            color: #0f172a; /* Slate-900 */
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Fraunces', serif;
+            color: #003580; /* Deep Navy Blue */
+            letter-spacing: -0.02em;
+        }
+        /* Animation Classes */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up {
+            opacity: 0;
+            animation: fadeUp 0.8s ease-out forwards;
+        }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+
+        .section-padding {
+            padding: 5rem 1.5rem;
+        }
+        .card {
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            outline: none;
+            position: relative;
+            z-index: 50;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        .btn-primary {
+            background-color: #003580; /* Deep Navy Blue */
+            color: white;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #002766;
+        }
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #003580; /* Deep Navy Blue */
+            border: 1px solid #003580;
+        }
+        .btn-secondary:hover {
+            background-color: #f3f4f6;
+        }
+        .quiz-option-button {
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 53, 128, 0.2);
+            color: #003580;
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        .quiz-option-button:hover {
+            background-color: #dbeafe; /* Light blue */
+            transform: scale(1.02);
+        }
+        .quiz-option-button.selected {
+            background-color: #003580; /* Deep Navy */
+            color: white;
+            border: 2px solid #003580;`r`n            box-shadow: 0 0 10px rgba(0, 53, 128, 0.3);
+        }
+        .progress-bar-container {
+            background-color: rgba(0, 53, 128, 0.1);
+            border-radius: 9999px;
+            overflow: hidden;
+            height: 16px;
+        }
+        .progress-bar {
+            background-color: #003580; /* Deep Navy */
+            height: 100%;
+            transition: width 0.3s ease-in-out;
+            border-radius: 9999px;
+        }
+        .honeypot-field { display: none; }
+        .consultant-profile {
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            text-align: center;
+        }
+        .profile-photo {
+            border: 5px solid #003580;
+            background-color: #e0e7ff; /* Light Indigo */
+        }
+        .quiz-step {
+            transition: all 0.3s ease-in-out;
+        }
+        .quiz-step.hidden {
+            opacity: 0;
+            transform: translateX(20px);
+            pointer-events: none;
+        }
+        .quiz-step.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Blobs -->
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-100/50 rounded-full blur-3xl -z-10"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-100/50 rounded-full blur-3xl -z-10"></div>
+
+    <!-- Header -->
+    <header class="bg-snow-white shadow-md border-b border-gray-200">
+        <div class="flex flex-wrap items-center justify-between p-4 max-w-5xl mx-auto">
+            <img src='perfil.jpg' class='w-20 h-20 rounded-full object-cover'>
+            <div class="flex gap-4">
+                <button onclick="scrollToSection('quiz-section')" class="btn btn-secondary">Eval£a tu Nivel</button>
+                <button onclick="scrollToSection('strategy-form-section')" class="btn btn-primary">Reserva tu Sesi¢n de Estudio</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center py-24 px-6">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-16">
+            <div class="md:w-2/3 text-center md:text-left">
+                <h1 class="text-6xl font-serif font-bold leading-tight mb-8 bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff] fade-up">
+                    InglÇs Sin Guion: Consultor°a LingÅ°stica para el Mundo Real.
+                </h1>
+                <p class="text-xl font-medium text-slate-900 mb-12 fade-up delay-1">Domina el inglÇs profesional con un enfoque pr†ctico y personalizado. Dirigido por Javier, profesor titulado especializado en perfiles corporativos y acadÇmicos.</p>
+                <button onclick="scrollToSection('quiz-section')" class="btn btn-primary fade-up delay-2">Eval£a tu Nivel</button>
+            </div>
+            <div class="md:w-1/3 flex justify-center">
+                <div class="consultant-profile p-8 w-full max-w-sm card">
+                    <img id="profile-pic" src="perfil.jpg" alt="Javier's Photo" class="w-48 h-48 rounded-full mx-auto mb-6 object-cover profile-photo">
+                    <p class="text-3xl font-serif font-bold text-deep-navy mb-2">Javier</p>
+                    <p class="text-lg font-medium text-slate-900">Prof. Titulado | Especialista Corporativo y AcadÇmico</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiz Section -->
+    <section id="quiz-section" class="py-24 px-6">
+        <div class="max-w-5xl mx-auto card p-6 md:p-12">
+            <h2 class="text-5xl font-serif font-bold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff]">Eval£a tu Nivel Actual</h2>
+
+            <div class="progress-bar-container w-full h-3 mb-12"></div>
+            <div id="quiz-progress-bar" class="progress-bar h-full"></div>
+
+            <div id="quiz-questions-container">
+                <!-- Paso 1: Objetivo -->
+                <div class="quiz-step active" id="quiz-step-1">
+                    <p class="text-2xl font-medium text-slate-900 mb-6">Paso 1: ®Cu†l es tu objetivo principal?</p>
+                    <div class="grid grid-cols-1 gap-4">
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="goal" data-value="career">Profesional</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="goal" data-value="academic">AcadÇmico</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="goal" data-value="social">Social/Viajes</button>
+                    </div>
+                </div>
+
+                <!-- Paso 2: Pregunta de Nivel -->
+                <div class="quiz-step hidden" id="quiz-step-2">
+                    <p class="text-2xl font-medium text-slate-900 mb-6">Paso 2: ®Cu†l es la forma m†s profesional de adjuntar un archivo?</p>
+                    <div class="grid grid-cols-1 gap-4">
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="grammar" data-value="find-attached">Please find attached...</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="grammar" data-value="here-is">Here is the file...</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="grammar" data-value="what-is">What is attached...</button>
+                    </div>
+                </div>
+
+                <!-- Paso 3: Pregunta de Nivel -->
+                <div class="quiz-step hidden" id="quiz-step-3">
+                    <p class="text-2xl font-medium text-slate-900 mb-6">Paso 3: Completa: "By the time we arrived, the meeting..."</p>
+                    <div class="grid grid-cols-1 gap-4">
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="tense" data-value="started">...started.</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="tense" data-value="had-started">...had already started.</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="tense" data-value="starts">...starts.</button>
+                    </div>
+                </div>
+
+                <!-- Paso 4: Pregunta de Nivel -->
+                <div class="quiz-step hidden" id="quiz-step-4">
+                    <p class="text-2xl font-medium text-slate-900 mb-6">Paso 4: ®QuÇ significa "circle back"?</p>
+                    <div class="grid grid-cols-1 gap-4">
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="vocab" data-value="discuss-later">Discutir m†s tarde</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="vocab" data-value="ignore">Ignorar el tema</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="vocab" data-value="return">Regresar f°sicamente</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="quiz-result" class="hidden">
+                <h3 class="text-4xl font-serif font-bold text-center mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff]">Tu Nivel Estimado</h3>
+                <p class="text-2xl font-medium text-slate-900 mb-4 text-center">CEFR: <span id="cefr-level" class="font-bold"></span></p>
+                <p id="cefr-description" class="text-lg text-slate-900 leading-relaxed text-center mb-10"></p>
+                <div class="text-center">
+                    <button id="whatsapp-redirect-btn" class="btn btn-primary">Contactar por WhatsApp</button>
+                </div>
+            </div>
+
+            <div class="text-center mt-10">
+                <button id="next-step-btn" class="btn btn-primary">Siguiente</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Metodolog°a Section -->
+    <section id="metodologia-section" class="py-24 px-6 bg-pale-gray">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-5xl font-serif font-bold text-center mb-16 bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff]">Nuestra Metodolog°a</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 auto-rows-fr">
+                <!-- Card 1: Large (2x1) -->
+                <div class="bg-white/70 backdrop-blur-md border border-white/20 rounded-3xl p-8 shadow-sm md:col-span-2">
+                    <svg class="w-10 h-10 text-deep-navy mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff] mb-2">100% Personalizado</h3>
+                    <p class="text-slate-700">Dise§amos cada sesi¢n enfocada en tus necesidades espec°ficas, ya sea inglÇs corporativo, acadÇmico o conversacional.</p>
+                </div>
+                <!-- Card 2: Small (1x1) -->
+                <div class="bg-white/70 backdrop-blur-md border border-white/20 rounded-3xl p-8 shadow-sm">
+                    <svg class="w-10 h-10 text-deep-navy mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff] mb-2">Flexibilidad</h3>
+                    <p class="text-slate-700">Horarios adaptados a tu ritmo de vida profesional.</p>
+                </div>
+                <!-- Card 3: Small (1x1) -->
+                <div class="bg-white/70 backdrop-blur-md border border-white/20 rounded-3xl p-8 shadow-sm">
+                    <svg class="w-10 h-10 text-deep-navy mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff] mb-2">Contenido Real</h3>
+                    <p class="text-slate-700">Material basado en situaciones de la vida cotidiana.</p>
+                </div>
+                <!-- Card 4: Large (2x1) -->
+                <div class="bg-white/70 backdrop-blur-md border border-white/20 rounded-3xl p-8 shadow-sm md:col-span-2">
+                    <svg class="w-10 h-10 text-deep-navy mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                    <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff] mb-2">Soporte Continuo</h3>
+                    <p class="text-slate-700">Dudas resueltas r†pidamente y seguimiento constante para asegurar que cumplas tus metas de aprendizaje.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing-section" class="py-24 px-6 bg-gray-50">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-5xl font-serif font-bold text-center mb-16 bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff]">Planes de Consultor°a</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Pack Inicial -->
+                <div class="card p-8 flex flex-col transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
+                    <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff] mb-4">Pack Inicial</h3>
+                    <p class="text-4xl font-bold text-deep-navy mb-6">$50.000 CLP</p>
+                    <ul class="text-slate-900 mb-8 flex-grow space-y-3">
+                        <li>4 sesiones mensuales (60 min c/u)</li>
+                        <li>Material de estudio personalizado</li>
+                    </ul>
+                    <p class="text-sm text-gray-600 mb-6 italic">Ideal para iniciar tu camino hacia la fluidez.</p>
+                    <button onclick="selectPlan('Pack Inicial')" class="btn btn-secondary w-full hover:scale-105 transition-transform">Elegir Plan</button>
+                </div>
+                <!-- Plan Consultor°a -->
+                <div class="card p-8 flex flex-col border border-deep-navy/30 transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
+                    <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff] mb-4">Plan Consultor°a</h3>
+                    <p class="text-4xl font-bold text-deep-navy mb-6">$90.000 CLP</p>
+                    <ul class="text-slate-900 mb-8 flex-grow space-y-3">
+                        <li>8 sesiones mensuales</li>
+                        <li>Soporte prioritario por WhatsApp para dudas r†pidas</li>
+                    </ul>
+                    <p class="text-sm text-gray-600 mb-6 italic">Avanza r†pido con sesiones enfocadas en tus metas.</p>
+                    <button onclick="selectPlan('Plan Consultor°a')" class="btn btn-primary w-full hover:scale-105 transition-transform">Elegir Plan</button>
+                </div>
+                <!-- Business English -->
+                <div class="card p-8 flex flex-col transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
+                    <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff] mb-4">Business English</h3>
+                    <p class="text-4xl font-bold text-deep-navy mb-6">Consultar</p>
+                    <ul class="text-slate-900 mb-8 flex-grow space-y-3">
+                        <li>Sesiones 1:1 enfocadas en entrevistas</li>
+                        <li>Vocabulario acadÇmico</li>
+                        <li>Presentaciones o business</li>
+                    </ul>
+                    <p class="text-sm text-gray-600 mb-6 italic">Preparaci¢n personalizada para desaf°os corporativos.</p>
+                    <button onclick="selectPlan('Business English')" class="btn btn-secondary w-full hover:scale-105 transition-transform">Elegir Plan</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Strategy Session Form -->
+    <section id="strategy-form-section" class="py-24 px-6">
+        <div class="max-w-5xl mx-auto card p-6 md:p-12">
+            <h2 class="text-5xl font-serif font-bold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff]">Reserva tu Sesi¢n de Estudio</h2>
+            <form id="strategy-session-form">
+                <div class="mb-8">
+                    <label for="name" class="block text-xl font-medium text-slate-900 mb-3">Nombre</label>
+                    <input type="text" id="name" name="name" required class="w-full py-4 px-6 border-2 border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#003580] focus:border-transparent shadow-inner">
+                </div>
+                <div class="mb-8">
+                    <label for="email" class="block text-xl font-medium text-slate-900 mb-3">Email</label>
+                    <input type="email" id="email" name="email" required class="w-full py-4 px-6 border-2 border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#003580] focus:border-transparent shadow-inner">
+                </div>
+                <div class="mb-8">
+                    <label for="message" class="block text-xl font-medium text-slate-900 mb-3">®C¢mo puedo ayudarte?</label>
+                    <textarea id="message" name="message" rows="5" required class="w-full py-4 px-6 border-2 border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#003580] focus:border-transparent shadow-inner"></textarea>
+                </div>
+
+                <!-- Honeypot Field -->
+                <div class="honeypot-field">
+                    <label for="website">Leave this empty</label>
+                    <input type="text" id="website" name="website">
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <footer class="py-16 px-6 text-center text-slate-900 text-sm bg-pale-gray">
+        <p>&copy; 2026 Javier | InglÇs Sin Guion. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function selectPlan(planName) {
+            const messageTextarea = document.getElementById('message');
+            messageTextarea.value = `Hola Javier, me interesa el ${planName}. Me gustar°a agendar mi primera sesi¢n de estudio.`;
+            scrollToSection('strategy-form-section');
+            messageTextarea.focus();
+        }
+
+        window.onload = function() {
+            // --- Global Variables & Quiz Config ---
+            const quizQuestionsData = [
+                {
+                    id: 'goal',
+                    text: 'Paso 1: ®Cu†l es tu objetivo principal?',
+                    options: [
+                        { value: 'career', text: 'Profesional' },
+                        { value: 'academic', text: 'AcadÇmico' },
+                        { value: 'social', text: 'Social/Viajes' }
+                    ]
+                },
+                {
+                    id: 'grammar',
+                    text: 'Paso 2: ®Cu†l es la forma m†s profesional de adjuntar un archivo?',
+                    options: [
+                        { value: 'find-attached', text: 'Please find attached...' },
+                        { value: 'here-is', text: 'Here is the file...' },
+                        { value: 'what-is', text: 'What is attached...' }
+                    ]
+                },
+                {
+                    id: 'tense',
+                    text: 'Paso 3: Completa: \"By the time we arrived, the meeting...\"',
+                    options: [
+                        { value: 'started', text: '...started.' },
+                        { value: 'had-started', text: '...had already started.' },
+                        { value: 'starts', text: '...starts.' }
+                    ]
+                },
+                {
+                    id: 'vocab',
+                    text: 'Paso 4: ®QuÇ significa \"circle back\"?',
+                    options: [
+                        { value: 'discuss-later', text: 'Discutir m†s tarde' },
+                        { value: 'ignore', text: 'Ignorar el tema' },
+                        { value: 'return', text: 'Regresar f°sicamente' }
+                    ]
+                }
+            ];
+
+            let currentStep = 0;
+            let quizAnswers = {};
+
+            // --- DOM Elements ---
+            const profilePic = document.getElementById('profile-pic');
+            const quizQuestionsContainer = document.getElementById('quiz-questions-container');
+            const progressBar = document.getElementById('quiz-progress-bar');
+            const nextStepBtn = document.getElementById('next-step-btn');
+            const submitQuizBtn = document.getElementById('submit-quiz-btn');
+            const quizResultDiv = document.getElementById('quiz-result');
+            const cefrLevelSpan = document.getElementById('cefr-level');
+            const cefrDescriptionP = document.getElementById('cefr-description');
+            const whatsappRedirectBtn = document.getElementById('whatsapp-redirect-btn');
+
+            const quizSection = document.getElementById('quiz-section');
+            const strategySessionForm = document.getElementById('strategy-session-form');
+            const honeypotField = document.getElementById('website');
+
+            // --- Utility Functions ---
+            function updateProgressBar() {
+                const progress = ((currentStep + 1) / quizQuestionsData.length) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+
+            function showStep(stepIndex) {
+                const steps = quizQuestionsContainer.children;
+                for (let i = 0; i < steps.length; i++) {
+                    steps[i].classList.add('hidden');
+                    steps[i].classList.remove('active');
+                }
+                const currentStepElement = document.getElementById(`quiz-step-${stepIndex + 1}`);
+                if (currentStepElement) {
+                    currentStepElement.classList.remove('hidden');
+                    currentStepElement.classList.add('active');
+                }
+                updateProgressBar();
+                if (stepIndex === quizQuestionsData.length - 1) {
+                    nextStepBtn.innerText = 'Ver mi Nivel';
+                } else {
+                    nextStepBtn.innerText = 'Siguiente';
+                }
+            }
+
+            function selectQuizOption(event) {
+                const clickedButton = event.target.closest('.quiz-option-button');
+                if (!clickedButton) return;
+
+                const questionId = clickedButton.dataset.questionId;
+                const value = clickedButton.dataset.value;
+
+                document.querySelectorAll(`.quiz-option-button[data-question-id="${questionId}"]`).forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                clickedButton.classList.add('selected');
+                quizAnswers[questionId] = value;
+            }
+
+            function getCefrProfile(answers) {
+                let score = 0;
+
+                // Grammar: 'find-attached' is correct
+                if (answers.grammar === 'find-attached') score += 3;
+                else score += 1;
+
+                // Tense: 'had-started' is correct
+                if (answers.tense === 'had-started') score += 3;
+                else score += 1;
+
+                // Vocab: 'discuss-later' is correct
+                if (answers.vocab === 'discuss-later') score += 3;
+                else score += 1;
+
+                let level = '';
+                let description = '';
+
+                if (score <= 4) {
+                    level = 'A1/A2';
+                    description = 'Tus habilidades son fundamentales. Enf¢cate en la base gramatical y vocabulario esencial.';
+                } else if (score <= 7) {
+                    level = 'B1/B2';
+                    description = 'Manejas conceptos intermedios. Podemos trabajar en fluidez y precisi¢n en contextos profesionales.';
+                } else {
+                    level = 'C1/C2';
+                    description = 'Posees un nivel avanzado. Nos enfocaremos en perfeccionar matices y vocabulario tÇcnico especializado.';
+                }
+                return { level, description };
+            }
+
+            // --- Event Listeners Initialization ---
+
+            // Profile picture fallback if perfil.jpg is not found
+            if (profilePic) {
+                profilePic.onerror = function() {
+                    this.style.display = 'none'; // Hide broken image icon
+                    const initial = document.createElement('span');
+                    initial.className = 'text-4xl font-serif font-bold text-deep-navy';
+                    initial.textContent = 'J';
+                    this.parentNode.insertBefore(initial, this);
+                };
+            }
+
+            // Quiz Initialization
+            showStep(currentStep);
+
+            // Quiz Navigation & Option Selection
+            nextStepBtn.addEventListener('click', () => {
+                const currentQuestionDiv = quizQuestionsContainer.querySelector('.quiz-step.active');
+                if (!currentQuestionDiv) return;
+
+                const selectedOption = currentQuestionDiv.querySelector('.quiz-option-button.selected');
+                
+                // If we are not on the last question, we must have selected an option
+                if (currentStep < quizQuestionsData.length && !selectedOption) {
+                    alert('Por favor, selecciona una opci¢n.');
+                    return;
+                }
+
+                if (selectedOption) {
+                    quizAnswers[selectedOption.dataset.questionId] = selectedOption.dataset.value;
+                }
+
+                if (currentStep < quizQuestionsData.length - 1) {
+                    currentStep++;
+                    showStep(currentStep);
+                } else {
+                    submitQuiz();
+                }
+            });
+
+            quizQuestionsContainer.addEventListener('click', selectQuizOption);
+
+            // Quiz Submission
+            function submitQuiz() {
+                // Ensure all questions have been answered before submitting
+                const allAnswered = quizQuestionsData.every(q => quizAnswers.hasOwnProperty(q.id));
+                if (!allAnswered) {
+                    alert('Por favor, responde todas las preguntas.');
+                    return;
+                }
+
+                const profile = getCefrProfile(quizAnswers);
+                cefrLevelSpan.textContent = profile.level;
+                cefrDescriptionP.textContent = profile.description;
+                quizQuestionsContainer.classList.add('hidden');
+                nextStepBtn.classList.add('hidden');
+                quizResultDiv.classList.remove('hidden');
+                quizResultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            // Scroll to Sections
+            // (Functionality handled by global scrollToSection)
+
+            // Strategy Session Form Submission
+            if (strategySessionForm) {
+                strategySessionForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    const honeypot = document.getElementById('website').value;
+                    if (honeypot) {
+                        alert('Spam detected. Please try again.');
+                        return;
+                    }
+
+                    const name = document.getElementById('name').value;
+                    const email = document.getElementById('email').value;
+                    const message = document.getElementById('message').value;
+                    const level = cefrLevelSpan.innerText;
+                    const goal = quizAnswers.goal ? quizAnswers.goal.charAt(0).toUpperCase() + quizAnswers.goal.slice(1) : 'No especificado';
+
+                    const whatsAppMessage = `Hola Javier, hice el quiz y mi nivel estimado es ${level}. Me interesa la consultor°a para ${goal}.\n\nNombre: ${name}\nEmail: ${email}\nMensaje: ${message}`;
+
+                    // Placeholder for WhatsApp redirect
+                    // const whatsappUrl = `https://wa.me/{{YOUR_PHONE_NUMBER}}?text=${encodeURIComponent(whatsAppMessage)}`;
+                    // window.location.href = whatsappUrl;
+                    alert(`Solicitud enviada a ${name}. ≠Gracias!\nWhatsApp Message Preview: ${whatsAppMessage}`);
+                    strategySessionForm.reset();
+                });
+            }
+        };
+    </script>
+</body>
+</html>
+
+
+
+
+
+
