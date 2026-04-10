@@ -171,7 +171,7 @@
     <!-- Header -->
     <header class="bg-snow-white shadow-md border-b border-gray-200">
         <div class="flex flex-wrap items-center justify-between p-4 max-w-5xl mx-auto">
-            <img src='perfil.jpg' class='w-20 h-20 rounded-full object-cover'>
+            <img src='./perfil.jpg' class='w-20 h-20 rounded-full object-cover'>
             <div class="flex gap-4">
                 <button onclick="scrollToSection('quiz-section')" class="btn btn-secondary">Evalúa tu Nivel</button>
                 <button onclick="scrollToSection('strategy-form-section')" class="btn btn-primary">Reserva tu Sesión de Estudio</button>
@@ -191,7 +191,7 @@
             </div>
             <div class="md:w-1/3 flex justify-center">
                 <div class="consultant-profile p-8 w-full max-w-sm card">
-                    <img id="profile-pic" src="perfil.jpg" alt="Javier's Photo" class="w-48 h-48 rounded-full mx-auto mb-6 object-cover profile-photo">
+                    <img id="profile-pic" src="./perfil.jpg" alt="Javier's Photo" class="w-48 h-48 rounded-full mx-auto mb-6 object-cover profile-photo">
                     <p class="text-3xl font-serif font-bold text-deep-navy mb-2">Javier</p>
                     <p class="text-lg font-medium text-slate-900">Prof. Titulado | Especialista Corporativo y Académico</p>
                 </div>
@@ -531,7 +531,7 @@
 
             // --- Event Listeners Initialization ---
 
-            // Profile picture fallback if perfil.jpg is not found
+            // Profile picture fallback if  is not found
             if (profilePic) {
                 profilePic.onerror = function() {
                     this.style.display = 'none'; // Hide broken image icon
