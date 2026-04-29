@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://dexusjik.github.io; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://formspree.io;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://dexusjik.github.io; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://formspree.io;">
     <title>Javier Perez | Inglés Sin Guion</title>
     
     <link rel="icon" type="image/jpg" href="https://dexusjik.github.io/image5.jpg">
@@ -21,15 +21,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
     <style>
-        html {
-            scroll-behavior: smooth;
-        }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #F3F4F6; /* Pale Gray */
             color: #0f172a; /* Slate-900 */
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Fraunces', serif;
@@ -50,7 +49,7 @@
         .delay-3 { animation-delay: 0.6s; }
 
         .section-padding {
-            padding: 5rem 1.5rem;
+            padding: 8rem 1.5rem;
         }
         .card {
             background-color: rgba(255, 255, 255, 0.7);
@@ -59,6 +58,28 @@
             border-radius: 1.5rem;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .asymmetric-container {
+            position: relative;
+        }
+        .asymmetric-image {
+            position: relative;
+            z-index: 1;
+        }
+        .asymmetric-text {
+            position: relative;
+            z-index: 2;
+            margin-left: -5rem;
+            background: white;
+            padding: 3rem;
+            border-radius: 1.5rem;
+            box-shadow: 20px 20px 60px rgba(0,0,0,0.05);
+        }
+        @media (max-width: 768px) {
+            .asymmetric-text {
+                margin-left: 0;
+                margin-top: -2rem;
+            }
         }
         .btn {
             display: inline-block;
@@ -145,6 +166,7 @@
             transition: all 0.3s ease-in-out;
         }
         .quiz-step.hidden {
+            display: none !important;
             opacity: 0;
             transform: translateX(20px);
             pointer-events: none;
@@ -154,16 +176,73 @@
             transform: translateX(0);
             pointer-events: auto;
         }
+
+        /* Scroll Reveal Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Seamless Section Blending */
+        .blend-bottom-navy::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(to bottom, transparent, #0f172a);
+            pointer-events: none;
+            z-index: -1;
+        }
+        .blend-top-navy::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(to bottom, #0f172a, transparent);
+            pointer-events: none;
+            z-index: -1;
+        }
+        .blend-bottom-white::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(to bottom, transparent, #ffffff);
+            pointer-events: none;
+            z-index: -1;
+        }
+        .blend-top-white::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(to bottom, #ffffff, transparent);
+            pointer-events: none;
+            z-index: -1;
+        }
     </style>
 </head>
 <body>
-    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-100/50 rounded-full blur-3xl -z-10"></div>
-    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-100/50 rounded-full blur-3xl -z-10"></div>
+    <div class="fixed inset-0 bg-[#F3F4F6] -z-20"></div>
+    <div id="blur-1" class="fixed top-[-10%] left-[-10%] w-[60%] h-[60%] bg-blue-600/40 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
+    <div id="blur-2" class="fixed bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-blue-600/40 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
 
     <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div class="flex items-center justify-between p-4 max-w-6xl mx-auto">
             <a href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;" class="flex items-center gap-4 cursor-pointer">
-                <img src='./image4.jpg' class='w-12 h-12 rounded-[2rem] object-cover border-2 border-deep-navy'>
+                <img src='./image4.jpg' loading="lazy" class='w-12 h-12 rounded-[2rem] object-cover border-2 border-deep-navy'>
                 <span class="font-serif font-bold text-deep-navy text-xl hidden sm:block">Inglés Sin Guion</span>
             </a>
             <nav class="hidden md:flex gap-8 text-sm font-semibold text-slate-600">
@@ -178,7 +257,7 @@
         </div>
     </header>
 
-    <section class="min-h-[90vh] flex items-center py-20 px-6">
+    <section class="py-24 px-6 relative blend-bottom-navy">
         <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
             <div class="text-left">
                 <h1 class="text-5xl lg:text-7xl font-serif font-bold leading-[1.1] mb-6 text-deep-navy fade-up">
@@ -187,24 +266,13 @@
                 <p class="text-lg lg:text-xl font-medium text-slate-700 mb-8 max-w-lg fade-up delay-1">
                     Domina el inglés profesional con un enfoque práctico y sin guiones rígidos. Especializado en perfiles corporativos y éxito académico.
                 </p>
-                
-                <div class="flex flex-wrap gap-4 mb-10 fade-up delay-2">
-                    <span class="bg-blue-50 text-deep-navy px-3 py-1 rounded-full text-xs font-bold border border-blue-100">Business English</span>
-                    <span class="bg-blue-50 text-deep-navy px-3 py-1 rounded-full text-xs font-bold border border-blue-100">Foco Académico</span>
-                    <span class="bg-blue-50 text-deep-navy px-3 py-1 rounded-full text-xs font-bold border border-blue-100">Fluidez Real</span>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-4 fade-up delay-3">
-                    <button onclick="scrollToSection('quiz-section')" class="btn btn-primary px-8">Comenzar Evaluación</button>
-                    <button onclick="scrollToSection('metodologia-section')" class="btn btn-secondary px-8">Ver Metodología</button>
-                </div>
             </div>
 
             <div class="relative flex justify-center md:justify-end fade-up delay-2">
                 <div class="absolute -top-10 -right-10 w-64 h-64 bg-blue-200/30 rounded-full blur-3xl -z-10"></div>
                 
                 <div class="consultant-profile p-6 w-full max-w-sm card !rounded-[2rem] border-white/40 shadow-professional">
-                    <img id="profile-pic" src="./image5.jpg" alt="Javier Perez" class="w-full aspect-square rounded-[2rem] mb-6 object-cover profile-photo hover:scale-[1.02] transition-all duration-500">
+                    <img id="profile-pic" src="./image5.jpg" loading="lazy" alt="Javier Perez" class="w-full aspect-square rounded-[2rem] mb-6 object-cover profile-photo hover:scale-[1.02] transition-all duration-500">
                     <div class="text-left">
                         <p class="text-2xl font-serif font-bold text-deep-navy">Javier Perez</p>
                         <p class="text-sm font-semibold text-blue-600 mb-3 uppercase tracking-wider">Consultor Principal</p>
@@ -215,47 +283,47 @@
         </div>
     </section>
 
-    <section id="quiz-section" class="py-24 px-6">
+    <section id="quiz-section" class="py-24 px-6 relative blend-top-navy blend-bottom-navy">
         <div class="max-w-5xl mx-auto card p-6 md:p-12">
             <h2 class="text-5xl font-serif font-bold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff]">Evalúa tu Nivel Actual</h2>
 
             <div class="progress-bar-container w-full h-3 mb-12"></div>
             <div id="quiz-progress-bar" class="progress-bar h-full"></div>
 
-            <div id="quiz-questions-container">
+            <div id="quiz-questions-container" class="quiz-container-relative">
                 <div class="quiz-step active" id="quiz-step-1">
                     <p class="text-2xl font-medium text-slate-900 mb-6">Paso 1: ¿Cuál es tu objetivo principal?</p>
                     <div class="grid grid-cols-1 gap-4">
-                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="goal" data-value="career">Profesional</button>
-                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="goal" data-value="academic">Académico</button>
-                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="goal" data-value="social">Social/Viajes</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar objetivo: Profesional" data-question-id="goal" data-value="career">Profesional</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar objetivo: Académico" data-question-id="goal" data-value="academic">Académico</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar objetivo: Social o Viajes" data-question-id="goal" data-value="social">Social/Viajes</button>
                     </div>
                 </div>
 
                 <div class="quiz-step hidden" id="quiz-step-2">
                     <p class="text-2xl font-medium text-slate-900 mb-6">Paso 2: ¿Cuál es la forma más profesional de adjuntar un archivo?</p>
                     <div class="grid grid-cols-1 gap-4">
-                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="grammar" data-value="find-attached">Please find attached...</button>
-                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="grammar" data-value="here-is">Here is the file...</button>
-                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="grammar" data-value="what-is">What is attached...</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar opción: Please find attached" data-question-id="grammar" data-value="find-attached">Please find attached...</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar opción: Here is the file" data-question-id="grammar" data-value="here-is">Here is the file...</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar opción: What is attached" data-question-id="grammar" data-value="what-is">What is attached...</button>
                     </div>
                 </div>
 
                 <div class="quiz-step hidden" id="quiz-step-3">
                     <p class="text-2xl font-medium text-slate-900 mb-6">Paso 3: Completa: "By the time we arrived, the meeting..."</p>
                     <div class="grid grid-cols-1 gap-4">
-                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="tense" data-value="started">...started.</button>
-                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="tense" data-value="had-started">...had already started.</button>
-                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="tense" data-value="starts">...starts.</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar opción: started" data-question-id="tense" data-value="started">...started.</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar opción: had already started" data-question-id="tense" data-value="had-started">...had already started.</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar opción: starts" data-question-id="tense" data-value="starts">...starts.</button>
                     </div>
                 </div>
 
                 <div class="quiz-step hidden" id="quiz-step-4">
                     <p class="text-2xl font-medium text-slate-900 mb-6">Paso 4: ¿Qué significa "circle back"?</p>
                     <div class="grid grid-cols-1 gap-4">
-                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="vocab" data-value="discuss-later">Discutir más tarde</button>
-                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="vocab" data-value="ignore">Ignorar el tema</button>
-                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" data-question-id="vocab" data-value="return">Regresar físicamente</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar opción: Discutir más tarde" data-question-id="vocab" data-value="discuss-later">Discutir más tarde</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar opción: Ignorar el tema" data-question-id="vocab" data-value="ignore">Ignorar el tema</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar opción: Regresar físicamente" data-question-id="vocab" data-value="return">Regresar físicamente</button>
                     </div>
                 </div>
             </div>
@@ -265,7 +333,7 @@
                 <p class="text-2xl font-medium text-slate-900 mb-4 text-center">CEFR: <span id="cefr-level" class="font-bold"></span></p>
                 <p id="cefr-description" class="text-lg text-slate-900 leading-relaxed text-center mb-10"></p>
                 <div class="text-center">
-                    <button id="whatsapp-redirect-btn" class="btn btn-primary">Contactar por WhatsApp</button>
+                    <button id="whatsapp-redirect-btn" class="btn btn-primary">Enviar Solicitud</button>
                 </div>
             </div>
 
@@ -275,11 +343,10 @@
         </div>
     </section>
 
-    <div class="h-16 bg-gradient-to-b from-[#F3F4F6] to-[#0f172a]"></div>
-    <section id="about-section" class="py-24 px-6 bg-gradient-to-b from-[#0f172a] via-[#1e293b] to-[#0f172a]">
+    <section id="about-section" class="py-24 px-6 bg-gradient-to-b from-[#0f172a] via-[#1e293b] to-[#0f172a] relative blend-top-navy blend-bottom-white">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12">
             <div class="md:w-1/2">
-                <img src="image2.jpg" alt="Javier Perez" class="rounded-[2rem] shadow-[0_20px_50px_-10px_rgba(0,31,63,0.4)] border border-white/5 object-cover w-full h-[500px]">
+                <img src="image2.jpg" loading="lazy" alt="Javier Perez" class="rounded-[2rem] shadow-[0_20px_50px_-10px_rgba(0,31,63,0.4)] border border-white/5 object-cover w-full h-[500px]">
             </div>
             <div class="md:w-1/2">
                 <h2 class="text-4xl font-serif font-bold mb-6 text-[#BAE6FD] tracking-[-0.01em]">Más que solo gramática</h2>
@@ -287,9 +354,7 @@
             </div>
         </div>
     </section>
-    <div class="h-16 bg-gradient-to-t from-white to-[#0f172a]"></div>
-
-    <section id="metodologia-section" class="py-24 px-6 bg-white">
+    <section id="metodologia-section" class="py-24 px-6 bg-white relative blend-top-white">
         <div class="max-w-6xl mx-auto">
             <h2 class="text-5xl font-serif font-bold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff]">Nuestra Metodología</h2>
             <p class="text-center text-gray-600 mb-16 text-lg">Un enfoque estructurado, práctico y adaptado a tus necesidades corporativas o académicas.</p>
@@ -327,11 +392,11 @@
         </div>
     </section>
 
-    <section class="relative h-[450px] flex items-center justify-center overflow-hidden my-12">
-        <img src="image3.jpg" class="absolute w-full h-full object-cover brightness-75 -z-10">
+    <section class="relative h-[450px] flex items-center justify-center overflow-hidden blend-top-white blend-bottom-white">
+        <img src="image3.jpg" loading="lazy" class="absolute w-full h-full object-cover brightness-75 -z-10">
         <div class="absolute w-full h-full -z-10 backdrop-blur-[2px] bg-black/20"></div>
         <div class="text-center text-white px-6">
-            <p class="text-xl font-medium">Rompe las barreras lingüísticas y alcanza tus metas globales.</p>
+            <p class="text-3xl md:text-4xl font-serif italic font-bold drop-shadow-lg">Rompe las barreras lingüísticas y alcanza tus metas globales.</p>
         </div>
     </section>
 
@@ -349,7 +414,8 @@
                     <p class="text-sm text-gray-600 mb-6 italic">Ideal para iniciar tu camino hacia la fluidez.</p>
                     <button onclick="selectPlan('Pack Inicial')" class="btn btn-secondary w-full hover:scale-105 transition-transform">Elegir Plan</button>
                 </div>
-                <div class="card p-8 flex flex-col border border-deep-navy/30 transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
+                <div class="card p-8 flex flex-col border-2 border-deep-navy relative transition duration-300 hover:-translate-y-3 hover:shadow-2xl scale-105 z-10">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-deep-navy text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">Recomendado</div>
                     <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff] mb-4">Plan Consultoría</h3>
                     <p class="text-4xl font-bold text-deep-navy mb-6">$90.000 CLP</p>
                     <ul class="text-slate-900 mb-8 flex-grow space-y-3">
@@ -360,21 +426,49 @@
                     <button onclick="selectPlan('Plan Consultoría')" class="btn btn-primary w-full hover:scale-105 transition-transform">Elegir Plan</button>
                 </div>
                 <div class="card p-8 flex flex-col transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
-                    <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff] mb-4">Business English</h3>
-                    <p class="text-4xl font-bold text-deep-navy mb-6">Consultar</p>
+                    <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff] mb-4">Clase Individual</h3>
+                    <p class="text-4xl font-bold text-deep-navy mb-6">$15.000 CLP</p>
                     <ul class="text-slate-900 mb-8 flex-grow space-y-3">
-                        <li>Sesiones 1:1 enfocadas en entrevistas</li>
-                        <li>Vocabulario académico</li>
-                        <li>Presentaciones o business</li>
+                        <li>1 Sesión intensiva (60 min)</li>
+                        <li>Diagnóstico de nivel profesional</li>
+                        <li>Plan de acción personalizado</li>
                     </ul>
-                    <p class="text-sm text-gray-600 mb-6 italic">Preparación personalizada para desafíos corporativos.</p>
-                    <button onclick="selectPlan('Business English')" class="btn btn-secondary w-full hover:scale-105 transition-transform">Elegir Plan</button>
+                    <p class="text-sm text-gray-600 mb-6 italic">Ideal para resolver una duda puntual o probar la metodología.</p>
+                    <button onclick="selectPlan('Clase Individual')" class="btn btn-secondary w-full hover:scale-105 transition-transform">Elegir Plan</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="faq-section" class="py-24 px-6">
+    <section id="testimonials-section" class="py-24 px-6 bg-white relative blend-bottom-white">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-5xl font-serif font-bold text-center mb-16 bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff]">Casos de Éxito</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="card p-8 flex flex-col items-center text-center hover:shadow-xl transition-shadow duration-300">
+                    <div class="w-20 h-20 rounded-full mb-6 border-4 border-pink-100 bg-pink-50 flex items-center justify-center overflow-hidden">
+                        <svg class="w-12 h-12 text-pink-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <p class="text-slate-600 italic mb-6">"Gracias a las clases de Javier, pude viajar a Ámsterdam y desenvolverme con un inglés funcional en mis actividades."</p>
+                    <p class="font-bold text-deep-navy">María</p>
+                    <p class="text-xs text-blue-600 uppercase tracking-widest font-semibold">Government Worker</p>
+                </div>
+                <div class="card p-8 flex flex-col items-center text-center hover:shadow-xl transition-shadow duration-300">
+                    <div class="w-20 h-20 rounded-full mb-6 border-4 border-blue-100 bg-blue-50 flex items-center justify-center overflow-hidden">
+                        <svg class="w-12 h-12 text-blue-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <p class="text-slate-600 italic mb-6">"Como guía en Rapa Nui, el inglés es vital. Logré pasar de conocimientos básicos a un nivel conversacional que me permite atender a turistas de todo el mundo."</p>
+                    <p class="font-bold text-deep-navy">Tane</p>
+                    <p class="text-xs text-blue-600 uppercase tracking-widest font-semibold">Guía Turístico Rapa Nui</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq-section" class="py-24 px-6 bg-white relative blend-top-white reveal">
         <div class="max-w-4xl mx-auto">
             <h2 class="text-5xl font-serif font-bold text-center mb-16 text-deep-navy">Preguntas Frecuentes</h2>
             <div class="space-y-8">
@@ -431,6 +525,7 @@
         <p>&copy; 2026 Javier Perez | Inglés Sin Guion. Todos los derechos reservados.</p>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
     <script>
         function scrollToSection(id) {
             const element = document.getElementById(id);
@@ -446,7 +541,35 @@
             messageTextarea.focus();
         }
 
-        window.onload = function() {
+        window.onload = async function() {
+            if (!window.gsap) {
+                console.error('GSAP failed to load');
+                return;
+            }
+
+            window.addEventListener('mousemove', (e) => {
+                const moveX = (e.clientX - window.innerWidth / 2) * 0.15;
+                const moveY = (e.clientY - window.innerHeight / 2) * 0.15;
+                const distance = Math.sqrt(moveX*moveX + moveY*moveY) * 0.01;
+                const scale = 1 + (distance * 0.1);
+
+                gsap.to('#blur-1', { 
+                    x: moveX, 
+                    y: moveY, 
+                    scale: scale,
+                    backgroundColor: distance > 2 ? 'rgba(79, 70, 229, 0.4)' : 'rgba(59, 130, 246, 0.4)',
+                    duration: 2, 
+                    ease: 'power3.out' 
+                });
+
+                gsap.to('#blur-2', { 
+                    x: -moveX * 1.8, 
+                    y: -moveY * 1.8, 
+                    scale: 1 / scale,
+                    duration: 2, 
+                    ease: 'power3.out' 
+                });
+            });
             // --- Global Variables & Quiz Config ---
             const quizQuestionsData = [
                 {
@@ -510,14 +633,32 @@
 
             function showStep(stepIndex) {
                 const steps = quizQuestionsContainer.children;
-                for (let i = 0; i < steps.length; i++) {
-                    steps[i].classList.add('hidden');
-                    steps[i].classList.remove('active');
-                }
                 const currentStepElement = document.getElementById(`quiz-step-${stepIndex + 1}`);
+                const previousStepElement = document.getElementById(`quiz-step-${stepIndex}`);
+
+                // Mark current as active IMMEDIATELY to prevent click-block
                 if (currentStepElement) {
-                    currentStepElement.classList.remove('hidden');
                     currentStepElement.classList.add('active');
+                    currentStepElement.classList.remove('hidden');
+                }
+
+                if (previousStepElement) {
+                    gsap.to(previousStepElement, { 
+                        opacity: 0, 
+                        x: -20, 
+                        duration: 0.4, 
+                        onComplete: () => {
+                            previousStepElement.classList.remove('active');
+                            previousStepElement.classList.add('hidden');
+                        } 
+                    });
+                }
+
+                if (currentStepElement) {
+                    gsap.fromTo(currentStepElement, 
+                        { opacity: 0, x: 20 }, 
+                        { opacity: 1, x: 0, duration: 0.5, delay: 0.1 }
+                    );
                 }
                 updateProgressBar();
                 if (stepIndex === quizQuestionsData.length - 1) {
@@ -645,6 +786,39 @@
                     }
                 });
             }
+
+            // --- Scroll Reveal Logic ---
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const children = entry.target.querySelectorAll('.fade-up, .delay-1, .delay-2, .delay-3, .card, .asymmetric-text');
+                        entry.target.classList.add('active');
+                        if (children.length > 0) {
+                            children.forEach((child, index) => {
+                                setTimeout(() => {
+                                    child.classList.add('active');
+                                    if (child.classList.contains('fade-up')) {
+                                        child.style.opacity = '1';
+                                        child.style.transform = 'translateY(0)';
+                                    }
+                                }, index * 150);
+                            });
+                        }
+                    }
+                });
+            }, { threshold: 0.1 });
+            revealElements.forEach(element => {
+                revealObserver.observe(element);
+            });
+
+            // --- Lenis Smooth Scroll ---
+            const lenis = new Lenis();
+            function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            }
+            requestAnimationFrame(raf);
         };
     </script>
 </body>
