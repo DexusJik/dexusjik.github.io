@@ -88,9 +88,16 @@
             interactiveElements.forEach(el => {
                 el.addEventListener('mouseenter', () => {
                     cursor.classList.add('cursor-hover');
+                    const hoverText = el.getAttribute('data-cursor-text');
+                    if (hoverText) {
+                        cursor.innerText = hoverText;
+                        cursor.classList.add('cursor-text');
+                    }
                 });
                 el.addEventListener('mouseleave', () => {
                     cursor.classList.remove('cursor-hover');
+                    cursor.classList.remove('cursor-text');
+                    cursor.innerText = '';
                 });
             });
 
