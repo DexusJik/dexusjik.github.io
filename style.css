@@ -233,15 +233,17 @@
         #custom-cursor {
             pointer-events: none;
             transition: opacity 0.3s ease;
-            transform: translate(-50%, -50%);
+            position: fixed;
+            top: 0;
+            left: 0;
         }
         .cursor-hover {
-            transform: translate(-50%, -50%) scale(4) !important;
+            transform: scale(4) !important;
             background-color: rgba(0, 53, 128, 0.5) !important;
             mix-blend-mode: difference;
         }
         .cursor-text {
-            transform: translate(-50%, -50%) scale(2) !important;
+            transform: scale(2) !important;
             background-color: #003580 !important;
             width: auto !important;
             height: auto !important;
