@@ -168,10 +168,10 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 60px;
+            height: 100px;
             background: linear-gradient(to bottom, transparent, #0f172a);
             pointer-events: none;
-            z-index: -1;
+            z-index: 1;
         }
         .blend-top-navy::before {
             content: '';
@@ -179,10 +179,10 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 60px;
+            height: 100px;
             background: linear-gradient(to bottom, #0f172a, transparent);
             pointer-events: none;
-            z-index: -1;
+            z-index: 1;
         }
         .blend-bottom-white::after {
             content: '';
@@ -190,10 +190,10 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 60px;
+            height: 100px;
             background: linear-gradient(to bottom, transparent, #ffffff);
             pointer-events: none;
-            z-index: -1;
+            z-index: 1;
         }
         .blend-top-white::before {
             content: '';
@@ -201,8 +201,51 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 60px;
+            height: 100px;
             background: linear-gradient(to bottom, #ffffff, transparent);
             pointer-events: none;
-            z-index: -1;
+            z-index: 1;
+        }
+
+        /* Premium Polish Styles */
+        .magnetic-btn {
+            transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .nav-link.active {
+            color: #003580 !important;
+            font-weight: 700;
+            border-bottom: 2px solid #003580;
+        }
+        .char-wrap {
+            display: inline-block;
+            transform: translateY(100%);
+            opacity: 0;
+        }
+        .text-reveal-container {
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: bottom;
+            padding-bottom: 0.15em;
+            margin-bottom: -0.15em;
+        }
+
+        /* Custom Cursor */
+        #custom-cursor {
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            transform: translate(-50%, -50%);
+        }
+        .cursor-hover {
+            transform: translate(-50%, -50%) scale(4) !important;
+            background-color: rgba(0, 53, 128, 0.5) !important;
+            mix-blend-mode: difference;
+        }
+        .cursor-text {
+            transform: translate(-50%, -50%) scale(2) !important;
+            background-color: #003580 !important;
+            width: auto !important;
+            height: auto !important;
+            padding: 0.5rem 1rem !important;
+            border-radius: 9999px !important;
+            white-space: nowrap;
         }

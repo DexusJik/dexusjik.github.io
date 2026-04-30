@@ -18,6 +18,101 @@
                 return;
             }
 
+            // --- 2. Magnetic Buttons ---
+            const magneticBtns = document.querySelectorAll('.magnetic-btn');
+            magneticBtns.forEach(btn => {
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    
+                    gsap.to(btn, {
+                        x: x * 0.3,
+                        y: y * 0.3,
+                        duration: 0.3,
+                        ease: 'power2.out'
+                    });
+                });
+                
+                btn.addEventListener('mouseleave', () => {
+                    gsap.to(btn, {
+                        x: 0,
+                        y: 0,
+                        duration: 0.5,
+                        ease: 'elastic.out(1, 0.3)'
+                    });
+                });
+            });
+
+            // --- 3. Text Reveal Animation ---
+            const revealContainers = document.querySelectorAll('.text-reveal-container');
+            revealContainers.forEach(container => {
+                const text = container.innerText;
+                container.innerHTML = '';
+                
+                text.split('').forEach(char => {
+                    const span = document.createElement('span');
+                    span.innerText = char === ' ' ? '\u00A0' : char;
+                    span.className = 'char-wrap';
+                    container.appendChild(span);
+                });
+            });
+
+            gsap.to('.char-wrap', {
+                y: 0,
+                opacity: 1,
+                stagger: 0.02,
+                duration: 0.8,
+                ease: 'power4.out',
+                delay: 0.2
+            });
+
+            // --- 4. ScrollSpy Navigation ---
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            // --- Custom Cursor Logic ---
+            const cursor = document.getElementById('custom-cursor');
+            
+            window.addEventListener('mousemove', (e) => {
+                gsap.to(cursor, {
+                    x: e.clientX,
+                    y: e.clientY,
+                    duration: 0.1,
+                    ease: 'power2.out'
+                });
+                cursor.style.opacity = '1';
+            });
+
+            const interactiveElements = document.querySelectorAll('a, button, .quiz-option-button');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursor.classList.add('cursor-hover');
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursor.classList.remove('cursor-hover');
+                });
+            });
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (window.pageYOffset >= (sectionTop - 150)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            // --- Existing Parallax Logic ---
             window.addEventListener('mousemove', (e) => {
                 const moveX = (e.clientX - window.innerWidth / 2) * 0.15;
                 const moveY = (e.clientY - window.innerHeight / 2) * 0.15;
@@ -41,6 +136,7 @@
                     ease: 'power3.out' 
                 });
             });
+
             // --- Global Variables & Quiz Config ---
             const quizQuestionsData = [
                 {
@@ -107,7 +203,6 @@
                 const currentStepElement = document.getElementById(`quiz-step-${stepIndex + 1}`);
                 const previousStepElement = document.getElementById(`quiz-step-${stepIndex}`);
 
-                // Mark current as active IMMEDIATELY to prevent click-block
                 if (currentStepElement) {
                     currentStepElement.classList.add('active');
                     currentStepElement.classList.remove('hidden');
@@ -174,10 +269,8 @@
                 return { level, description };
             }
 
-            // Quiz Initialization
             showStep(currentStep);
 
-            // Quiz Navigation
             nextStepBtn.addEventListener('click', () => {
                 const currentQuestionDiv = quizQuestionsContainer.querySelector('.quiz-step.active');
                 if (!currentQuestionDiv) return;
@@ -258,7 +351,6 @@
                 });
             }
 
-            // --- Scroll Reveal Logic ---
             const revealElements = document.querySelectorAll('.reveal');
             const revealObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -283,7 +375,6 @@
                 revealObserver.observe(element);
             });
 
-            // --- Lenis Smooth Scroll ---
             const lenis = new Lenis();
             function raf(time) {
                 lenis.raf(time);
