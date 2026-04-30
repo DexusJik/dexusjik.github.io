@@ -72,32 +72,33 @@
             const navLinks = document.querySelectorAll('.nav-link');
 
             // --- Custom Cursor Logic ---
-            const cursor = document.getElementById('custom-cursor');
+            const cursorContainer = document.getElementById('custom-cursor');
+            const cursorInner = cursorContainer.querySelector('.cursor-inner');
             
             window.addEventListener('mousemove', (e) => {
-                gsap.to(cursor, {
+                gsap.to(cursorContainer, {
                     x: e.clientX,
                     y: e.clientY,
                     duration: 0.1,
                     ease: 'power2.out'
                 });
-                cursor.style.opacity = '1';
+                cursorContainer.style.opacity = '1';
             });
 
             const interactiveElements = document.querySelectorAll('a, button, .quiz-option-button');
             interactiveElements.forEach(el => {
                 el.addEventListener('mouseenter', () => {
-                    cursor.classList.add('cursor-hover');
+                    cursorInner.classList.add('cursor-hover');
                     const hoverText = el.getAttribute('data-cursor-text');
                     if (hoverText) {
-                        cursor.innerText = hoverText;
-                        cursor.classList.add('cursor-text');
+                        cursorInner.innerText = hoverText;
+                        cursorInner.classList.add('cursor-text');
                     }
                 });
                 el.addEventListener('mouseleave', () => {
-                    cursor.classList.remove('cursor-hover');
-                    cursor.classList.remove('cursor-text');
-                    cursor.innerText = '';
+                    cursorInner.classList.remove('cursor-hover');
+                    cursorInner.classList.remove('cursor-text');
+                    cursorInner.innerText = '';
                 });
             });
 
