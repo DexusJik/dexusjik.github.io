@@ -50,20 +50,22 @@
                 const text = container.innerText;
                 container.innerHTML = '';
                 
-                text.split('').forEach(char => {
+                // Split by lines instead of characters for Editorial look
+                const lines = text.split('\n');
+                lines.forEach(line => {
                     const span = document.createElement('span');
-                    span.innerText = char === ' ' ? '\u00A0' : char;
-                    span.className = 'char-wrap';
+                    span.innerText = line;
+                    span.className = 'line-wrap';
                     container.appendChild(span);
                 });
             });
 
-            gsap.to('.char-wrap', {
+            gsap.to('.line-wrap', {
                 y: 0,
                 opacity: 1,
-                stagger: 0.02,
-                duration: 0.8,
-                ease: 'power4.out',
+                stagger: 0.1,
+                duration: 1,
+                ease: 'expo.out',
                 delay: 0.2
             });
 
@@ -364,6 +366,22 @@
             const revealObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
+                        // Implement Micro-Scaling on Scroll using GSAP
+                        gsap.fromTo(entry.target, 
+                            { 
+                                scale: 0.95, 
+                                opacity: 0, 
+                                y: 30 
+                            }, 
+                            { 
+                                scale: 1, 
+                                opacity: 1, 
+                                y: 0, 
+                                duration: 1.2, 
+                                ease: 'expo.out' 
+                            }
+                        );
+
                         const children = entry.target.querySelectorAll('.fade-up, .delay-1, .delay-2, .delay-3, .card, .asymmetric-text');
                         entry.target.classList.add('active');
                         if (children.length > 0) {
