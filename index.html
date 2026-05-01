@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://dexusjik.github.io; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://formspree.io;">
+    <title>Javier Perez | Inglés Sin Guion</title>
+    
+    <link rel="icon" type="image/jpg" href="assets/images/image5.webp">
+    <link rel="apple-touch-icon" href="assets/images/image5.webp">
+    
+    <meta property="og:title" content="Javier Perez | Inglés Sin Guion">
+    <meta property="og:description" content="Consultoría Lingüística para el Mundo Real. Domina el inglés profesional con un enfoque práctico.">
+    <meta property="og:image" content="assets/images/image5.webp">
+    <meta property="og:url" content="https://dexusjik.github.io/">
+    <meta property="og:type" content="website">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://dexusjik.github.io/image5.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <div class="fixed inset-0 bg-[#F3F4F6] -z-20"></div>
+
+
+    <div id="blur-1" class="fixed top-[-10%] left-[-10%] w-[60%] h-[60%] bg-blue-600/40 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
+    <div id="blur-2" class="fixed bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-blue-600/40 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
+    <div class="grain-overlay"></div>
+
+    <div id="custom-cursor" class="fixed top-0 left-0 w-6 h-6 pointer-events-none z-[9999] opacity-0 transition-opacity duration-300">
+        <div class="cursor-inner w-full h-full bg-deep-navy rounded-full mix-blend-difference flex items-center justify-center text-white text-[10px] font-bold uppercase tracking-tighter transition-all duration-300"></div>
+    </div>
+
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+        <div class="flex items-center justify-between p-4 max-w-6xl mx-auto">
+            <a href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;" class="flex items-center gap-4 cursor-pointer">
+                <img src='assets/images/image4.webp' loading="lazy" class='w-12 h-12 rounded-[2rem] object-cover border-2 border-deep-navy'>
+                <span class="font-serif font-bold text-deep-navy text-xl hidden sm:block">Inglés Sin Guion</span>
+            </a>
+            <nav class="hidden md:flex gap-8 text-sm font-semibold text-slate-600">
+                <a href="#metodologia-section" data-cursor-text="Metodología" class="nav-link hover:text-deep-navy transition-colors">Metodología</a>
+                <a href="#pricing-section" data-cursor-text="Planes" class="nav-link hover:text-deep-navy transition-colors">Planes</a>
+                <a href="#about-section" data-cursor-text="Sobre mí" class="nav-link hover:text-deep-navy transition-colors">Sobre mí</a>
+            </nav>
+            <div class="flex gap-3">
+                <button onclick="scrollToSection('quiz-section')" data-cursor-text="Hacer Quiz" class="btn btn-secondary magnetic-btn !py-2 !px-4 text-sm">Quiz de Nivel</button>
+                <button onclick="scrollToSection('strategy-form-section')" data-cursor-text="Reservar ahora" class="btn btn-primary magnetic-btn !py-2 !px-4 text-sm">Reservar</button>
+            </div>
+        </div>
+    </header>
+
+    <section class="py-24 px-6 relative">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <div class="text-left">
+                <h1 class="text-5xl lg:text-7xl font-serif font-bold leading-[1.1] mb-6 text-deep-navy fade-up">
+                    <span class="text-reveal-container">Consultoría Lingüística</span>
+                    <span class="text-reveal-container"><span class="text-blue-600 italic">para el Mundo Real.</span></span>
+                </h1>
+                <p class="text-lg lg:text-xl font-medium text-slate-700 mb-8 max-w-lg fade-up delay-1">
+                    Domina el inglés profesional con un enfoque práctico y sin guiones rígidos. Especializado en perfiles corporativos y éxito académico.
+                </p>
+            </div>
+
+            <div class="relative flex justify-center md:justify-end fade-up delay-2">
+                <div class="absolute -top-10 -right-10 w-64 h-64 bg-blue-200/30 rounded-full blur-3xl -z-10"></div>
+                
+                <div class="consultant-profile p-6 w-full max-w-sm card !rounded-[2rem] border-white/40 shadow-professional">
+                    <img id="profile-pic" src="assets/images/image5.webp" loading="lazy" alt="Javier Perez" class="w-full aspect-square rounded-[2rem] mb-6 object-cover profile-photo hover:scale-[1.02] transition-all duration-500">
+                    <div class="text-left">
+                        <p class="text-2xl font-serif font-bold text-deep-navy">Javier Perez</p>
+                        <p class="text-sm font-semibold text-blue-600 mb-3 uppercase tracking-wider">Consultor Principal</p>
+                        <p class="text-slate-600 text-sm leading-relaxed">Prof. Titulado especializado en eliminar la fricción lingüística en entornos de alta exigencia.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="quiz-section" class="py-24 px-6 relative blend-bottom-navy">
+        <div class="max-w-5xl mx-auto card p-6 md:p-12">
+            <h2 class="text-5xl font-serif font-bold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff]">Evalúa tu Nivel Actual</h2>
+
+            <div class="progress-bar-container w-full h-3 mb-12"></div>
+            <div id="quiz-progress-bar" class="progress-bar h-full"></div>
+
+            <div id="quiz-questions-container" class="quiz-container-relative">
+                <div class="quiz-step active" id="quiz-step-1">
+                    <p class="text-2xl font-medium text-slate-900 mb-6">Paso 1: ¿Cuál es tu objetivo principal?</p>
+                    <div class="grid grid-cols-1 gap-4">
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar objetivo: Profesional" data-question-id="goal" data-value="career">Profesional</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar objetivo: Académico" data-question-id="goal" data-value="academic">Académico</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar objetivo: Social o Viajes" data-question-id="goal" data-value="social">Social/Viajes</button>
+                    </div>
+                </div>
+
+                <div class="quiz-step hidden" id="quiz-step-2">
+                    <p class="text-2xl font-medium text-slate-900 mb-6">Paso 2: ¿Cuál es la forma más profesional de adjuntar un archivo?</p>
+                    <div class="grid grid-cols-1 gap-4">
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar opción: Please find attached" data-question-id="grammar" data-value="find-attached">Please find attached...</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar opción: Here is the file" data-question-id="grammar" data-value="here-is">Here is the file...</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar opción: What is attached" data-question-id="grammar" data-value="what-is">What is attached...</button>
+                    </div>
+                </div>
+
+                <div class="quiz-step hidden" id="quiz-step-3">
+                    <p class="text-2xl font-medium text-slate-900 mb-6">Paso 3: Completa: "By the time we arrived, the meeting..."</p>
+                    <div class="grid grid-cols-1 gap-4">
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar opción: started" data-question-id="tense" data-value="started">...started.</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar opción: had already started" data-question-id="tense" data-value="had-started">...had already started.</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar opción: starts" data-question-id="tense" data-value="starts">...starts.</button>
+                    </div>
+                </div>
+
+                <div class="quiz-step hidden" id="quiz-step-4">
+                    <p class="text-2xl font-medium text-slate-900 mb-6">Paso 4: ¿Qué significa "circle back"?</p>
+                    <div class="grid grid-cols-1 gap-4">
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar opción: Discutir más tarde" data-question-id="vocab" data-value="discuss-later">Discutir más tarde</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar opción: Ignorar el tema" data-question-id="vocab" data-value="ignore">Ignorar el tema</button>
+                        <button type="button" class="quiz-option-button rounded-2xl hover:scale-[1.02]" aria-label="Seleccionar opción: Regresar físicamente" data-question-id="vocab" data-value="return">Regresar físicamente</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="quiz-result" class="hidden">
+                <h3 class="text-4xl font-serif font-bold text-center mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff]">Tu Nivel Estimado</h3>
+                <p class="text-2xl font-medium text-slate-900 mb-4 text-center">CEFR: <span id="cefr-level" class="font-bold"></span></p>
+                <p id="cefr-description" class="text-lg text-slate-900 leading-relaxed text-center mb-10"></p>
+                <div class="text-center">
+                    <button id="whatsapp-redirect-btn" class="btn btn-primary">Enviar Solicitud</button>
+                </div>
+            </div>
+
+            <div class="text-center mt-10">
+                <button id="next-step-btn" class="btn btn-primary">Siguiente</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="about-section" class="pt-24 pb-40 px-6 bg-gradient-to-b from-[#0f172a] via-[#1e293b] to-[#0f172a] relative blend-bottom-white">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12 relative z-10">
+            <div class="md:w-1/2">
+                <img src="assets/images/image2.webp" loading="lazy" alt="Javier Perez" class="rounded-[2rem] shadow-[0_20px_50px_-10px_rgba(0,31,63,0.4)] border border-white/5 object-cover w-full h-[500px]">
+            </div>
+            <div class="md:w-1/2">
+                <h2 class="text-4xl font-serif font-bold mb-6 text-[#BAE6FD] tracking-[-0.01em]">Más que solo gramática</h2>
+                <p class="text-[1.1rem] text-[#E2E8F0] font-light leading-[1.8] mb-6">Me titulé como Profesor de Inglés, adquiriendo una base técnica sólida, pero rápidamente comprobé que el sistema tradicional escolar rara vez genera hablantes fluidos. 'Inglés Sin Guion' nace de esa ruptura. Tomé el rigor de la academia y eliminé la fricción del aula para ofrecer consultoría directa, práctica y adaptada a la vida real.</p>
+            </div>
+        </div>
+    </section>
+    <section id="metodologia-section" class="py-24 px-6 bg-white relative blend-top-white">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-5xl font-serif font-bold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff]">Nuestra Metodología</h2>
+            <p class="text-center text-gray-600 mb-16 text-lg">Un enfoque estructurado, práctico y adaptado a tus necesidades corporativas o académicas.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg transition-shadow duration-300">
+                    <div class="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-deep-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-deep-navy mb-4">100% Personalizado</h3>
+                    <p class="text-gray-600">Sesiones diseñadas exclusivamente para tus metas, nivel actual y contexto profesional o académico.</p>
+                </div>
+                <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg transition-shadow duration-300">
+                    <div class="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-deep-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-deep-navy mb-4">Flexibilidad Total</h3>
+                    <p class="text-gray-600">Adaptamos los horarios y la intensidad del estudio para integrarse perfectamente en tu ritmo de vida.</p>
+                </div>
+                <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg transition-shadow duration-300">
+                    <div class="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-deep-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-deep-navy mb-4">Contenido Real</h3>
+                    <p class="text-gray-600">Enfoque en situaciones auténticas: entrevistas, presentaciones, reuniones y comunicación efectiva.</p>
+                </div>
+                <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg transition-shadow duration-300">
+                    <div class="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-deep-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-deep-navy mb-4">Soporte Continuo</h3>
+                    <p class="text-gray-600">Seguimiento constante y feedback detallado para asegurar tu progreso hacia la fluidez.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="relative h-[450px] flex items-center justify-center overflow-hidden blend-top-white blend-bottom-white">
+        <img src="assets/images/image3.webp" loading="lazy" class="absolute w-full h-full object-cover brightness-75 -z-10">
+        <div class="absolute w-full h-full -z-10 backdrop-blur-[2px] bg-black/20"></div>
+        <div class="text-center text-white px-6">
+            <p class="text-3xl md:text-4xl font-serif italic font-bold drop-shadow-lg">Rompe las barreras lingüísticas y alcanza tus metas globales.</p>
+        </div>
+    </section>
+
+    <section id="pricing-section" class="py-24 px-6 bg-gray-50">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-5xl font-serif font-bold text-center mb-16 bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff]">Planes de Consultoría</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="card p-8 flex flex-col transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
+                    <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff] mb-4">Pack Inicial</h3>
+                    <p class="text-4xl font-bold text-deep-navy mb-6">$50.000 CLP</p>
+                    <ul class="text-slate-900 mb-8 flex-grow space-y-3">
+                        <li>4 sesiones mensuales (60 min c/u)</li>
+                        <li>Material de estudio personalizado</li>
+                    </ul>
+                    <p class="text-sm text-gray-600 mb-6 italic">Ideal para iniciar tu camino hacia la fluidez.</p>
+                    <button onclick="selectPlan('Pack Inicial')" class="btn btn-secondary w-full hover:scale-105 transition-transform">Elegir Plan</button>
+                </div>
+                <div class="card p-8 flex flex-col border-2 border-deep-navy relative transition duration-300 hover:-translate-y-3 hover:shadow-2xl scale-105 z-10">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-deep-navy text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">Recomendado</div>
+                    <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff] mb-4">Plan Consultoría</h3>
+                    <p class="text-4xl font-bold text-deep-navy mb-6">$90.000 CLP</p>
+                    <ul class="text-slate-900 mb-8 flex-grow space-y-3">
+                        <li>8 sesiones mensuales</li>
+                        <li>Soporte prioritario por WhatsApp para dudas rápidas</li>
+                    </ul>
+                    <p class="text-sm text-gray-600 mb-6 italic">Avanza rápido con sesiones enfocadas en tus metas.</p>
+                    <button onclick="selectPlan('Plan Consultoría')" class="btn btn-primary w-full hover:scale-105 transition-transform">Elegir Plan</button>
+                </div>
+                <div class="card p-8 flex flex-col transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
+                    <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff] mb-4">Clase Individual</h3>
+                    <p class="text-4xl font-bold text-deep-navy mb-6">$15.000 CLP</p>
+                    <ul class="text-slate-900 mb-8 flex-grow space-y-3">
+                        <li>1 Sesión intensiva (60 min)</li>
+                        <li>Diagnóstico de nivel profesional</li>
+                        <li>Plan de acción personalizado</li>
+                    </ul>
+                    <p class="text-sm text-gray-600 mb-6 italic">Ideal para resolver una duda puntual o probar la metodología.</p>
+                    <button onclick="selectPlan('Clase Individual')" class="btn btn-secondary w-full hover:scale-105 transition-transform">Elegir Plan</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials-section" class="py-24 px-6 bg-white relative blend-bottom-white">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-5xl font-serif font-bold text-center mb-16 bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff]">Casos de Éxito</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="card p-8 flex flex-col items-center text-center hover:shadow-xl transition-shadow duration-300">
+                    <div class="w-20 h-20 rounded-full mb-6 border-4 border-pink-100 bg-pink-50 flex items-center justify-center overflow-hidden">
+                        <svg class="w-12 h-12 text-pink-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <p class="text-slate-600 italic mb-6">"Gracias a las clases de Javier, pude viajar a Ámsterdam y desenvolverme con un inglés funcional en mis actividades."</p>
+                    <p class="font-bold text-deep-navy">María</p>
+                    <p class="text-xs text-blue-600 uppercase tracking-widest font-semibold">Government Worker</p>
+                </div>
+                <div class="card p-8 flex flex-col items-center text-center hover:shadow-xl transition-shadow duration-300">
+                    <div class="w-20 h-20 rounded-full mb-6 border-4 border-blue-100 bg-blue-50 flex items-center justify-center overflow-hidden">
+                        <svg class="w-12 h-12 text-blue-300" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <p class="text-slate-600 italic mb-6">"Como guía en Rapa Nui, el inglés es vital. Logré pasar de conocimientos básicos a un nivel conversacional que me permite atender a turistas de todo el mundo."</p>
+                    <p class="font-bold text-deep-navy">Tane</p>
+                    <p class="text-xs text-blue-600 uppercase tracking-widest font-semibold">Guía Turístico Rapa Nui</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq-section" class="py-24 px-6 bg-white relative blend-top-white reveal">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-5xl font-serif font-bold text-center mb-16 text-deep-navy">Preguntas Frecuentes</h2>
+            <div class="space-y-8">
+                <div class="card p-6">
+                    <h3 class="text-xl font-bold text-deep-navy mb-2">¿Cuánto tiempo debo dedicarle?</h3>
+                    <p class="text-slate-600">Nos adaptamos a tu ritmo. Podemos trabajar en sesiones de una hora o más intensivas, según tu disponibilidad y objetivos. La constancia es más importante que la cantidad.</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-bold text-deep-navy mb-2">¿Online o presencial?</h3>
+                    <p class="text-slate-600">Trabajo principalmente online, lo que nos permite flexibilidad total sin importar dónde estés. Las sesiones presenciales son posibles pero tienen un costo adicional debido a la logística.</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-bold text-deep-navy mb-2">¿Cuál es su política de reembolso?</h3>
+                    <p class="text-slate-600">Busco tu compromiso total. Si no estás satisfecho con tu primera sesión, podemos discutirlo y buscar una solución. No realizo reembolsos completos después de las sesiones realizadas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="strategy-form-section" class="py-24 px-6">
+        <div class="max-w-5xl mx-auto card p-6 md:p-12">
+            <h2 class="text-5xl font-serif font-bold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff]">Reserva tu Sesión de Estudio</h2>
+            <form id="strategy-session-form">
+                <div class="mb-8">
+                    <label for="name" class="block text-xl font-medium text-slate-900 mb-3">Nombre</label>
+                    <input type="text" id="name" name="name" required class="w-full py-4 px-6 border-2 border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#003580] focus:border-transparent shadow-inner">
+                </div>
+                <div class="mb-8">
+                    <label for="email" class="block text-xl font-medium text-slate-900 mb-3">Email</label>
+                    <input type="email" id="email" name="email" required class="w-full py-4 px-6 border-2 border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#003580] focus:border-transparent shadow-inner">
+                </div>
+                <div class="mb-8">
+                    <label for="numero" class="block text-xl font-medium text-slate-900 mb-3">Número de Teléfono</label>
+                    <input type="tel" id="numero" name="numero" required class="w-full py-4 px-6 border-2 border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#003580] focus:border-transparent shadow-inner">
+                </div>
+                <div class="mb-8">
+                    <label for="message" class="block text-xl font-medium text-slate-900 mb-3">¿Cómo puedo ayudarte?</label>
+                    <textarea id="message" name="message" rows="5" required class="w-full py-4 px-6 border-2 border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#003580] focus:border-transparent shadow-inner"></textarea>
+                </div>
+
+                <div class="honeypot-field">
+                    <label for="_gotcha">Leave this empty</label>
+                    <input type="text" id="_gotcha" name="_gotcha">
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <footer class="py-16 px-6 text-center text-slate-900 text-sm bg-pale-gray">
+        <p>&copy; 2026 Javier Perez | Inglés Sin Guion. Todos los derechos reservados<a href="pangal-esports/equipo.html" style="color: inherit; text-decoration: none; cursor: default;">.</a></p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+</body>
+</html>
