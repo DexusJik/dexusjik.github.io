@@ -1,0 +1,323 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "open mobile navigation" [ref=e5] [cursor=pointer]:
+          - /url: "#"
+        - link "home" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - img [ref=e9]
+        - button [ref=e23] [cursor=pointer]:
+          - img [ref=e26]
+    - generic [ref=e30]:
+      - paragraph [ref=e31]: We need your consent so that we and our trusted partners can store and access cookies, unique identifies, personal data, and information about your browsing behavior on your device.
+      - generic [ref=e32]:
+        - button "allow all cookies" [ref=e33] [cursor=pointer]: 🍕 Accept
+        - button "deny all cookies" [ref=e34] [cursor=pointer]: Deny
+        - link "open cookie preferences" [ref=e35] [cursor=pointer]:
+          - /url: "#"
+          - text: Manage Settings
+    - main [ref=e36]:
+      - generic [ref=e39]:
+        - list [ref=e41]:
+          - group "1 / 5" [ref=e42]:
+            - generic [ref=e44]:
+              - heading "Four Times in a Row" [level=2] [ref=e45]
+              - paragraph [ref=e46]: The Liquid Guild has secured its fourth consecutive Race to World First title. Find out how it all went down!
+              - link "link to article" [ref=e48] [cursor=pointer]:
+                - /url: https://teamliquid.com/news/race-to-world-first-win-again
+                - generic [ref=e49]: Read More
+                - img [ref=e51]
+            - 'img "Four Times in a Row: The Liquid Guild wins RWF again!" [ref=e55]'
+          - group "2 / 5" [ref=e56]:
+            - generic [ref=e58]:
+              - 'heading "Farewell, Nesk: Letters from the R6 community" [level=2] [ref=e59]'
+              - paragraph [ref=e60]: Eight years of dominating the R6 scene comes to an end. Read Nesk's goodbye letters from the community.
+              - link "link to article" [ref=e62] [cursor=pointer]:
+                - /url: /articles/farewell-nesk-letters-r6-community
+                - generic [ref=e63]: Read more
+                - img [ref=e65]
+            - 'img "Farewell, Nesk: Letters from the R6 community" [ref=e69]'
+          - group "3 / 5" [ref=e70]:
+            - generic [ref=e72]:
+              - heading "This is how our Dota 2 team won BLAST Slam VI" [level=2] [ref=e73]
+              - paragraph [ref=e74]: Support player Erik "tOfu" Engel gives us insight into their triumph.
+              - link "link to article" [ref=e76] [cursor=pointer]:
+                - /url: /articles/blast-slam-vi-victory-tofu
+                - generic [ref=e77]: Read More
+                - img [ref=e79]
+            - img "tOfu breaks down Team Liquid’s BLAST Slam VI Victory" [ref=e83]
+          - group "4 / 5" [ref=e84]:
+            - generic [ref=e86]:
+              - heading "We're partnering with ePremier League debutant Sunderland AFC" [level=2] [ref=e87]
+              - paragraph [ref=e88]: Read all about our latest EA FC partnership with Premier League team Sunderland.
+              - link "link to article" [ref=e90] [cursor=pointer]:
+                - /url: https://teamliquid.com/news/partnership-sunderland-afc
+                - generic [ref=e91]: Read More
+                - img [ref=e93]
+            - img "Team Liquid partners with ePremier League debutant Sunderland AFC" [ref=e97]
+          - group "5 / 5" [ref=e98]:
+            - generic [ref=e100]:
+              - heading "A new era for Team Liquid Alienware in R6" [level=2] [ref=e101]
+              - paragraph [ref=e102]: Introducing our new roster and new name going forward in Rainbow Six Siege.
+              - link "link to article" [ref=e104] [cursor=pointer]:
+                - /url: https://teamliquid.com/news/team-liquid-alienware-r6
+                - generic [ref=e105]: Read more
+                - img [ref=e107]
+            - img "A new era for Team Liquid Alienware in R6" [ref=e111]
+        - generic [ref=e112]:
+          - button "Go to slide 1" [ref=e113]
+          - button "Go to slide 2" [ref=e114]
+          - button "Go to slide 3" [ref=e115]
+          - button "Go to slide 4" [ref=e116]
+          - button "Go to slide 5" [ref=e117]
+      - generic [ref=e121]:
+        - generic [ref=e122]:
+          - heading "Upcoming matches" [level=2] [ref=e123]
+          - generic [ref=e124]:
+            - link "navigate previous slide" [ref=e125] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e127]
+            - link "navigate next slide" [ref=e129] [cursor=pointer]:
+              - /url: "#"
+              - img [ref=e131]
+        - link "navigate to match" [ref=e135] [cursor=pointer]:
+          - /url: "#"
+          - generic [ref=e137]: Date
+          - heading "Heading" [level=3] [ref=e138]
+          - generic [ref=e139]:
+            - generic [ref=e140]: Team A
+            - generic [ref=e141]: Team B
+        - link "View schedule page" [ref=e143] [cursor=pointer]:
+          - /url: /schedule
+          - generic [ref=e144]: View schedule page
+          - img [ref=e145]
+      - generic [ref=e149]:
+        - list [ref=e152]:
+          - listitem [ref=e153]:
+            - generic [ref=e154]:
+              - link [ref=e155] [cursor=pointer]:
+                - /url: https://store.teamliquid.com/collections/team-liquid-2026-pro-kit
+              - generic [ref=e156]: New
+              - img "Team Liquid official jersey." [ref=e157]
+              - heading "TEAM LIQUID 2026 JERSEY" [level=2] [ref=e159]
+        - generic [ref=e161]:
+          - list [ref=e163]:
+            - listitem [ref=e164]:
+              - generic [ref=e165]:
+                - generic [ref=e166]: Fans
+                - heading "JOIN OUR COMMUNITY" [level=2] [ref=e168]
+                - link [ref=e170] [cursor=pointer]:
+                  - /url: /sign-up/
+                  - img [ref=e171]
+          - list [ref=e174]:
+            - listitem [ref=e175]:
+              - generic [ref=e176]:
+                - generic [ref=e177]: Team Liquid
+                - heading "ALIENWARE" [level=2] [ref=e179]
+                - link [ref=e181] [cursor=pointer]:
+                  - /url: https://www.dell.com/en-us/gaming/alienware
+                  - img [ref=e182]
+      - generic [ref=e185]:
+        - generic [ref=e186]:
+          - heading "Ride With The Cavalry" [level=1] [ref=e188]
+          - generic [ref=e189]:
+            - paragraph [ref=e190]: Team Liquid competes in three major leagues, fielding teams in over 15 different esports with over 150 players competing around the world.
+            - link "All teams" [ref=e191] [cursor=pointer]:
+              - /url: /games
+              - generic [ref=e192]: All teams
+              - img [ref=e193]
+        - list [ref=e196]:
+          - listitem [ref=e197] [cursor=pointer]:
+            - link "Chess" [ref=e198]:
+              - /url: /games/chess
+              - img "Chess" [ref=e201]
+          - listitem [ref=e202] [cursor=pointer]:
+            - link "Counter Strike 2" [ref=e203]:
+              - /url: /games/cs
+              - img "Counter Strike 2" [ref=e206]
+          - listitem [ref=e207] [cursor=pointer]:
+            - link "Valorant" [ref=e208]:
+              - /url: /games/valorant/emea
+              - img "Valorant" [ref=e211]
+          - listitem [ref=e212] [cursor=pointer]:
+            - link "League of Legends" [ref=e213]:
+              - /url: /games/league/lcs
+              - img "League of Legends" [ref=e216]
+          - listitem [ref=e217] [cursor=pointer]:
+            - link "Dota 2" [ref=e218]:
+              - /url: /games/dota2
+              - img "Dota 2" [ref=e221]
+          - listitem [ref=e222] [cursor=pointer]:
+            - link "Rainbow Six" [ref=e223]:
+              - /url: /games/rainbow-six
+              - img "Rainbow Six" [ref=e226]
+          - listitem [ref=e227] [cursor=pointer]:
+            - link "World of Warcraft" [ref=e228]:
+              - /url: /games/wow
+              - img "World of Warcraft" [ref=e231]
+          - listitem [ref=e232] [cursor=pointer]:
+            - link "StarCraft 2" [ref=e233]:
+              - /url: /games/rts/sc2
+              - img "StarCraft 2" [ref=e236]
+      - generic [ref=e238]:
+        - heading "Shop Liquid" [level=2] [ref=e239]
+        - generic [ref=e240]:
+          - generic [ref=e241]:
+            - form "Email Form" [ref=e244]:
+              - generic [ref=e245]:
+                - generic [ref=e246] [cursor=pointer]:
+                  - radio "All" [checked] [ref=e248]
+                  - generic [ref=e249]: All
+                - generic [ref=e251] [cursor=pointer]: Tops
+                - generic [ref=e253] [cursor=pointer]: Bottoms
+                - generic [ref=e255] [cursor=pointer]: Jersey
+                - generic [ref=e257] [cursor=pointer]: Accessories
+            - generic [ref=e258]:
+              - link "previous slide" [ref=e259] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e261]
+              - link "next slide" [ref=e263] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e265]
+          - list [ref=e268]:
+            - listitem [ref=e269]:
+              - generic [ref=e270]:
+                - generic [ref=e271]:
+                  - generic [ref=e272]:
+                    - img "Team Liquid Logo Crest Dark" [ref=e273]
+                    - img "Team Liquid Logo Crest Dark" [ref=e274]
+                  - heading "Product title which is long which is long which is long which is long" [level=3] [ref=e275]
+                - generic [ref=e276]:
+                  - generic [ref=e278]: Category
+                  - generic [ref=e279]: Price
+                - link "navigate to product" [ref=e280] [cursor=pointer]:
+                  - /url: "#"
+        - link "See the whole shop" [ref=e282] [cursor=pointer]:
+          - /url: https://tl.gg/store
+          - generic [ref=e283]: See the whole shop
+          - img [ref=e284]
+      - generic [ref=e287]:
+        - generic [ref=e288]:
+          - group "4 / 5" [ref=e289]:
+            - img "Team Liquid athlete taking a selfie with a fans in an esports event." [ref=e290]
+          - group "5 / 5" [ref=e291]
+          - group "1 / 5" [ref=e292]:
+            - img "Team Liquid fans posing and smiling for the camera in an e-sports event." [ref=e293]
+          - group "2 / 5" [ref=e294]:
+            - img "Team Liquid fans posing for the camera." [ref=e295]
+          - group "3 / 5" [ref=e296]:
+            - img "Team Liquid esports athlete Micke greeting fans in an event." [ref=e297]
+        - button "Next slide" [ref=e298] [cursor=pointer]:
+          - img [ref=e301]
+        - button "Previous slide" [ref=e303] [cursor=pointer]:
+          - img [ref=e306]
+      - list [ref=e312]:
+        - listitem [ref=e313]:
+          - link "Alienware" [ref=e315] [cursor=pointer]:
+            - /url: https://www.alienware.com/
+            - img "Alienware" [ref=e316]
+        - listitem [ref=e320]:
+          - link "Blacklyte" [ref=e322] [cursor=pointer]:
+            - /url: https://blacklyte.com
+            - img "Blacklyte" [ref=e323]
+        - listitem [ref=e327]:
+          - link "Duelbits" [ref=e329] [cursor=pointer]:
+            - /url: https://duelbits.com/
+            - img "Duelbits" [ref=e330]
+        - listitem [ref=e334]:
+          - link "Hypersolid" [ref=e336] [cursor=pointer]:
+            - /url: https://www.hypersolid.com/
+            - img "Hypersolid" [ref=e337]
+        - listitem [ref=e341]:
+          - link "IMC" [ref=e343] [cursor=pointer]:
+            - /url: https://www.imc.com/
+            - img "IMC" [ref=e344]
+        - listitem [ref=e348]:
+          - link "Monster Energy" [ref=e350] [cursor=pointer]:
+            - /url: https://www.monsterenergy.com/us/en/products/monster-energy
+            - img "Monster Energy" [ref=e351]
+        - listitem [ref=e355]:
+          - link "SAP" [ref=e357] [cursor=pointer]:
+            - /url: https://tl.gg/SAP
+            - img "SAP" [ref=e358]
+        - listitem [ref=e362]:
+          - link "UNICEF" [ref=e364] [cursor=pointer]:
+            - /url: https://www.unicef.org/
+            - img "UNICEF" [ref=e365]
+        - listitem [ref=e369]:
+          - link "Visa" [ref=e371] [cursor=pointer]:
+            - /url: https://www.visa.com/
+            - img "Visa" [ref=e372]
+        - listitem [ref=e376]:
+          - link "Zenni" [ref=e378] [cursor=pointer]:
+            - /url: https://www.zenni.com
+            - img "Zenni" [ref=e379]
+    - contentinfo [ref=e386]:
+      - generic [ref=e387]:
+        - generic [ref=e389]:
+          - link [ref=e390] [cursor=pointer]:
+            - /url: /
+            - img [ref=e392]
+          - generic [ref=e415]: A world renowned professional gaming organization established in 2000.
+          - generic [ref=e416]:
+            - generic [ref=e417]:
+              - link "Teams" [ref=e418] [cursor=pointer]:
+                - /url: /games
+              - link "Partners" [ref=e419] [cursor=pointer]:
+                - /url: /partners
+              - link "Careers" [ref=e420] [cursor=pointer]:
+                - /url: https://careers.teamliquid.com/
+                - generic [ref=e421]: Careers
+                - img [ref=e423]
+              - link "Schedule" [ref=e426] [cursor=pointer]:
+                - /url: /schedule
+              - link "Store" [ref=e427] [cursor=pointer]:
+                - /url: https://tl.gg/store
+                - generic [ref=e428]: Store
+                - img [ref=e430]
+              - link "Brand Kit" [ref=e433] [cursor=pointer]:
+                - /url: /brand-kit
+              - link "Contact" [ref=e434] [cursor=pointer]:
+                - /url: /contact
+            - button "English" [ref=e438] [cursor=pointer]:
+              - generic [ref=e439]: English
+              - img [ref=e441]
+        - generic [ref=e444]:
+          - generic [ref=e445]:
+            - link "© 2000 - 2025 Team Liquid" [ref=e446] [cursor=pointer]:
+              - /url: /about
+            - link "Terms & Policies" [ref=e447] [cursor=pointer]:
+              - /url: /policies
+            - link "open cookie preferences" [ref=e448] [cursor=pointer]:
+              - /url: "#"
+              - text: Cookie Preferences
+          - generic [ref=e449]:
+            - link [ref=e450] [cursor=pointer]:
+              - /url: https://www.dell.com/en-us/gaming/alienware
+              - img [ref=e452]
+            - link [ref=e454] [cursor=pointer]:
+              - /url: https://discord.gg/teamliquid
+              - img [ref=e456]
+            - link [ref=e458] [cursor=pointer]:
+              - /url: https://www.facebook.com/teamliquid
+              - img [ref=e460]
+            - link "Team Liquid Instagram" [ref=e462] [cursor=pointer]:
+              - /url: https://www.instagram.com/teamliquid/?hl=en
+              - img [ref=e464]
+            - link [ref=e469] [cursor=pointer]:
+              - /url: https://www.reddit.com/r/teamliquid
+              - img [ref=e471]
+            - link [ref=e473] [cursor=pointer]:
+              - /url: https://www.twitch.tv/team/teamliquid
+              - img [ref=e475]
+            - link [ref=e477] [cursor=pointer]:
+              - /url: https://twitter.com/teamliquid
+              - img [ref=e479]
+            - link [ref=e482] [cursor=pointer]:
+              - /url: https://www.youtube.com/channel/UCdtXkZSNEv1EW8UZJBAPYKQ
+              - img [ref=e484]
+  - iframe [ref=e488]:
+    - generic [ref=f1e6]:
+      - text: protected by
+      - strong [ref=f1e7]: reCAPTCHA

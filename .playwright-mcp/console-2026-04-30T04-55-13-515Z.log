@@ -1,0 +1,15 @@
+[     566ms] [ERROR] Docusaurus React Root onRecoverableError: Error: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+    at br (https://goose-docs.ai/assets/js/main.fe03630e.js:2:134489)
+    at vr (https://goose-docs.ai/assets/js/main.fe03630e.js:2:135858)
+    at mc (https://goose-docs.ai/assets/js/main.fe03630e.js:2:188945)
+    at mu (https://goose-docs.ai/assets/js/main.fe03630e.js:2:224109)
+    at uu (https://goose-docs.ai/assets/js/main.fe03630e.js:2:221910)
+    at lu (https://goose-docs.ai/assets/js/main.fe03630e.js:2:221821)
+    at https://goose-docs.ai/assets/js/main.fe03630e.js:2:216938
+    at Kl (https://goose-docs.ai/assets/js/main.fe03630e.js:2:217036)
+    at Bu (https://goose-docs.ai/assets/js/main.fe03630e.js:2:232915)
+    at MessagePort.P (https://goose-docs.ai/assets/js/main.fe03630e.js:2:3804) {componentStack: 
+    at div (<anonymous>)
+    at Ne (<anonymous>)
+…oose-docs.ai/assets/js/main.fe03630e.js:2:521618)} @ https://goose-docs.ai/assets/js/main.fe03630e.js:1
+[     977ms] [LOG] Loaded servers: [Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object, Object] @ https://goose-docs.ai/assets/js/66453e5c.17d4ac9c.js:1

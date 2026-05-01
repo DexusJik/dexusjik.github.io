@@ -76,9 +76,10 @@
             const cursorInner = cursorContainer.querySelector('.cursor-inner');
             
             window.addEventListener('mousemove', (e) => {
+                const { offsetWidth, offsetHeight } = cursorContainer;
                 gsap.to(cursorContainer, {
-                    x: e.clientX,
-                    y: e.clientY,
+                    x: e.clientX - offsetWidth / 2,
+                    y: e.clientY - offsetHeight / 2,
                     duration: 0.1,
                     ease: 'power2.out'
                 });
