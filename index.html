@@ -41,7 +41,7 @@
 
     <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div class="flex items-center justify-between p-4 max-w-6xl mx-auto">
-            <a href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;" class="flex items-center gap-4 cursor-pointer">
+            <a href="#" id="logo-link" class="flex items-center gap-4 cursor-pointer">
                 <img src='assets/images/image4.webp' loading="lazy" class='w-12 h-12 rounded-[2rem] object-cover border-2 border-deep-navy'>
                 <span class="font-serif font-bold text-deep-navy text-xl hidden sm:block">Inglés Sin Guion</span>
             </a>
@@ -51,8 +51,8 @@
                 <a href="#about-section" data-cursor-text="Sobre mí" class="nav-link hover:text-deep-navy transition-colors">Sobre mí</a>
             </nav>
             <div class="flex gap-3">
-                <button onclick="scrollToSection('quiz-section')" data-cursor-text="Hacer Quiz" class="btn btn-secondary magnetic-btn !py-2 !px-4 text-sm">Quiz de Nivel</button>
-                <button onclick="scrollToSection('strategy-form-section')" data-cursor-text="Reservar ahora" class="btn btn-primary magnetic-btn !py-2 !px-4 text-sm">Reservar</button>
+                <button id="quiz-button" data-cursor-text="Hacer Quiz" class="btn btn-secondary magnetic-btn !py-2 !px-4 text-sm">Quiz de Nivel</button>
+                <button id="strategy-button" data-cursor-text="Reservar ahora" class="btn btn-primary magnetic-btn !py-2 !px-4 text-sm">Reservar</button>
             </div>
         </div>
     </header>
@@ -213,7 +213,7 @@
                         <li>Material de estudio personalizado</li>
                     </ul>
                     <p class="text-sm text-gray-600 mb-6 italic">Ideal para iniciar tu camino hacia la fluidez.</p>
-                    <button onclick="selectPlan('Pack Inicial')" class="btn btn-secondary w-full hover:scale-105 transition-transform">Elegir Plan</button>
+                    <button id="pack-inicial-btn" onclick="selectPlan('Pack Inicial')" class="btn btn-secondary w-full hover:scale-105 transition-transform">Elegir Plan</button>
                 </div>
                 <div class="card p-8 flex flex-col border-2 border-deep-navy relative transition duration-300 hover:-translate-y-3 hover:shadow-2xl scale-105 z-10">
                     <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-deep-navy text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">Recomendado</div>
@@ -224,7 +224,7 @@
                         <li>Soporte prioritario por WhatsApp para dudas rápidas</li>
                     </ul>
                     <p class="text-sm text-gray-600 mb-6 italic">Avanza rápido con sesiones enfocadas en tus metas.</p>
-                    <button onclick="selectPlan('Plan Consultoría')" class="btn btn-primary w-full hover:scale-105 transition-transform">Elegir Plan</button>
+                    <button id="plan-consultoria-btn" class="btn btn-primary w-full hover:scale-105 transition-transform">Elegir Plan</button>
                 </div>
                 <div class="card p-8 flex flex-col transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
                     <h3 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#003580] to-[#007bff] mb-4">Clase Individual</h3>
@@ -235,7 +235,7 @@
                         <li>Plan de acción personalizado</li>
                     </ul>
                     <p class="text-sm text-gray-600 mb-6 italic">Ideal para resolver una duda puntual o probar la metodología.</p>
-                    <button onclick="selectPlan('Clase Individual')" class="btn btn-secondary w-full hover:scale-105 transition-transform">Elegir Plan</button>
+                    <button id="clase-individual-btn" onclick="selectPlan('Clase Individual')" class="btn btn-secondary w-full hover:scale-105 transition-transform">Elegir Plan</button>
                 </div>
             </div>
         </div>
@@ -325,7 +325,5 @@
     <footer class="py-16 px-6 text-center text-slate-900 text-sm bg-pale-gray">
         <p>&copy; 2026 Javier Perez | Inglés Sin Guion. Todos los derechos reservados<a href="pangal-esports/equipo.html" style="color: inherit; text-decoration: none; cursor: default;">.</a></p>
     </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 </body>
 </html>

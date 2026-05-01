@@ -12,6 +12,12 @@
             messageTextarea.focus();
         }
 
+        // Smooth scroll for logo link
+        document.getElementById('logo-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        });
+
         window.onload = async function() {
             if (!window.gsap) {
                 console.error('GSAP failed to load');
@@ -401,6 +407,13 @@
             revealElements.forEach(element => {
                 revealObserver.observe(element);
             });
+
+            // --- Event Listeners for Buttons (replacing inline onclick) ---
+            document.getElementById('quiz-button')?.addEventListener('click', () => scrollToSection('quiz-section'));
+            document.getElementById('strategy-button')?.addEventListener('click', () => scrollToSection('strategy-form-section'));
+            document.getElementById('pack-inicial-btn')?.addEventListener('click', () => selectPlan('Pack Inicial'));
+            document.getElementById('plan-consultoria-btn')?.addEventListener('click', () => selectPlan('Plan Consultoría'));
+            document.getElementById('clase-individual-btn')?.addEventListener('click', () => selectPlan('Clase Individual'));
 
             const lenis = new Lenis();
             function raf(time) {
