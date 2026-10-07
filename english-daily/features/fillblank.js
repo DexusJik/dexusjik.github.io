@@ -117,7 +117,9 @@
         area.appendChild(G.prompt('Completa la oración'));
 
         var card = el('div', 'sentence-card fillblank-card');
+        /* the sentence with its blank is English; set before it is populated */
         var line = el('p', 'sentence-en fillblank-line');
+        line.lang = 'en';
         var slot = el('span', 'fillblank-slot');
         slot.setAttribute('role', 'img');
         slot.setAttribute('aria-label', 'espacio en blanco');
@@ -135,7 +137,7 @@
         card.appendChild(audio);
         area.appendChild(card);
 
-        var list = G.choiceList(G.shuffle([blank.correct].concat(blank.distractors)));
+        var list = G.choiceList(G.shuffle([blank.correct].concat(blank.distractors)), 'en');
         area.appendChild(list);
 
         function fillSlot(word, state) {

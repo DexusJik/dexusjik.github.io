@@ -469,7 +469,10 @@
         m.setAttribute('aria-hidden', 'true');
         row.appendChild(m);
         row.appendChild(el('span', 'tips-sr', label));
-        row.appendChild(el('span', 'tips-contrast-text', text));
+        /* both halves of a contrast are English sentences */
+        var body = el('span', 'tips-contrast-text', text);
+        body.lang = 'en';
+        row.appendChild(body);
         return row;
     }
 

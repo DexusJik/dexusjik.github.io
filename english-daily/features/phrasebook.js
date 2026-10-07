@@ -199,7 +199,9 @@
             lesson.sentences.forEach(function (s, si) {
                 var row = el('div', 'pb-row');
                 var text = el('div', 'pb-row__text');
-                text.appendChild(el('p', 'pb-row__en', s.en));
+                var enLine = el('p', 'pb-row__en', s.en);
+                enLine.lang = 'en';
+                text.appendChild(enLine);
                 text.appendChild(el('p', 'pb-row__es', s.es));
                 var sp = el('button', 'pb-speak', '🔊');
                 sp.type = 'button';
