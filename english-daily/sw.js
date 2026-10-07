@@ -20,6 +20,7 @@ var PRECACHE = [
     './daily.css',
     './sentences.js',
     './placement.js',
+    './migrations.js',
     './game.js',
     './features/tips.js',
     './features/tips.css',

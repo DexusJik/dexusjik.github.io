@@ -780,7 +780,9 @@
             correct: placement.correct,
             total: placement.questions.length,
             level: level,
-            date: todayKey()
+            date: todayKey(),
+            /* stamped so a future migration can tell current results from stale ones */
+            v: (window.DailyMigrations && window.DailyMigrations.CURRENT_VERSION) || 2
         };
         state.seenSentences += placement.correct;
 
@@ -2367,6 +2369,15 @@
     /* ================= boot ================= */
 
     function init() {
+        /*
+         * Upgrade saved state before anything reads it. The migration may
+         * clear a stale placement result so the test is offered once more;
+         * it never touches progress, and it never re-offers the test to
+         * someone who deliberately skipped it.
+         */
+        if (window.DailyMigrations && window.DailyMigrations.run) {
+            if (window.DailyMigrations.run(state).length) save();
+        }
         applyName();
         rollover();
         ensureRivals();
