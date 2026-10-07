@@ -711,7 +711,7 @@
         if (q.showEn) card.appendChild(speakButton(q.stem));
         ex.appendChild(card);
 
-        ex.appendChild(choiceList(q.options, check));
+        ex.appendChild(choiceList(q.options, check, q.showEn ? 'en' : 'es'));
         enablePlacementCheck(q);
     }
 
@@ -1151,6 +1151,25 @@
         $('lesson-progress-fill').style.width = pct + '%';
     }
 
+    /* exercise types whose option text is English */
+    var EN_OPTION_TYPES = { listen: true, spanishToEnglish: true, fillBlank: true, wordBank: true };
+
+    /*
+     * Last line of defence for lang marking. Feature renderers register their
+     * own exercises, and a feature may build options without saying what
+     * language they are in; anything the render path missed is caught here
+     * rather than left to be read aloud in the wrong voice.
+     */
+    function markOptionLanguage(item) {
+        var area = exerciseArea;
+        if (!area) return;
+        var wants = EN_OPTION_TYPES[item && item.type];
+        var chips = area.querySelectorAll('.choice, .word-chip');
+        for (var i = 0; i < chips.length; i++) {
+            if (!chips[i].getAttribute('lang')) chips[i].lang = wants ? 'en' : 'es';
+        }
+    }
+
     function renderStep() {
         session.answered = false;
         exerciseArea.innerHTML = '';
@@ -1185,6 +1204,7 @@
             exerciseArea.innerHTML = '';
             renderMultipleChoice(s);
         }
+        markOptionLanguage(item);
     }
 
     /* moves past an ungraded step (tip card, intro) without touching score */
@@ -1303,8 +1323,8 @@
         card.appendChild(play);
         exerciseArea.appendChild(card);
         setTimeout(function () { speak(s.en, 0.9); }, 300);
+        exerciseArea.appendChild(choiceList(optionsFor(s, 'en'), null, 'en'));
 
-        exerciseArea.appendChild(choiceList(optionsFor(s, 'en')));
         enableChoiceCheck(s.en, null, 'Escucha otra vez y fíjate en qué palabras cambian.');
     }
 
@@ -1316,12 +1336,13 @@
         card.className = 'sentence-card';
         var en = document.createElement('p');
         en.className = 'sentence-en';
+        en.lang = 'en';
         en.textContent = s.en;
         card.appendChild(en);
         card.appendChild(speakButton(s.en));
         exerciseArea.appendChild(card);
+        exerciseArea.appendChild(choiceList(optionsFor(s, 'es'), null, 'es'));
 
-        exerciseArea.appendChild(choiceList(optionsFor(s, 'es')));
         enableChoiceCheck(s.es, null, 'Fíjate en el tiempo verbal y en si el sentido cambia.');
     }
 
@@ -1337,8 +1358,8 @@
         es.textContent = s.es;
         card.appendChild(es);
         exerciseArea.appendChild(card);
+        exerciseArea.appendChild(choiceList(optionsFor(s, 'en'), null, 'en'));
 
-        exerciseArea.appendChild(choiceList(optionsFor(s, 'en')));
         enableChoiceCheck(s.en, null, 'Varias opciones parecen traducidas: mira el tiempo verbal.');
     }
 
@@ -1350,6 +1371,7 @@
         card.className = 'sentence-card';
         var en = document.createElement('p');
         en.className = 'sentence-en';
+        en.lang = 'en';
         en.textContent = s.en;
         card.appendChild(en);
         card.appendChild(speakButton(s.en));
@@ -1466,6 +1488,9 @@
                 var c = document.createElement('button');
                 c.type = 'button';
                 c.className = 'word-chip';
+                /* set at creation so it travels with the tile when the learner
+                   moves it between the bank and the answer slots */
+                c.lang = 'en';
                 c.textContent = entry.text;
                 /* tapping a placed word returns it to the bank */
                 c.title = 'Toca para devolver esta palabra';
@@ -1491,6 +1516,7 @@
                 var c = document.createElement('button');
                 c.type = 'button';
                 c.className = 'word-chip';
+                c.lang = 'en';
                 c.textContent = entry.text;
                 c.onclick = function () {
                     if (session && session.answered) return;
@@ -1587,6 +1613,7 @@
         card.className = 'sentence-card';
         var en = document.createElement('p');
         en.className = 'sentence-en';
+        en.lang = 'en';
         en.textContent = s.en;
         card.appendChild(en);
 
@@ -1634,7 +1661,12 @@
      * Defaults to the lesson check button. The placement screen passes its own,
      * otherwise selecting an option would enable the wrong control.
      */
-    function choiceList(options, enableTarget) {
+    /*
+     * lang: the language of the option text, so screen readers do not read
+     * English options with the page's Spanish voice. Omit it and nothing is
+     * set, which keeps older call sites working unchanged.
+     */
+    function choiceList(options, enableTarget, lang) {
         var target = enableTarget || checkBtn;
         var list = document.createElement('div');
         list.className = 'choice-list';
@@ -1644,11 +1676,13 @@
             btn.type = 'button';
             btn.className = 'choice';
             btn.dataset.value = opt;
+            if (lang) btn.lang = lang;
             var kbd = document.createElement('span');
             kbd.className = 'choice-kbd';
             kbd.textContent = String(i + 1);
             var label = document.createElement('span');
             label.textContent = opt;
+            if (lang) label.lang = lang;
             btn.appendChild(kbd);
             btn.appendChild(label);
             btn.onclick = function () {
@@ -1929,8 +1963,19 @@
             shown.push(s);
             var d = document.createElement('div');
             d.className = 'review-item' + (it.result === false ? ' review-missed' : '');
-            d.innerHTML = '<p class="review-en">' + escapeHtml(s.en) + '</p>' +
-                '<p class="review-es">' + escapeHtml(s.es) + '</p>';
+
+            /* built as elements rather than innerHTML so the language of each
+               half can be stated: English with lang, Spanish on the default */
+            var pEn = document.createElement('p');
+            pEn.className = 'review-en';
+            pEn.lang = 'en';
+            pEn.textContent = s.en;
+            var pEs = document.createElement('p');
+            pEs.className = 'review-es';
+            pEs.textContent = s.es;
+
+            d.appendChild(pEn);
+            d.appendChild(pEs);
             review.appendChild(d);
         });
 
@@ -2467,7 +2512,7 @@
         prompt: prompt,
         speak: speak,
         speakButton: speakButton,
-        choiceList: function (options) { return choiceList(options); },
+        choiceList: function (options, lang) { return choiceList(options, undefined, lang); },
         enableChoiceCheck: enableChoiceCheck,
         revealCorrect: revealCorrect,
         optionsFor: optionsFor,
