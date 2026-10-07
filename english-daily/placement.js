@@ -90,8 +90,8 @@ window.PLACEMENT_ITEMS = [
         lv: 3, pts: 2, dir: 'en',
         q: 'Not only did he arrive late, but he also left early.',
         a: 'No solo llegó tarde, sino que además se fue temprano.',
-        w: ['No solo llegó tarde, pero se fue temprano.', 'No solamente llegó tarde, sino también se fue temprano.'],
-        why: '"Not only... but also" se traduce con "no solo... sino (que) también". Con "pero" queda agramatical.'
+        w: ['No solo llegó tarde, pero se fue temprano.', 'No solo llegó tarde, pero también se fue temprano.'],
+        why: '"Not only... but also" se traduce con "no solo... sino (que) también". Ni "pero" ni "pero también" pueden sostener ese contraste.'
     },
 
     /* ---------------- BANDA 4 - B2 - 3 puntos ---------------- */
@@ -120,7 +120,7 @@ window.PLACEMENT_ITEMS = [
         lv: 4, pts: 3, dir: 'en',
         q: 'She has a gift for defusing tense situations.',
         a: 'Tiene talento para desarmar situaciones tensas.',
-        w: ['Tiene un regalo para situaciones que desarman.', 'Es buena desarmando situaciones tensas.', 'Tiene talento para destruir situaciones.'],
+        w: ['Tiene un regalo para situaciones que desarman.', 'Tiene talento para destruir situaciones.'],
         why: '"A gift for" es "tener talento para", no "tener un regalo para". Y "defusing" es "desarmar": en inglés "un arma" y "una situación" se desarman igual.'
     },
     {
@@ -150,9 +150,9 @@ window.PLACEMENT_ITEMS = [
         lv: 5, pts: 4, dir: 'es',
         q: 'Que los datos estuvieran incompletos debilitó todo el modelo.',
         a: 'That the data were incomplete undermined the entire model.',
-        w: ['Because the data were incomplete, the entire model was undermined.',
+        w: ['Because the data were incomplete, the whole model was crumbling.',
           'That the data were incomplete undermined the whole model.'],
-        why: 'El "that" que abre una oración completiva se traduce con "that" más sujeto y verbo, no con "because". Y "entire" es "todo" o "entero", no "whole".'
+        why: 'El "that" que abre una oración completiva se traduce con "that" más sujeto y verbo; "because" convierte el sujeto en causa y cambia el sentido. Y "entire" es "todo" o "entero", no "whole".'
     },
     {
         lv: 5, pts: 4, dir: 'en',
@@ -166,7 +166,7 @@ window.PLACEMENT_ITEMS = [
         q: 'Notwithstanding the objections, the ruling stands.',
         a: 'Pese a las objeciones, la resolución se mantiene.',
         w: ['Sin tener en cuenta las objeciones, la resolución está en pie.',
-          'A pesar de las objeciones, el fallo sigue en pie.'],
-        why: '"Notwithstanding" es una preposición culta: "pese a", no una locución verbal. Y "ruling" aquí es "resolución" o "fallo", no "regla".'
+          'Sin tener en cuenta las objeciones, el fallo sigue en pie.'],
+        why: '"Notwithstanding" es una preposición culta, "pese a"; "sin tener en cuenta" es una locución verbal y no equivale. Y "ruling" aquí es "resolución" o "fallo", no "regla".'
     }
 ];
