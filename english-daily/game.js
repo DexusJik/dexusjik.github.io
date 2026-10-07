@@ -632,7 +632,11 @@
     function buildPlacementQuestions() {
         var items = window.PLACEMENT_ITEMS || [];
         return items.map(function (it, n) {
-            var stem = it.dir === 'en' ? it.q : it.a;
+            /* `q` is the prompt in the language named by `dir` (see placement.js).
+               Using `a` here printed the correct answer as the prompt itself for
+               every dir:'es' item. `showEn` stays the single source of truth for
+               "the stem is English", and renderPlacementStep derives `lang` from it. */
+            var stem = it.q;
             return {
                 item: it,
                 stem: stem,
@@ -697,7 +701,11 @@
         var card = document.createElement('div');
         card.className = 'sentence-card';
         var line = document.createElement('p');
+        /* The stem is always the primary content, so it keeps the prominent
+           sentence styling whatever the language. `lang` is what tells a screen
+           reader which voice to use; the document default is Spanish. */
         line.className = 'sentence-en';
+        line.lang = q.showEn ? 'en' : 'es';
         line.textContent = q.stem;
         card.appendChild(line);
         if (q.showEn) card.appendChild(speakButton(q.stem));
