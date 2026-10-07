@@ -330,7 +330,7 @@
         56: {
             title: 'Negociar sin cerrar puertas',
             body: '"Meet halfway" es que ambos cedan hasta un punto medio. "Flexible on" indica dónde puedes ceder y "below what we can accept" marca tu límite con cortesía.',
-            example: { en: 'We can meet you halfway.', es: 'Podemos llegar a un punto medio contigo.' },
+            example: { en: 'We can meet you halfway.', es: 'Podemos ceder a medio camino contigo.' },
             contrast: '✗ discuss about the details → ✓ discuss the details'
         },
         57: {
@@ -352,7 +352,7 @@
         60: {
             title: 'Condicionales mezclados',
             body: 'Mezclan tiempos: una condición pasada con un resultado presente ("If I had accepted…, I\'d be living abroad now"). "Were we to…" y "Should it…" son variantes formales.',
-            example: { en: 'If I had accepted the offer, I\'d be living abroad now.', es: 'Si hubiera aceptado la oferta, estaría viviendo en el extranjero ahora.' }
+            example: { en: 'If I had accepted the offer, I\'d be living abroad now.', es: 'Si hubiera aceptado la oferta, estaría viviendo fuera del país ahora.' }
         },
         61: {
             title: 'Inversión tras palabras negativas',
