@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:;">
+    <title>1 Oración al Día | Inglés Sin Guion</title>
+
+    <link rel="icon" type="image/jpg" href="../assets/images/image5.webp">
+
+    <meta property="og:title" content="1 Oración al Día | Inglés Sin Guion">
+    <meta property="og:description" content="365 oraciones en inglés ordenadas por dificultad. Una al día, todos los días.">
+    <meta property="og:image" content="../assets/images/image5.webp">
+    <meta property="og:type" content="website">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="daily.css">
+</head>
+<body>
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+
+    <header class="topbar">
+        <a href="../index.html" class="brand">
+            <img src="../assets/images/image4.webp" alt="Inglés Sin Guion" class="brand-img">
+            <span class="brand-name">1 Oración al Día</span>
+        </a>
+
+        <div class="stats" id="stats-bar">
+            <div class="stat stat-streak" id="streak-stat" title="Racha de días">
+                <span class="stat-icon">🔥</span>
+                <span class="stat-value" id="streak-value">0</span>
+            </div>
+            <div class="stat stat-gems" title="Gemas">
+                <span class="stat-icon">💎</span>
+                <span class="stat-value" id="gems-value">0</span>
+            </div>
+            <div class="stat stat-hearts" id="hearts-stat" title="Vidas">
+                <span class="stat-icon">❤️</span>
+                <span class="stat-value" id="hearts-value">5</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============ SCREEN: PATH (home) ============ -->
+    <main id="screen-path" class="screen">
+        <section class="goal-strip">
+            <div class="goal-ring-wrap">
+                <svg class="goal-ring" viewBox="0 0 44 44" aria-hidden="true">
+                    <circle class="ring-track" cx="22" cy="22" r="18"></circle>
+                    <circle class="ring-fill" id="goal-ring-fill" cx="22" cy="22" r="18"></circle>
+                </svg>
+                <div class="goal-ring-text">
+                    <span id="goal-count">0</span><span class="goal-total">/50</span>
+                </div>
+            </div>
+            <div class="goal-copy">
+                <p class="goal-title" id="goal-title">Meta diaria</p>
+                <p class="goal-sub" id="goal-sub">Completa lecciones para alcanzar 50 XP hoy.</p>
+            </div>
+            <button class="btn btn-goal" id="lesson-cta">Empezar</button>
+        </section>
+
+        <section class="unit-intro">
+            <p class="unit-eyebrow" id="unit-eyebrow">Nivel 1 · A1</p>
+            <h1 class="unit-title" id="unit-title">Primeros Pasos</h1>
+            <p class="unit-sub" id="unit-sub">5 oraciones · 2 XP cada una</p>
+        </section>
+
+        <section class="path" id="path-list" aria-label="Lecciones"></section>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <p class="stat-card-value" id="card-xp">0</p>
+                <p class="stat-card-label">XP total</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-card-value" id="card-learned">0/365</p>
+                <p class="stat-card-label">Oraciones vistas</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-card-value" id="card-perfect">0</p>
+                <p class="stat-card-label">Lecciones perfectas</p>
+            </div>
+        </section>
+
+        <section class="badges-section">
+            <h2 class="badges-title">Logros</h2>
+            <div class="badges-grid" id="badges-grid"></div>
+        </section>
+    </main>
+
+    <!-- ============ SCREEN: LESSON ============ -->
+    <main id="screen-lesson" class="screen lesson-screen hidden">
+        <div class="lesson-top">
+            <button class="icon-btn" id="quit-lesson" aria-label="Salir de la lección">✕</button>
+            <div class="lesson-progress-track">
+                <div class="lesson-progress-fill" id="lesson-progress-fill"></div>
+            </div>
+            <div class="hearts-live" id="hearts-live"></div>
+        </div>
+
+        <div class="exercise-area" id="exercise-area">
+            <!-- filled by game.js -->
+        </div>
+
+        <footer class="lesson-footer">
+            <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+            <button class="btn btn-primary btn-check" id="check-btn" disabled>Comprobar</button>
+        </footer>
+    </main>
+
+    <!-- ============ SCREEN: RESULT ============ -->
+    <main id="screen-result" class="screen result-screen hidden">
+        <div class="result-card">
+            <div class="result-burst" id="result-burst">🎉</div>
+            <h2 class="result-title" id="result-title">¡Lección completa!</h2>
+            <p class="result-sub" id="result-sub">Leccion 1 de 73</p>
+
+            <ul class="result-stats">
+                <li><span class="rs-label">XP ganado</span><span class="rs-value" id="res-xp">+10</span></li>
+                <li><span class="rs-label">Precisión</span><span class="rs-value" id="res-acc">100%</span></li>
+                <li><span class="rs-label">Tiempo</span><span class="rs-value" id="res-time">1:05</span></li>
+            </ul>
+
+            <div class="result-review" id="result-review"></div>
+
+            <div class="result-actions">
+                <button class="btn btn-secondary" id="result-back">Ruta</button>
+                <button class="btn btn-primary" id="result-next">Siguiente lección</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="sentences.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

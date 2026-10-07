@@ -4,494 +4,318 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pangal e-sports | Equipo de Rocket League</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #000000;
-            color: #ffffff;
-        }
-        
-        .font-heading {
-            font-family: 'Inter', sans-serif;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: -0.05em;
-        }
+    <meta name="description" content="Pangal e-sports, equipo de Rocket League. Roster, calendario de partidos y syntactic synergy.">
 
-        .liquid-gradient {
-            background: radial-gradient(circle at 50% 50%, #0a0a0a 0%, #000000 100%);
-        }
-
-        .accent-color {
-            color: #00d1ff;
-        }
-
-        .bg-accent {
-            background-color: #00d1ff;
-        }
-
-        .hero-overlay {
-            background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%);
-        }
-
-        .team-photo-container {
-            position: relative;
-            overflow: hidden;
-            border-radius: 1.5rem;
-            box-shadow: 0 0 80px rgba(0, 209, 255, 0.2);
-            border: 1px solid rgba(0, 209, 255, 0.3);
-        }
-
-        .player-label {
-            position: absolute;
-            bottom: 40px;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(12px);
-            padding: 12px 24px;
-            border-left: 6px solid #00d1ff;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .label-left { left: 30px; }
-        .label-center { left: 50%; transform: translateX(-50%); bottom: 20px; border-left: 0; border-bottom: 6px solid #00d1ff; }
-        .label-right { right: 30px; }
-
-        @media (max-width: 768px) {
-            .player-label {
-                padding: 6px 8px;
-                bottom: 15px;
-                min-width: auto;
-            }
-            .player-label span:first-child {
-                font-size: 0.6rem; /* Extremely small for roles */
-            }
-            .player-label span:last-child {
-                font-size: 0.9rem; /* Smaller names */
-            }
-            .label-left { 
-                left: 5px; 
-                width: 30%;
-            }
-            .label-right { 
-                right: 5px; 
-                width: 30%;
-            }
-            .label-center { 
-                bottom: 5px; 
-                width: 35%;
-                font-size: 0.8rem;
-            }
-        }
-
-        .meme-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        .meme-card:hover {
-            border-color: #00d1ff;
-            transform: translateY(-10px) scale(1.02);
-            background: rgba(255, 255, 255, 0.05);
-            box-shadow: 0 20px 40px rgba(0, 209, 255, 0.1);
-        }
-
-        /* PRO Bento Grid - Transparent PNG Optimization */
-        .bento-item {
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(255, 255, 255, 0.03);
-            position: relative;
-            overflow: visible;
-        }
-        
-        .bento-item:hover {
-            border-color: #00d1ff;
-            background: rgba(255, 255, 255, 0.06);
-            transform: translateY(-5px);
-        }
-
-        .player-img-pop {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            max-height: 120%;
-            z-index: 30;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.9));
-            pointer-events: none;
-        }
-
-        .bento-item:hover .player-img-pop {
-            transform: translate(-50%, -30px) scale(1.08);
-            filter: drop-shadow(0 30px 50px rgba(0,0,0,1));
-        }
-
-        .player-glow {
-            position: absolute;
-            bottom: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            height: 70%;
-            background: radial-gradient(circle, rgba(0, 209, 255, 0.4) 0%, transparent 70%);
-            z-index: 1;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
-        }
-
-        .bento-item:hover .player-glow {
-            opacity: 1;
-        }
-
-        .glow-text {
-            text-shadow: 0 0 20px rgba(0, 209, 255, 0.5);
-        }
-    </style>
+    <link rel="icon" type="image/png" href="pangal_esports_blue.webp">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="pangal.css">
+    <script src="pangal.js" defer></script>
 </head>
-<body class="overflow-x-hidden">
+<body>
+    <a href="#home" class="sr-only">Saltar al contenido</a>
 
-    <!-- Navigation Bar -->
-    <nav class="fixed w-full z-50 bg-black/95 backdrop-blur-xl border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
-                <div class="flex items-center gap-3 group cursor-pointer">
-    <img src="p_sports.webp" alt="Pangal e-sports Logo" class="w-12 h-12 object-contain rounded-lg rotate-3 group-hover:rotate-0 transition-transform duration-300">
-    <span class="text-2xl font-heading tracking-tighter uppercase">Pangal <span class="accent-color">e-sports</span></span>
-</div>
-                <div class="hidden md:flex space-x-10 text-xs font-black uppercase tracking-[0.2em] text-gray-400">
-                    <a href="#home" class="hover:text-white transition-colors">Inicio</a>
-                    <a href="#roster" class="hover:text-white transition-colors">Equipo</a>
-                    <a href="#matches" class="hover:text-white transition-colors">Partidos</a>
-                    <a href="#about" class="hover:text-white transition-colors">Nosotros</a>
-                    <a href="#memes" class="hover:text-white transition-colors">Memes</a>
-                </div>
-                <div class="flex items-center gap-5">
-                    <a href="#" class="text-lg text-gray-500 hover:text-white transition-colors"><i class="fab fa-twitch"></i></a>
-                    <a href="#" class="text-lg text-gray-500 hover:text-white transition-colors"><i class="fab fa-discord"></i></a>
-                </div>
+    <!-- ================= NAV ================= -->
+    <nav class="nav" id="nav">
+        <div class="shell nav__inner">
+            <a href="#home" class="brand">
+                <img src="p_sports.webp" alt="" width="44" height="44">
+                <span>Pangal <b>e-sports</b></span>
+            </a>
+
+            <div class="nav__links">
+                <a href="#home">Inicio</a>
+                <a href="#roster">Equipo</a>
+                <a href="#partidos">Partidos</a>
+                <a href="#nosotros">Nosotros</a>
+                <a href="#memes">Memes</a>
+                <a href="../index.html">Inglés Sin Guion</a>
+            </div>
+
+            <div class="social">
+                <a href="#" aria-label="Twitch">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2h17v12l-5 5h-4l-3 3H7v-3H4V2zm3 3v9h2v3l2-3h3l2-3V5H7zm11 0h-2v5h2V5zm-5 0h-2v5h2V5z"/></svg>
+                </a>
+                <a href="#" aria-label="Discord">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4.5A16 16 0 0 0 15.6 3l-.2.4a15 15 0 0 0-6.8 0L8.4 3A16 16 0 0 0 4 4.5C1.2 8.7.5 12.9.9 17a16 16 0 0 0 4.9 2.5l1-1.7c-.6-.2-1.1-.5-1.6-.8l.4-.3a11 11 0 0 0 8.8 0l.4.3c-.5.3-1 .6-1.6.8l1 1.7a16 16 0 0 0 4.9-2.5c.5-4.7-.6-8.8-3.1-12.5zM8.9 14.6c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.9.9 1.8 2c0 1.1-.8 2-1.8 2zm6.2 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.9.9 1.8 2c0 1.1-.8 2-1.8 2z"/></svg>
+                </a>
             </div>
         </div>
     </nav>
 
-    <section id="home" class="relative h-screen w-full overflow-hidden flex items-center">
-        <video 
-            src="no_enemies.mp4" 
-            autoplay 
-            loop 
-            muted 
-            playsinline 
-            class="absolute inset-0 w-full h-full object-cover opacity-30 blur-md brightness-50 scale-110 transition-all duration-700" 
-            id="hero-bg">
-        </video>
-        <div class="absolute inset-0 hero-overlay"></div>
-        
-        <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="max-w-5xl mx-auto text-center">
-                <h2 class="text-blue-400 font-black uppercase tracking-[0.3em] text-sm mb-6 opacity-0 translate-y-4" id="hero-sub">División de Rocket League</h2>
-                <h1 class="text-5xl md:text-9xl font-heading leading-[0.9] mb-8 opacity-0 translate-y-8" id="hero-title">
-                    EXPERTOS EN <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-200 to-blue-600 glow-text">FALLAR EL OPEN NET</span>
-                </h1>
-                <p class="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto mb-10 opacity-0 translate-y-8 px-4" id="hero-desc">
-                    Pangal e-sports redefine lo que significa fallar un tiro fácil en la arena de Rocket League. 
-                    <span class="text-white font-bold">Sinceramente, solo queremos llegar a Campeón.</span>
+    <main>
+        <!-- ================= HERO ================= -->
+        <section class="hero" id="home">
+            <video class="hero__bg" id="hero-bg" src="no_enemies.mp4"
+                   autoplay muted loop playsinline aria-hidden="true" tabindex="-1"></video>
+
+            <div class="shell hero__inner">
+                <p class="hero__eyebrow">División de Rocket League</p>
+                <h1 class="hero__title">Expertos en<br><em>fallar el open net</em></h1>
+                <p class="hero__desc">
+                    Pangal e-sports redefine lo que significa regalar un gol fácil en la arena.
+                    <strong>Sinceramente, solo queremos llegar a Campeón.</strong>
                 </p>
-                <div class="flex justify-center gap-6 opacity-0 translate-y-8" id="hero-btns">
-                    <a href="#roster" class="bg-accent text-black px-10 py-4 font-black uppercase tracking-tighter hover:bg-white transition-all transform hover:scale-105">
-                        Ver Equipo
-                    </a>
-                    <a href="#matches" class="border border-white/20 px-10 py-4 font-black uppercase tracking-tighter hover:bg-white hover:text-black transition-all transform hover:scale-105">
-                        Partidos
-                    </a>
+                <div class="hero__actions">
+                    <a href="#roster" class="btn">Ver equipo</a>
+                    <a href="#partidos" class="btn btn--ghost">Partidos</a>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Team Photo Section -->
-    <section class="py-32 bg-black">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-20">
-                <h2 class="text-4xl md:text-6xl font-heading uppercase mb-4">La <span class="accent-color">Sinergia</span></h2>
-                <div class="w-24 h-2 bg-accent mx-auto"></div>
-            </div>
-            
-            <div class="team-photo-container group">
-                <img src="team photo.png" alt="Pangal e-sports Team" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
-                
-                <div class="player-label label-left">
-                    <span class="text-blue-400 text-xs font-black block uppercase tracking-tighter">Delantero / Capitán</span>
-                    <span class="text-white text-2xl font-black italic">Javier</span>
-                </div>
-                <div class="player-label label-center">
-                    <span class="text-blue-400 text-xs font-black block uppercase tracking-tighter">El Muro</span>
-                    <span class="text-white text-2xl font-black italic">Ignacio</span>
-                </div>
-                <div class="player-label label-right">
-                    <span class="text-blue-400 text-xs font-black block uppercase tracking-tighter">Creador de Juego</span>
-                    <span class="text-white text-2xl font-black italic">Alexis</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Roster Section (Ultra Pop-Out Style) -->
-    <section id="roster" class="py-32 liquid-gradient">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-20">
-                <h2 class="text-5xl md:text-7xl font-heading uppercase mb-4">Nuestros <span class="accent-color">Titulares</span></h2>
-                <div class="w-20 h-2 bg-accent mx-auto"></div>
             </div>
 
-            <!-- Bento Grid Layout -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 h-auto md:h-[600px]">
-                <!-- Captain - Large Bento -->
-                <div class="md:col-span-2 md:row-span-2 bento-item rounded-3xl p-12 flex flex-col justify-end group">
-                    <div class="player-glow"></div>
-                    <img src="javier.png" alt="Javier" class="player-img-pop w-full h-auto max-h-[140%] object-contain">
-                    <div class="relative z-40 mb-10">
-                        <span class="bg-accent text-black text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest mb-4 inline-block">Capitán del Equipo</span>
-                        <h3 class="text-6xl font-heading italic mb-2">Javier Perez</h3>
-                        <p class="text-blue-400 font-bold uppercase tracking-widest text-sm mb-6">Delantero / Líder Táctico</p>
-                        <div class="flex gap-4">
-                            <a href="https://www.instagram.com/its_javierperez/" target="_blank" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent hover:text-black transition"><i class="fab fa-instagram"></i></a>
-                            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent hover:text-black transition"><i class="fab fa-twitch"></i></a>
+            <div class="hero__ticker" aria-hidden="true">
+                <span>Diamond I</span>
+                <span>·</span>
+                <span>1 torneo</span>
+                <span>·</span>
+                <span>0 open nets</span>
+            </div>
+        </section>
+
+        <!-- ================= TEAM PHOTO ================= -->
+        <section class="section">
+            <div class="shell">
+                <div class="section-head section-head--center reveal">
+                    <p class="eyebrow">El equipo completo</p>
+                    <h2>La sinergia</h2>
+                    <span class="slash"></span>
+                </div>
+
+                <figure class="photo-frame reveal">
+                    <img src="team-photo.png" alt="Foto del equipo Pangal e-sports" loading="lazy">
+                    <figcaption>
+                        <span>DexusJik</span>
+                        <span>Nachulin</span>
+                        <span>Gorgonita</span>
+                    </figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <!-- ================= ROSTER ================= -->
+        <section class="section section--raised" id="roster">
+            <div class="shell">
+                <div class="section-head section-head--center reveal">
+                    <p class="eyebrow">Roster</p>
+                    <h2>Nuestros titulares</h2>
+                    <span class="slash"></span>
+                </div>
+
+                <div class="roster">
+                    <article class="player player--captain reveal">
+                        <div class="player__glow"></div>
+                        <img class="player__portrait" src="javier.png" alt="Javier Perez" loading="lazy">
+                        <div class="player__meta">
+                            <span class="player__role">Capitán del equipo</span>
+                            <h3 class="player__name">Javier Perez</h3>
+                            <p class="player__handle">DexusJik</p>
+                            <p class="player__bio">Delantero y líder táctico. Decide los dosages y carga con la culpa cuando se falla.</p>
+                            <div class="player__socials">
+                                <a href="https://www.instagram.com/its_javierperez/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de Javier">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.3 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .3-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.3-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.3 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.1 0-3.5 0-4.7.1-1.1 0-1.7.2-2.1.3-.5.2-.9.4-1.3.8-.4.4-.6.8-.8 1.3-.1.4-.2 1-.3 2.1-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.7.3 2.1.2.5.4.9.8 1.3.4.4.8.6 1.3.8.4.1 1 .2 2.1.3 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.3.5-.2.9-.4 1.3-.8.4-.4.6-.8.8-1.3.1-.4.2-1 .3-2.1.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.3-2.1-.2-.5-.4-.9-.8-1.3-.4-.4-.8-.6-1.3-.8-.4-.1-1-.2-2.1-.3-1.2-.1-1.6-.1-4.7-.1zm0 3.1a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 8.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zm6.3-8.4a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0z"/></svg>
+                                </a>
+                                <a href="#" aria-label="Twitch de Javier">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2h17v12l-5 5h-4l-3 3H7v-3H4V2zm3 3v9h2v3l2-3h3l2-3V5H7zm11 0h-2v5h2V5zm-5 0h-2v5h2V5z"/></svg>
+                                </a>
+                            </div>
                         </div>
+                    </article>
+
+                    <article class="player reveal">
+                        <div class="player__glow"></div>
+                        <img class="player__portrait" src="alexis.png" alt="Alexis Pavez" loading="lazy">
+                        <div class="player__meta">
+                            <span class="player__role player__role--ghost">Creador de juego</span>
+                            <h3 class="player__name">Alexis Pavez</h3>
+                            <p class="player__handle">Gorgonita</p>
+                            <p class="player__bio">Experto en pases de precisión y rotaciones a alta velocidad.</p>
+                            <div class="player__socials">
+                                <a href="https://www.instagram.com/gorgonita_coach/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de Alexis">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.3 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .3-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.3-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.3 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.1 0-3.5 0-4.7.1-1.1 0-1.7.2-2.1.3-.5.2-.9.4-1.3.8-.4.4-.6.8-.8 1.3-.1.4-.2 1-.3 2.1-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.7.3 2.1.2.5.4.9.8 1.3.4.4.8.6 1.3.8.4.1 1 .2 2.1.3 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.3.5-.2.9-.4 1.3-.8.4-.4.6-.8.8-1.3.1-.4.2-1 .3-2.1.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.3-2.1-.2-.5-.4-.9-.8-1.3-.4-.4-.8-.6-1.3-.8-.4-.1-1-.2-2.1-.3-1.2-.1-1.6-.1-4.7-.1zm0 3.1a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 8.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zm6.3-8.4a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0z"/></svg>
+                                </a>
+                                <a href="#" aria-label="Twitch de Alexis">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2h17v12l-5 5h-4l-3 3H7v-3H4V2zm3 3v9h2v3l2-3h3l2-3V5H7zm11 0h-2v5h2V5zm-5 0h-2v5h2V5z"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="player reveal">
+                        <div class="player__glow"></div>
+                        <img class="player__portrait" src="ignacio.png" alt="Ignacio Herrera" loading="lazy">
+                        <div class="player__meta">
+                            <span class="player__role player__role--ghost">El muro</span>
+                            <h3 class="player__name">Ignacio Herrera</h3>
+                            <p class="player__handle">Nachulin</p>
+                            <p class="player__bio">Defensa imbatible y maestro de los despejes aéreos.</p>
+                            <div class="player__socials">
+                                <a href="https://www.instagram.com/nachulinnn/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de Ignacio">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.3 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .3-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.3-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.3 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.1 0-3.5 0-4.7.1-1.1 0-1.7.2-2.1.3-.5.2-.9.4-1.3.8-.4.4-.6.8-.8 1.3-.1.4-.2 1-.3 2.1-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.7.3 2.1.2.5.4.9.8 1.3.4.4.8.6 1.3.8.4.1 1 .2 2.1.3 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.3.5-.2.9-.4 1.3-.8.4-.4.6-.8.8-1.3.1-.4.2-1 .3-2.1.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.3-2.1-.2-.5-.4-.9-.8-1.3-.4-.4-.8-.6-1.3-.8-.4-.1-1-.2-2.1-.3-1.2-.1-1.6-.1-4.7-.1zm0 3.1a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 8.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zm6.3-8.4a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0z"/></svg>
+                                </a>
+                                <a href="#" aria-label="Twitch de Ignacio">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2h17v12l-5 5h-4l-3 3H7v-3H4V2zm3 3v9h2v3l2-3h3l2-3V5H7zm11 0h-2v5h2V5zm-5 0h-2v5h2V5z"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="player player--note reveal">
+                        <h3>Cazadores de trofeos</h3>
+                        <p>
+                            Suplentes: <strong>Souptrax</strong>, que no juega nunca pero está ahí,
+                            y <strong>Nicolás</strong>, rango Oro con la stability de un muro.
+                        </p>
+                        <div class="trophy" aria-hidden="true">🏆</div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= MATCHES ================= -->
+        <section class="section" id="partidos">
+            <div class="shell">
+                <div class="section-head reveal">
+                    <p class="eyebrow">Calendario</p>
+                    <h2>Próximos encuentros</h2>
+                    <span class="slash"></span>
+                </div>
+
+                <div class="fixtures">
+                    <div class="fixture reveal">
+                        <span class="fixture__side fixture__side--home">
+                            <span class="fixture__team">Pangal e-sports</span>
+                        </span>
+                        <span class="fixture__status">Próximamente</span>
+                        <span class="fixture__side fixture__side--away">
+                            <span class="fixture__team">Colo-Colo Pataguas</span>
+                        </span>
+                    </div>
+
+                    <div class="fixture reveal">
+                        <span class="fixture__side fixture__side--home">
+                            <span class="fixture__team">Pangal e-sports</span>
+                        </span>
+                        <span class="fixture__status fixture__status--muted">Por confirmar</span>
+                        <span class="fixture__side fixture__side--away">
+                            <span class="fixture__team">Huracán FC</span>
+                        </span>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <div class="bento-item rounded-3xl p-8 group flex flex-col justify-between">
-                    <div class="player-glow"></div>
-                    <img src="alexis.png" alt="Alexis" class="player-img-pop w-full h-auto max-h-[120%] object-contain">
-                    <div class="relative z-40 mt-24">
-                        <h3 class="text-2xl font-heading italic">Alexis Pavez</h3>
-                        <p class="text-blue-400 text-xs font-bold uppercase mb-4">Creador de Juego</p>
-                        <div class="text-gray-400 text-sm font-medium">Experto en pases de precisión y rotaciones a alta velocidad.</div>
-                        <div class="flex gap-3 mt-4">
-                            <a href="https://www.instagram.com/gorgonita_coach/" target="_blank" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent hover:text-black transition"><i class="fab fa-instagram"></i></a>
-                            <a href="#" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent hover:text-black transition"><i class="fab fa-twitch"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Player 3 - Small Bento -->
-                <div class="bento-item rounded-3xl p-8 group flex flex-col justify-between">
-                    <div class="player-glow"></div>
-                    <img src="ignacio.png" alt="Ignacio" class="player-img-pop w-full h-auto max-h-[120%] object-contain">
-                    <div class="relative z-40 mt-24">
-                        <h3 class="text-2xl font-heading italic">Ignacio Herrera</h3>
-                        <p class="text-blue-400 text-xs font-bold uppercase mb-4">El Muro</p>
-                        <div class="text-gray-400 text-sm font-medium">Defensa imbatible y maestro de los despejes aéreos.</div>
-                        <div class="flex gap-3 mt-4">
-                            <a href="https://www.instagram.com/nachulinnn/" target="_blank" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent hover:text-black transition"><i class="fab fa-instagram"></i></a>
-                            <a href="#" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-accent hover:text-black transition"><i class="fab fa-twitch"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Stat Card - Small Bento -->
-                <div class="md:col-span-2 bento-item rounded-3xl p-12 flex flex-col justify-center bg-white/10 border-white/20 text-white group">
-                    <h4 class="text-4xl font-heading italic leading-none mb-6 glow-text">Cazadores de <br>Trofeos</h4>
-                    <p class="text-gray-300 text-sm font-bold uppercase tracking-tighter leading-relaxed">
-                        Suplentes: <span class="text-white font-black">Souptrax</span> (no juega nunca pero está ahí) y <span class="text-white font-black">Nicolás</span> (Rango Oro).
+        <!-- ================= ABOUT ================= -->
+        <section class="section section--raised" id="nosotros">
+            <div class="shell about__grid">
+                <div class="about__body reveal">
+                    <p class="eyebrow">Nosotros</p>
+                    <h2 style="font-size:clamp(2.25rem,7vw,4.5rem);margin-block:1rem 1.5rem">Sobre Pangal</h2>
+                    <p>
+                        Fundado con la pasión por la competitividad y la excelencia, Pangal e-sports
+                        es más que un equipo: es una comunidad dedicada a llevar el Rocket League al
+                        siguiente nivel.
                     </p>
-                    <div class="text-7xl font-black opacity-50 group-hover:opacity-100 transition-opacity mt-6">🏆</div>
+                    <p>
+                        Nos enfocamos en la sinergia táctica, el entrenamiento riguroso y la mentalidad
+                        ganadora. El objetivo es dejar huella en la historia del esports.
+                    </p>
+
+                    <div class="stat-pair">
+                        <div class="stat">
+                            <span class="stat__value">Diamond I</span>
+                            <span class="stat__label">Rango máximo (con suerte)</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat__value">1</span>
+                            <span class="stat__label">Torneo ganado (el único)</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Matches Section -->
-    <section id="matches" class="py-32 bg-black">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-end mb-16">
+        <!-- ================= MEMES ================= -->
+        <section class="section" id="memes">
+            <div class="shell">
+                <div class="section-head section-head--center reveal">
+                    <p class="eyebrow">Humor</p>
+                    <h2>Zona de memes</h2>
+                    <p style="margin-top:1rem">Porque no todo es seriedad en la arena.</p>
+                    <span class="slash"></span>
+                </div>
+
+                <div class="memes">
+                    <figure class="meme reveal">
+                        <div class="meme__frame">
+                            <video src="alexis_meme.mp4" loop muted playsinline controls
+                                   aria-label="Meme de Alexis"></video>
+                        </div>
+                        <figcaption class="meme__meta">
+                            <h3>Alexis "Apple Run" Pavez</h3>
+                            <p>Cuando el balón va hacia la portería contraria...</p>
+                        </figcaption>
+                    </figure>
+
+                    <figure class="meme reveal">
+                        <div class="meme__frame">
+                            <video src="no_enemies.mp4" loop muted playsinline controls
+                                   aria-label="Meme No Tengo Enemigos"></video>
+                        </div>
+                        <figcaption class="meme__meta">
+                            <h3>No tengo enemigos</h3>
+                            <p>Solo el balón que nunca tocamos.</p>
+                        </figcaption>
+                    </figure>
+
+                    <div class="meme meme--empty reveal">
+                        <span class="plus" aria-hidden="true">+</span>
+                        <p>Próximamente más fails</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="site-footer">
+        <div class="shell">
+            <div class="footer__grid">
                 <div>
-                    <h2 class="text-5xl md:text-7xl font-heading uppercase mb-4">Próximos <span class="accent-color">Encuentros</span></h2>
-                    <div class="w-20 h-2 bg-accent"></div>
-                </div>
-                <a href="#" class="hidden md:block text-xs font-black uppercase tracking-[0.3em] text-gray-500 hover:text-white transition">Calendario Completo →</a>
-            </div>
-
-            <div class="grid gap-4">
-                <div class="group flex flex-col md:flex-row items-center justify-between bg-white/[0.02] border border-white/5 p-8 hover:bg-white/[0.05] transition-all cursor-pointer gap-6 md:gap-12">
-                    <div class="flex-1 text-center md:text-right">
-                        <span class="text-2xl font-heading italic">Pangal e-sports</span>
-                    </div>
-                    <div class="flex-shrink-0 text-center py-3 px-8 bg-blue-600 rounded-full font-black text-[10px] uppercase tracking-[0.2em] text-white whitespace-nowrap">
-                        PRÓXIMAMENTE
-                    </div>
-                    <div class="flex-1 text-center md:text-left">
-                        <span class="text-2xl font-heading italic">Colo-Colo Pataguas</span>
-                    </div>
-                </div>
-
-                <div class="group flex flex-col md:flex-row items-center justify-between bg-white/[0.02] border border-white/5 p-8 hover:bg-white/[0.05] transition-all cursor-pointer gap-6 md:gap-12">
-                    <div class="flex-1 text-center md:text-right">
-                        <span class="text-2xl font-heading italic">Pangal e-sports</span>
-                    </div>
-                    <div class="flex-shrink-0 text-center py-3 px-8 bg-gray-800 rounded-full font-black text-[10px] uppercase tracking-[0.2em] text-gray-400 whitespace-nowrap">
-                        PRÓXIMAMENTE
-                    </div>
-                    <div class="flex-1 text-center md:text-left">
-                        <span class="text-2xl font-heading italic">Huracán FC</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="py-32 liquid-gradient">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
-            <div class="relative group">
-                <div class="absolute -inset-4 bg-accent/20 blur-3xl rounded-full group-hover:bg-accent/30 transition-all duration-500"></div>
-                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&q=80&w=2071" alt="Gaming Setup" class="relative rounded-3xl shadow-2xl border border-white/10 grayscale group-hover:grayscale-0 transition duration-700">
-            </div>
-            <div>
-                <h2 class="text-5xl md:text-7xl font-heading uppercase mb-8">Sobre <span class="accent-color">Pangal</span></h2>
-                <p class="text-gray-400 text-xl mb-8 leading-relaxed">
-                    Fundado con la pasión por la competitividad y la excelencia, Pangal e-sports es más que un equipo; es una comunidad dedicada a llevar el juego de Rocket League al siguiente nivel. 
-                </p>
-                <p class="text-gray-400 text-xl mb-12 leading-relaxed">
-                    Nos enfocamos en la sinergia táctica, el entrenamiento riguroso y la mentalidad ganadora. Nuestro objetivo es dejar una huella imborrable en la historia del esports.
-                </p>
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="bg-white/5 p-6 md:p-8 rounded-2xl border border-white/10 hover:border-accent/50 transition text-center">
-                        <span class="block text-2xl md:text-4xl font-heading accent-color mb-2 whitespace-nowrap tracking-tight">Diamante I</span>
-                        <span class="text-[10px] md:text-xs uppercase font-black text-gray-500 tracking-widest">Rango Máximo (con suerte)</span>
-                    </div>
-                    <div class="bg-white/5 p-6 md:p-8 rounded-2xl border border-white/10 hover:border-accent/50 transition text-center">
-                        <span class="block text-2xl md:text-4xl font-heading accent-color mb-2">1</span>
-                        <span class="text-[10px] md:text-xs uppercase font-black text-gray-500 tracking-widest">Torneo Ganado (el único)</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Memes Section -->
-    <section id="memes" class="py-32 bg-black">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-20">
-                <h2 class="text-5xl md:text-7xl font-heading uppercase mb-4">Zona de <span class="accent-color">Memes</span></h2>
-                <p class="text-gray-500 uppercase tracking-[0.3em] text-xs">Porque no todo es seriedad en la arena</p>
-                <div class="w-20 h-2 bg-accent mx-auto mt-6"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="meme-card rounded-3xl overflow-hidden p-6">
-                    <div class="rounded-2xl overflow-hidden bg-gray-900 aspect-square flex items-center justify-center">
-                        <video 
-                            src="alexis_meme.mp4" 
-                            loop 
-                            playsinline 
-                            controls
-                            class="w-full h-full object-cover"
-                        >
-                            Tu navegador no soporta videos.
-                        </video>
-                    </div>
-                    <div class="mt-6 text-center">
-                        <h3 class="text-2xl font-heading italic">Alexis "Apple Run" Pavez</h3>
-                        <p class="text-gray-500 text-sm italic mt-2">Cuando el balón va hacia la portería contraria...</p>
-                    </div>
-                </div>
-
-                <div class="meme-card rounded-3xl overflow-hidden p-6">
-                    <div class="rounded-2xl overflow-hidden bg-gray-900 aspect-square flex items-center justify-center">
-                        <video 
-                            src="no_enemies.mp4" 
-                            loop 
-                            playsinline 
-                            controls
-                            class="w-full h-full object-cover"
-                        >
-                            Tu navegador no soporta videos.
-                        </video>
-                    </div>
-                    <div class="mt-6 text-center">
-                        <h3 class="text-2xl font-heading italic">No Tengo Enemigos</h3>
-                        <p class="text-gray-500 text-sm italic mt-2">Solo el balón que, por alguna razón, nunca tocamos.</p>
-                    </div>
-                </div>
-
-                <div class="meme-card rounded-3xl overflow-hidden p-6 flex flex-col items-center justify-center border-dashed border-2 border-white/10 text-gray-700">
-                    <i class="fas fa-plus text-4xl mb-4"></i>
-                    <p class="font-black uppercase text-xs tracking-widest">Próximamente más fails</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="contact" class="bg-black border-t border-white/5 pt-24 pb-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-16 mb-20">
-                <div class="col-span-1 md:col-span-2">
-                    <div class="flex items-center gap-3 mb-8">
-                        <img src="p_sports.webp" alt="Pangal e-sports Logo" class="w-12 h-12 object-contain rounded-lg">
-                        <span class="text-3xl font-heading tracking-tighter uppercase">Pangal <span class="accent-color">e-sports</span></span>
-                    </div>
-                    <p class="text-gray-500 max-w-sm mb-8 text-lg leading-relaxed">
+                    <a href="#home" class="footer__brand">
+                        <img src="p_sports.webp" alt="" width="40" height="40">
+                        <span>Pangal <b>e-sports</b></span>
+                    </a>
+                    <p class="footer__tagline">
                         Líderes mundiales en el consumo excesivo de boost y en perder la posición.
                     </p>
-                    <div class="flex gap-5">
-                        <a href="#" class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center hover:bg-accent hover:text-black transition-all duration-300"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center hover:bg-accent hover:text-black transition-all duration-300"><i class="fab fa-twitch"></i></a>
-                        <a href="#" class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center hover:bg-accent hover:text-black transition-all duration-300"><i class="fab fa-discord"></i></a>
-                        <a href="#" class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center hover:bg-accent hover:text-black transition-all duration-300"><i class="fab fa-instagram"></i></a>
-                    </div>
                 </div>
-                <div>
-                    <h4 class="font-black uppercase tracking-[0.2em] mb-8 text-sm">Enlaces</h4>
-                    <ul class="space-y-4 text-gray-500 text-sm font-medium">
-                        <li><a href="#home" class="hover:text-white transition-colors">Inicio</a></li>
-                        <li><a href="#roster" class="hover:text-white transition-colors">Equipo</a></li>
-                        <li><a href="#matches" class="hover:text-white transition-colors">Partidos</a></li>
-                        <li><a href="#about" class="hover:text-white transition-colors">Nosotros</a></li>
-                        <li><a href="#memes" class="hover:text-white transition-colors">Memes</a></li>
+
+                <div class="footer__col">
+                    <h4>Equipo</h4>
+                    <ul>
+                        <li><a href="#home">Inicio</a></li>
+                        <li><a href="#roster">Roster</a></li>
+                        <li><a href="#partidos">Partidos</a></li>
+                        <li><a href="#nosotros">Nosotros</a></li>
+                        <li><a href="#memes">Memes</a></li>
                     </ul>
                 </div>
-                <div>
-                    <h4 class="font-black uppercase tracking-[0.2em] mb-8 text-sm">Legal</h4>
-                    <ul class="space-y-4 text-gray-500 text-sm font-medium">
-                        <li><a href="#" class="hover:text-white transition-colors">Términos</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Privacidad</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Cookies</a></li>
+
+                <div class="footer__col">
+                    <h4>Otros</h4>
+                    <ul>
+                        <li><a href="../index.html">Inglés Sin Guion</a></li>
+                        <li><a href="../english-daily/index.html">1 Oración al Día</a></li>
+                        <li><a href="#partidos">Calendario completo</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-white/5 pt-12 text-center text-gray-600 text-[10px] uppercase tracking-[0.4em] font-black">
-                &copy; 2026 Pangal e-sports. Todos los derechos reservados.
+
+            <div class="footer__base">
+                <p>&copy; 2026 Pangal e-sports</p>
+                <p>Todos los derechos reservados</p>
             </div>
         </div>
     </footer>
-
-    <script>
-        window.onload = () => {
-            const tl = gsap.timeline({ defaults: { ease: 'power4.out' }});
-
-            tl.to('#hero-sub', { opacity: 1, y: 0, duration: 1 })
-              .to('#hero-title', { opacity: 1, y: 0, duration: 1 }, '-=0.8')
-              .to('#hero-desc', { opacity: 1, y: 0, duration: 1 }, '-=0.8')
-              .to('#hero-btns', { opacity: 1, y: 0, duration: 1 }, '-=0.8');
-
-            window.addEventListener('mousemove', (e) => {
-                const x = (e.clientX - window.innerWidth / 2) * 0.01;
-                const y = (e.clientY - window.innerHeight / 2) * 0.01;
-                gsap.to('#hero-bg', { x: x * -1, y: y * -1, duration: 1 });
-            });
-        };
-    </script>
 </body>
 </html>
