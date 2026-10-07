@@ -79,20 +79,20 @@
 <body>
     <a href="#screen-path" class="sr-only skip-link">Saltar a las lecciones</a>
 
-    <!-- ============ NICKNAME MODAL ============ -->
+    <!-- ============ NICKNAME MODAL (MANDATORY ON FIRST JOIN) ============ -->
     <div class="modal" id="nick-modal" role="dialog" aria-modal="true"
          aria-labelledby="nick-title" hidden>
         <div class="modal__panel">
             <h2 class="modal__title" id="nick-title">¿Cuál es tu primer nombre?</h2>
-            <p class="modal__desc">Algunas frases de práctica lo usan, como <em>“Hello, my name is…”</em>, y aparece en la tabla de rivales. Se queda en este dispositivo.</p>
+            <p class="modal__desc">Es obligatorio para personalizar tus lecciones, ejercicios y tabla de rivales. Se guarda solo en este dispositivo.</p>
 
             <form id="nick-form" novalidate>
                 <label class="sr-only" for="nick-input">Primer nombre</label>
                 <input class="modal__input" id="nick-input" type="text"
                        maxlength="16" autocomplete="given-name" autocapitalize="words"
-                       placeholder="Ej: Camila" spellcheck="false">
+                       placeholder="Ej: Camila" spellcheck="false" required>
                 <p class="modal__error" id="nick-error" role="alert" hidden></p>
-                <button class="btn btn-primary modal__submit" type="submit">Empezar</button>
+                <button class="btn btn-primary modal__submit" type="submit">Empezar a practicar</button>
             </form>
         </div>
     </div>

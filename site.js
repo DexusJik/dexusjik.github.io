@@ -227,15 +227,21 @@
     }
 
     function initWhatsApp() {
-        var cta = document.getElementById('wa-cta');
-        if (!cta) return;
+        var buttons = [
+            { id: 'wa-cta', msg: 'Hola Javier, me interesa una sesión de consultoría de inglés. Me gustaría saber disponibilidad y recibir una propuesta.' },
+            { id: 'top-banner-wa', msg: 'Hola Javier, vi el sitio web y me gustaría consultar por disponibilidad y sesiones de consultoría de inglés.' },
+            { id: 'header-wa-btn', msg: 'Hola Javier, vi el sitio web y me gustaría consultar por disponibilidad y sesiones de consultoría de inglés.' },
+            { id: 'hero-wa-btn', msg: 'Hola Javier, me gustaría consultar directamente por las sesiones de consultoría de inglés y agendamiento.' },
+            { id: 'mobile-wa-btn', msg: 'Hola Javier, vi el sitio web y me gustaría consultar por disponibilidad y sesiones de consultoría de inglés.' }
+        ];
 
-        cta.addEventListener('click', function () {
-            sendToWhatsApp(
-                'Hola Javier, me interesa una sesión de consultoría de inglés. ' +
-                'Me gustaría saber disponibilidad y recibir una propuesta.',
-                cta
-            );
+        buttons.forEach(function (item) {
+            var el = document.getElementById(item.id);
+            if (el) {
+                el.addEventListener('click', function () {
+                    sendToWhatsApp(item.msg, el);
+                });
+            }
         });
     }
 

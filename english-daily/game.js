@@ -452,22 +452,54 @@
         });
     }
 
+    function shakeNickModal() {
+        var panel = document.querySelector('#nick-modal .modal__panel');
+        var input = $('nick-input');
+        if (panel && typeof panel.animate === 'function') {
+            panel.animate([
+                { transform: 'translateX(0)' },
+                { transform: 'translateX(-8px)' },
+                { transform: 'translateX(8px)' },
+                { transform: 'translateX(-5px)' },
+                { transform: 'translateX(5px)' },
+                { transform: 'translateX(0)' }
+            ], { duration: 320 });
+        }
+        if (input) input.focus();
+    }
+
     function showNickModal(isEdit) {
         var modal = $('nick-modal');
         var input = $('nick-input');
         var err = $('nick-error');
         var submit = modal.querySelector('.modal__submit');
 
-        // pre-fill only the first word of a legacy multi-word nickname
-        input.value = String(state.nickname || '').trim().split(/\s+/)[0] || '';
+        var hasValidName = state.nickname && !nicknameProblem(state.nickname);
+        var mandatory = !hasValidName;
+        modal.dataset.mandatory = mandatory ? 'true' : 'false';
+
+        if (isEdit && hasValidName) {
+            input.value = String(state.nickname).trim();
+            submit.textContent = 'Guardar';
+        } else {
+            input.value = '';
+            submit.textContent = 'Empezar a practicar';
+        }
+
         err.hidden = true;
         err.textContent = '';
-        submit.textContent = isEdit ? 'Guardar' : 'Empezar';
         modal.hidden = false;
-        setTimeout(function () { input.focus(); input.select(); }, 30);
+        setTimeout(function () {
+            input.focus();
+            if (input.value) input.select();
+        }, 30);
     }
 
-    function closeNickModal() {
+    function closeNickModal(force) {
+        if (!force && (!state.nickname || nicknameProblem(state.nickname))) {
+            shakeNickModal();
+            return;
+        }
         $('nick-modal').hidden = true;
     }
 
@@ -486,14 +518,14 @@
             if (problem) {
                 err.textContent = problem;
                 err.hidden = false;
-                input.focus();
+                shakeNickModal();
                 return;
             }
 
             var changed = name !== state.nickname;
             state.nickname = name;
             save();
-            closeNickModal();
+            closeNickModal(true);
             $('nick-chip-name').textContent = name;
             if (changed) {
                 applyName();
@@ -504,18 +536,49 @@
             maybePromptPlacement();
         });
 
+        // Click outside on modal backdrop: if mandatory, do not dismiss!
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) {
+                if (!state.nickname || nicknameProblem(state.nickname)) {
+                    shakeNickModal();
+                } else {
+                    closeNickModal(true);
+                }
+            }
+        });
+
+        // Focus trap inside modal: cannot tab out to elements behind
+        modal.addEventListener('keydown', function (e) {
+            if (e.key === 'Tab') {
+                var focusables = modal.querySelectorAll('input:not([disabled]), button:not([disabled])');
+                if (!focusables.length) return;
+                var first = focusables[0];
+                var last = focusables[focusables.length - 1];
+                if (e.shiftKey) {
+                    if (document.activeElement === first) {
+                        last.focus();
+                        e.preventDefault();
+                    }
+                } else {
+                    if (document.activeElement === last) {
+                        first.focus();
+                        e.preventDefault();
+                    }
+                }
+            }
+        });
+
         input.addEventListener('input', function () { err.hidden = true; });
 
         chip.addEventListener('click', function () { showNickModal(true); });
 
         /*
-         * Block until a valid first name exists. Saves from before the
-         * first-name rule may hold "Seba 99" or similar: ask once more.
+         * Mandatory first name on join: Block until a valid first name exists.
          */
         if (!state.nickname || nicknameProblem(state.nickname)) {
             showNickModal(false);
             if (state.nickname) {
-                err.textContent = 'Ahora usamos solo tu primer nombre. Revísalo, por favor.';
+                err.textContent = 'Ingresa tu primer nombre para continuar.';
                 err.hidden = false;
             }
         } else {
@@ -586,6 +649,10 @@
     var placement = null;
 
     function startPlacement() {
+        if (!state.nickname || nicknameProblem(state.nickname)) {
+            showNickModal(false);
+            return;
+        }
         placement = {
             questions: buildPlacementQuestions(),
             step: 0,
@@ -956,6 +1023,10 @@
     /* ================= lesson ================= */
 
     function startLesson(index) {
+        if (!state.nickname || nicknameProblem(state.nickname)) {
+            showNickModal(false);
+            return;
+        }
         var lesson = LESSONS[index];
         if (!lesson) return;
         rollover();
@@ -985,6 +1056,10 @@
      *   opts.onFinish  called with { correct, mistakes, total, perfect, session }
      */
     function startCustomSession(opts) {
+        if (!state.nickname || nicknameProblem(state.nickname)) {
+            showNickModal(false);
+            return false;
+        }
         if (!opts || !opts.items || !opts.items.length) return false;
         rollover();
         session = {
@@ -2058,6 +2133,10 @@
     var lastFocusedModalTrigger = null;
 
     function openShop() {
+        if (!state.nickname || nicknameProblem(state.nickname)) {
+            showNickModal(false);
+            return;
+        }
         lastFocusedModalTrigger = document.activeElement;
         updateShop();
         var modal = $('shop-modal');
@@ -2215,6 +2294,10 @@
     }
 
     function openCalendar() {
+        if (!state.nickname || nicknameProblem(state.nickname)) {
+            showNickModal(false);
+            return;
+        }
         lastFocusedModalTrigger = document.activeElement;
         renderCalendar();
         var modal = $('calendar-modal');
@@ -2250,6 +2333,15 @@
 
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' || e.key === 'Esc') {
+                var nick = $('nick-modal');
+                if (nick && !nick.hidden) {
+                    if (!state.nickname || nicknameProblem(state.nickname)) {
+                        shakeNickModal();
+                        return;
+                    }
+                    closeNickModal(true);
+                    return;
+                }
                 var shop = $('shop-modal');
                 if (shop && !shop.hidden) {
                     closeShop();
