@@ -3,44 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self';">
     <title>1 Oración al Día | Inglés Sin Guion</title>
 
-    <link rel="icon" type="image/jpg" href="../assets/images/image5.webp">
+    <link rel="canonical" href="https://dexusjik.github.io/english-daily/">
 
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#003580">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <!-- iOS ignores manifest icons and needs a PNG here, not webp -->
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="1 Oración">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+    <meta name="description" content="365 oraciones en inglés ordenadas por dificultad, de A1 a C2. Una al día, todos los días, con test de nivel inicial.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Inglés Sin Guion">
+    <meta property="og:locale" content="es_CL">
     <meta property="og:title" content="1 Oración al Día | Inglés Sin Guion">
     <meta property="og:description" content="365 oraciones en inglés ordenadas por dificultad. Una al día, todos los días.">
-    <meta property="og:image" content="../assets/images/image5.webp">
-    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dexusjik.github.io/english-daily/">
+    <!-- absolute: a relative ../ path does not resolve in most scrapers -->
+    <meta property="og:image" content="https://dexusjik.github.io/assets/images/og-card.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="1 Oración al Día — 365 oraciones en inglés por dificultad">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="1 Oración al Día | Inglés Sin Guion">
+    <meta name="twitter:description" content="365 oraciones en inglés ordenadas por dificultad. Una al día, todos los días.">
+    <meta name="twitter:image" content="https://dexusjik.github.io/assets/images/og-card.jpg">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalApplication",
+      "name": "1 Oración al Día",
+      "url": "https://dexusjik.github.io/english-daily/",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Any (web)",
+      "inLanguage": "es-CL",
+      "description": "Ruta de inglés de 365 oraciones en 73 lecciones, ordenadas de A1 a C2, con cuatro ejercicios por lección: escuchar, elegir, traducir y ordenar palabras.",
+      "image": "https://dexusjik.github.io/assets/images/og-card.jpg",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "CLP"
+      },
+      "featureList": [
+        "73 lecciones de A1 a C2",
+        "365 oraciones con traducciones",
+        "Test de nivel inicial de 20 preguntas",
+        "Racha diaria, XP y niveles",
+        "Funciona sin conexión"
+      ],
+      "publisher": { "@id": "https://dexusjik.github.io/#business" }
+    }
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="daily.css">
+    <link rel="stylesheet" href="features/tips.css">
+    <link rel="stylesheet" href="features/fillblank.css">
+    <link rel="stylesheet" href="features/challenge.css">
+    <link rel="stylesheet" href="features/review.css">
+    <link rel="stylesheet" href="features/phrasebook.css">
 </head>
 <body>
-    <div class="bg-blob blob-1"></div>
-    <div class="bg-blob blob-2"></div>
+    <a href="#screen-path" class="sr-only skip-link">Saltar a las lecciones</a>
+
+    <!-- ============ NICKNAME MODAL ============ -->
+    <div class="modal" id="nick-modal" role="dialog" aria-modal="true"
+         aria-labelledby="nick-title" hidden>
+        <div class="modal__panel">
+            <h2 class="modal__title" id="nick-title">¿Cuál es tu primer nombre?</h2>
+            <p class="modal__desc">Algunas frases de práctica lo usan, como <em>“Hello, my name is…”</em>, y aparece en la tabla de rivales. Se queda en este dispositivo.</p>
+
+            <form id="nick-form" novalidate>
+                <label class="sr-only" for="nick-input">Primer nombre</label>
+                <input class="modal__input" id="nick-input" type="text"
+                       maxlength="16" autocomplete="given-name" autocapitalize="words"
+                       placeholder="Ej: Camila" spellcheck="false">
+                <p class="modal__error" id="nick-error" role="alert" hidden></p>
+                <button class="btn btn-primary modal__submit" type="submit">Empezar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============ PLACEMENT PROMPT ============ -->
+    <div class="modal" id="placement-prompt" role="dialog" aria-modal="true"
+         aria-labelledby="pp-title" hidden>
+        <div class="modal__panel">
+            <div class="modal__emoji" aria-hidden="true">🎯</div>
+            <h2 class="modal__title" id="pp-title">¿Cómo está tu inglés?</h2>
+            <p class="modal__desc">
+                20 preguntas difíciles que van de nivel A2 a C1. Te decimos dónde empezar
+                y desbloqueamos la ruta desde tu nivel.
+            </p>
+            <p class="modal__hint">
+                No se puede repetir. Contestar mal no es un fracaso: si sale nivel básico,
+                la ruta empieza desde el principio, que es justo lo que necesitamos saber.
+            </p>
+            <button type="button" class="btn btn-primary modal__submit" id="placement-start">
+                Hacer el test
+            </button>
+            <button type="button" class="modal__link" id="placement-skip">
+                Prefiero empezar desde el principio
+            </button>
+        </div>
+    </div>
+
+    <!-- ============ SHOP MODAL ============ -->
+    <div class="modal" id="shop-modal" role="dialog" aria-modal="true"
+         aria-labelledby="shop-title" hidden>
+        <div class="modal__panel shop-panel">
+            <div class="modal__head">
+                <h2 class="modal__title" id="shop-title">Tienda de Gemas</h2>
+                <button type="button" class="modal__close" id="shop-close" aria-label="Cerrar tienda">✕</button>
+            </div>
+            <div class="shop-balance">
+                <span class="shop-balance__icon">💎</span>
+                <span class="shop-balance__val" id="shop-gems-val">0</span>
+                <span class="shop-balance__lbl">gemas disponibles</span>
+            </div>
+            <div class="shop-items">
+                <div class="shop-item">
+                    <div class="shop-item__icon">🧊</div>
+                    <div class="shop-item__info">
+                        <h3 class="shop-item__name">Congelador de racha</h3>
+                        <p class="shop-item__desc">Protege tu racha si un día no alcanzas a practicar. Se activa solo.</p>
+                        <span class="shop-item__status" id="freeze-status">0 / 2 equipados</span>
+                    </div>
+                    <button type="button" class="btn btn-secondary shop-item__btn" id="buy-freeze-btn">
+                        20 💎
+                    </button>
+                </div>
+                <div class="shop-item">
+                    <div class="shop-item__icon">❤️</div>
+                    <div class="shop-item__info">
+                        <h3 class="shop-item__name">Rellenar vidas</h3>
+                        <p class="shop-item__desc">Recupera tus 5 vidas completas al instante para seguir practicando.</p>
+                        <span class="shop-item__status" id="hearts-refill-status">5 / 5 vidas</span>
+                    </div>
+                    <button type="button" class="btn btn-primary shop-item__btn" id="buy-hearts-btn">
+                        15 💎
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ CALENDAR / STREAK MODAL ============ -->
+    <div class="modal" id="calendar-modal" role="dialog" aria-modal="true"
+         aria-labelledby="cal-title" hidden>
+        <div class="modal__panel cal-panel">
+            <div class="modal__head">
+                <h2 class="modal__title" id="cal-title">Tu Racha</h2>
+                <button type="button" class="modal__close" id="cal-close" aria-label="Cerrar calendario">✕</button>
+            </div>
+            <div class="cal-hero">
+                <span class="cal-flame">🔥</span>
+                <h3 class="cal-streak-count" id="cal-streak-count">0 días</h3>
+                <p class="cal-streak-desc" id="cal-streak-desc">¡Practica hoy para mantener encendida tu racha!</p>
+            </div>
+            <div class="cal-stats-row">
+                <div class="cal-stat-pill">
+                    <span class="cal-stat-lbl">Mejor racha</span>
+                    <strong class="cal-stat-val" id="cal-best-streak">0 días</strong>
+                </div>
+                <div class="cal-stat-pill">
+                    <span class="cal-stat-lbl">Congelador</span>
+                    <strong class="cal-stat-val" id="cal-freeze-count">0 activos</strong>
+                </div>
+            </div>
+            <div class="cal-grid-wrap">
+                <div class="cal-month-header" id="cal-month-header">Octubre 2026</div>
+                <div class="cal-weekdays">
+                    <span aria-label="Lunes">L</span><span aria-label="Martes">M</span><span aria-label="Miércoles">M</span><span aria-label="Jueves">J</span><span aria-label="Viernes">V</span><span aria-label="Sábado">S</span><span aria-label="Domingo">D</span>
+                </div>
+                <div class="cal-days-grid" id="cal-days-grid"></div>
+            </div>
+        </div>
+    </div>
 
     <header class="topbar">
-        <a href="../index.html" class="brand">
-            <img src="../assets/images/image4.webp" alt="Inglés Sin Guion" class="brand-img">
+        <a href="../" class="brand">
+            <img src="../assets/images/image4.webp" alt="Inglés Sin Guion" class="brand-img" width="40" height="40">
             <span class="brand-name">1 Oración al Día</span>
         </a>
 
+        <button type="button" class="nick-chip" id="nick-chip" aria-label="Cambiar tu primer nombre">
+            <span class="nick-chip__label" id="nick-chip-name">Tú</span>
+            <span class="nick-chip__pencil" aria-hidden="true">✎</span>
+        </button>
+
         <div class="stats" id="stats-bar">
-            <div class="stat stat-streak" id="streak-stat" title="Racha de días">
+            <button type="button" class="stat stat-streak stat-btn" id="streak-stat" title="Ver calendario de racha" aria-label="Ver calendario de racha">
                 <span class="stat-icon">🔥</span>
                 <span class="stat-value" id="streak-value">0</span>
-            </div>
-            <div class="stat stat-gems" title="Gemas">
+            </button>
+            <button type="button" class="stat stat-gems stat-btn" id="gems-stat" title="Abrir tienda de gemas" aria-label="Abrir tienda de gemas">
                 <span class="stat-icon">💎</span>
                 <span class="stat-value" id="gems-value">0</span>
-            </div>
-            <div class="stat stat-hearts" id="hearts-stat" title="Vidas">
+            </button>
+            <button type="button" class="stat stat-hearts stat-btn" id="hearts-stat" title="Ver vidas y recargas" aria-label="Ver vidas y recargas">
                 <span class="stat-icon">❤️</span>
                 <span class="stat-value" id="hearts-value">5</span>
-            </div>
+            </button>
         </div>
     </header>
 
@@ -63,13 +239,56 @@
             <button class="btn btn-goal" id="lesson-cta">Empezar</button>
         </section>
 
-        <section class="unit-intro">
-            <p class="unit-eyebrow" id="unit-eyebrow">Nivel 1 · A1</p>
-            <h1 class="unit-title" id="unit-title">Primeros Pasos</h1>
-            <p class="unit-sub" id="unit-sub">5 oraciones · 2 XP cada una</p>
+        <section class="diagnostic" id="diagnostic" hidden></section>
+
+        <section class="storage-notice" id="storage-notice" role="note" hidden></section>
+
+        <!-- filled by features/*.js through DailyGame.slot('top') -->
+        <div class="feature-slot" id="feature-slot-top"></div>
+
+        <section class="unit-intro" id="unit-intro">
+            <div class="unit-intro__text">
+                <p class="unit-eyebrow" id="unit-eyebrow">Nivel 1 · A1</p>
+                <h1 class="unit-title" id="unit-title">Primeros Pasos</h1>
+                <p class="unit-sub" id="unit-sub">5 oraciones · 2 XP cada una</p>
+            </div>
+            <button type="button" class="unit-guide-btn" id="unit-guide-btn" aria-label="Abrir libreta de frases">
+                <span aria-hidden="true">📖</span> Guía
+            </button>
         </section>
 
         <section class="path" id="path-list" aria-label="Lecciones"></section>
+
+        <!-- ============ LEVEL LADDER ============ -->
+        <section class="level-card" aria-label="Tu nivel">
+            <div class="level-card__head">
+                <span class="level-card__emoji" id="level-emoji">👶</span>
+                <div class="level-card__who">
+                    <p class="level-card__label">Nivel actual</p>
+                    <h2 class="level-card__name" id="level-name">Newborn</h2>
+                </div>
+                <div class="level-card__xp">
+                    <span id="level-xp">0</span><span class="level-card__xp-max">/730 XP</span>
+                </div>
+            </div>
+
+            <div class="level-track" role="img" aria-label="Progreso del nivel" id="level-track">
+                <div class="level-track__fill" id="level-fill"></div>
+            </div>
+
+            <p class="level-card__goal" id="level-goal">90 XP para ser Caveman</p>
+
+            <ol class="ladder" id="ladder"></ol>
+        </section>
+
+        <!-- ============ RIVALS ============ -->
+        <section class="rivals" aria-label="Rivales">
+            <div class="rivals__head">
+                <h2 class="rivals__title">Rivales</h2>
+                <p class="rivals__note">Rivales de práctica con XP fijo. No son personas reales.</p>
+            </div>
+            <ol class="rivals__list" id="rivals-list"></ol>
+        </section>
 
         <section class="stats-grid">
             <div class="stat-card">
@@ -86,14 +305,53 @@
             </div>
         </section>
 
+        <!-- filled by features/*.js through DailyGame.slot('bottom') -->
+        <div class="feature-slot" id="feature-slot-bottom"></div>
+
         <section class="badges-section">
             <h2 class="badges-title">Logros</h2>
             <div class="badges-grid" id="badges-grid"></div>
         </section>
     </main>
 
+    <!-- ============ SCREEN: PLACEMENT ============ -->
+    <main id="screen-placement" class="screen lesson-screen hidden" hidden>
+        <div class="lesson-top">
+            <button class="icon-btn" id="placement-quit" aria-label="Salir del test">✕</button>
+            <div class="lesson-progress-track">
+                <div class="lesson-progress-fill" id="placement-progress"></div>
+            </div>
+            <span class="placement-tag">Test de nivel</span>
+        </div>
+
+        <div class="exercise-area" id="placement-exercise"></div>
+
+        <footer class="lesson-footer">
+            <div class="feedback" id="placement-feedback" role="status" aria-live="polite"></div>
+            <button class="btn btn-primary btn-check" id="placement-check" disabled>Comprobar</button>
+        </footer>
+    </main>
+
+    <!-- ============ SCREEN: PLACEMENT RESULT ============ -->
+    <main id="screen-placement-result" class="screen result-screen hidden" hidden>
+        <div class="result-card">
+            <div class="result-burst" id="placement-result-emoji">🎯</div>
+            <h2 class="result-title" id="placement-result-level">Nivel</h2>
+            <p class="result-sub" id="placement-result-score"></p>
+            <p class="placement-where" id="placement-result-where"></p>
+
+            <ul class="result-stats">
+                <li><span class="rs-label">Tiempo</span><span class="rs-value" id="placement-result-time">0:00</span></li>
+            </ul>
+
+            <div class="result-actions">
+                <button class="btn btn-primary" id="placement-continue">Ir a mi ruta</button>
+            </div>
+        </div>
+    </main>
+
     <!-- ============ SCREEN: LESSON ============ -->
-    <main id="screen-lesson" class="screen lesson-screen hidden">
+    <main id="screen-lesson" class="screen lesson-screen hidden" hidden>
         <div class="lesson-top">
             <button class="icon-btn" id="quit-lesson" aria-label="Salir de la lección">✕</button>
             <div class="lesson-progress-track">
@@ -113,7 +371,7 @@
     </main>
 
     <!-- ============ SCREEN: RESULT ============ -->
-    <main id="screen-result" class="screen result-screen hidden">
+    <main id="screen-result" class="screen result-screen hidden" hidden>
         <div class="result-card">
             <div class="result-burst" id="result-burst">🎉</div>
             <h2 class="result-title" id="result-title">¡Lección completa!</h2>
@@ -135,6 +393,13 @@
     </main>
 
     <script src="sentences.js"></script>
+    <script src="placement.js"></script>
     <script src="game.js"></script>
+    <!-- optional features: each plugs in through window.DailyGame -->
+    <script src="features/tips.js"></script>
+    <script src="features/fillblank.js"></script>
+    <script src="features/challenge.js"></script>
+    <script src="features/review.js"></script>
+    <script src="features/phrasebook.js"></script>
 </body>
 </html>

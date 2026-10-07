@@ -1,0 +1,75 @@
+/* features/challenge.css — Desafío del día */
+
+.dc-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.9rem 0 0;
+    padding: 0.75rem 0.9rem 0.75rem 1rem;
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-bottom-width: 4px;
+    border-radius: 1rem;
+    min-width: 0;
+}
+
+.dc-icon {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: #fff8db;
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.dc-copy { flex: 1; min-width: 0; }
+
+.dc-title {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+.dc-sub,
+.dc-streak {
+    margin: 0.15rem 0 0;
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.35;
+}
+
+.dc-streak { color: #c2410c; font-weight: 600; }
+
+.dc-play.btn {
+    flex: 0 0 auto;
+    min-height: 44px;
+    padding: 0.55rem 1.1rem;
+    font-size: 0.85rem;
+    box-shadow: 0 3px 0 var(--line);
+}
+
+.dc-play:focus-visible {
+    outline: 3px solid var(--blue);
+    outline-offset: 2px;
+}
+
+.dc-card--done { background: #f6fbf1; border-color: #d7efc2; box-shadow: none; }
+.dc-card--done .dc-icon { background: var(--green); color: #fff; font-weight: 800; }
+
+@media (max-width: 22rem) {
+    .dc-card { gap: 0.6rem; padding: 0.7rem; }
+    .dc-icon { width: 2rem; height: 2rem; font-size: 1rem; }
+    .dc-play.btn { padding: 0.5rem 0.85rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dc-play.btn { transition: none; }
+    .dc-play.btn:active:not(:disabled) { transform: none; }
+}

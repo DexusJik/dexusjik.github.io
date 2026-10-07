@@ -52,6 +52,58 @@
     }
 
     /* ============================================================
+       mobile drawer
+       ============================================================ */
+
+    function initDrawer() {
+        var toggle = document.getElementById('nav-toggle');
+        var drawer = document.getElementById('mobile-nav');
+        if (!toggle || !drawer) return;
+
+        function isOpen() { return toggle.getAttribute('aria-expanded') === 'true'; }
+
+        function open() {
+            drawer.hidden = false;
+            toggle.setAttribute('aria-expanded', 'true');
+            toggle.querySelector('.sr-only').textContent = 'Cerrar menú';
+        }
+
+        function close() {
+            drawer.hidden = true;
+            toggle.setAttribute('aria-expanded', 'false');
+            toggle.querySelector('.sr-only').textContent = 'Abrir menú';
+        }
+
+        toggle.addEventListener('click', function () {
+            if (isOpen()) close(); else open();
+        });
+
+        drawer.addEventListener('click', function (e) {
+            if (e.target.closest('a')) close();
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && isOpen()) {
+                close();
+                toggle.focus();
+            }
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!isOpen()) return;
+            if (e.target.closest('#nav-toggle') || e.target.closest('#mobile-nav')) return;
+            close();
+        });
+
+        var wide = window.matchMedia('(min-width: 62rem)');
+        function onWide(e) { if (e.matches) close(); }
+        if (wide.addEventListener) wide.addEventListener('change', onWide);
+        else if (wide.addListener) wide.addListener(onWide);
+
+        close();
+    }
+
+    /* ============================================================
        reveal on scroll
        ============================================================ */
 
@@ -127,6 +179,7 @@
 
     function init() {
         initNav();
+        initDrawer();
         initReveal();
         initParallax();
         initVideos();

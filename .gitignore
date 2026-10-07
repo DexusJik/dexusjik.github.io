@@ -1,0 +1,43 @@
+# build output
+node_modules/
+dist/
+build/
+.vite/
+
+# wrangler / cloudflare
+.wrangler/
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+
+# secrets - never commit these
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.json
+credentials.json
+
+# os / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+.idea/
+.vscode/
+
+# logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# test screenshots & debug artifacts
+*_test.*
+test_*.*
+*screenshot*
+*debug*.*
+*.tmp
+*.bak
+scratch/

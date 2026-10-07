@@ -1,0 +1,141 @@
+.tips-card {
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-bottom-width: 4px;
+    border-radius: 1rem;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1.5rem;
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    animation: slide-up 0.3s ease-out;
+}
+
+.tips-label {
+    display: inline-block;
+    margin: 0 0 0.75rem;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    background: var(--gold);
+    color: var(--text);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.tips-title {
+    margin: 0 0 0.6rem;
+    font-size: 1.25rem;
+    line-height: 1.3;
+    color: var(--navy);
+}
+
+.tips-body {
+    margin: 0 0 1.25rem;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--text);
+}
+
+.tips-section {
+    margin: 0 0 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.tips-example {
+    position: relative;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 0.9rem;
+    padding: 0.9rem 4rem 0.9rem 1rem;
+}
+
+.tips-example .speak-btn {
+    top: 50%;
+    right: 0.75rem;
+    width: 44px;
+    height: 44px;
+    transform: translateY(-50%);
+}
+
+.tips-example .speak-btn:focus-visible {
+    outline: 3px solid var(--blue);
+    outline-offset: 2px;
+}
+
+.tips-en {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--text);
+}
+
+.tips-es {
+    margin: 0.3rem 0 0;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: var(--muted);
+}
+
+.tips-contrast {
+    margin-top: 1rem;
+}
+
+.tips-contrast-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin: 0.3rem 0 0;
+    padding: 0.45rem 0.7rem;
+    border-radius: 0.6rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.tips-mark {
+    flex: none;
+    font-weight: 800;
+}
+
+.tips-bad {
+    background: #fff1f1;
+    color: #b42318;
+}
+
+.tips-bad .tips-contrast-text {
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+}
+
+.tips-good {
+    background: #effbe6;
+    color: #2f6b00;
+    font-weight: 600;
+}
+
+.tips-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media (max-width: 360px) {
+    .tips-card { padding: 1.25rem 1rem; }
+    .tips-title { font-size: 1.15rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tips-card, .tips-example .speak-btn { transition: none; animation: none; }
+}

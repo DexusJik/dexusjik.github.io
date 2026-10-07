@@ -111,96 +111,139 @@
                 });
             });
         }
-
-        var blob1 = document.getElementById('blur-1');
-        var blob2 = document.getElementById('blur-2');
-        if (!blob1 || !blob2) return;
-        if (window.matchMedia('(hover: none)').matches) return;
-
-        var raf = null;
-        window.addEventListener('mousemove', function (e) {
-            if (raf) return;
-            raf = requestAnimationFrame(function () {
-                var dx = (e.clientX / window.innerWidth - 0.5);
-                var dy = (e.clientY / window.innerHeight - 0.5);
-                blob1.style.transform = 'translate3d(' + dx * 28 + 'px,' + dy * 28 + 'px,0)';
-                blob2.style.transform = 'translate3d(' + dx * -38 + 'px,' + dy * -38 + 'px,0)';
-                raf = null;
-            });
-        }, { passive: true });
     }
 
     /* ============================================================
-       custom cursor
+       mobile drawer
        ============================================================ */
 
-    function initCursor() {
-        var wrap = document.getElementById('custom-cursor');
-        var inner = $('.cursor-inner', wrap);
-        if (!wrap || !inner) return;
-        if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
+    function initDrawer() {
+        var toggle = document.getElementById('nav-toggle');
+        var drawer = document.getElementById('mobile-nav');
+        if (!toggle || !drawer) return;
 
-        var raf = null;
-        window.addEventListener('mousemove', function (e) {
-            if (raf) return;
-            raf = requestAnimationFrame(function () {
-                wrap.style.transform = 'translate3d(' + (e.clientX - 12) + 'px,' + (e.clientY - 12) + 'px,0)';
-                wrap.style.opacity = '1';
-                raf = null;
-            });
-        }, { passive: true });
+        function isOpen() { return toggle.getAttribute('aria-expanded') === 'true'; }
 
-        document.addEventListener('mouseleave', function () { wrap.style.opacity = '0'; });
+        function open() {
+            drawer.hidden = false;
+            toggle.setAttribute('aria-expanded', 'true');
+            toggle.querySelector('.sr-only').textContent = 'Cerrar menú';
+        }
 
-        $$('a, button, summary, .quiz-option-button').forEach(function (el) {
-            el.addEventListener('mouseenter', function () {
-                inner.classList.add('cursor-hover');
-                var label = el.getAttribute('data-cursor-text');
-                if (label) {
-                    inner.textContent = label;
-                    inner.classList.add('cursor-text');
-                }
-            });
-            el.addEventListener('mouseleave', function () {
-                inner.classList.remove('cursor-hover', 'cursor-text');
-                inner.textContent = '';
+        function close() {
+            drawer.hidden = true;
+            toggle.setAttribute('aria-expanded', 'false');
+            toggle.querySelector('.sr-only').textContent = 'Abrir menú';
+        }
+
+        toggle.addEventListener('click', function () {
+            if (isOpen()) close(); else open();
+        });
+
+        drawer.addEventListener('click', function (e) {
+            if (e.target.closest('a')) close();
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && isOpen()) {
+                close();
+                toggle.focus();
+            }
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!isOpen()) return;
+            if (e.target.closest('#nav-toggle') || e.target.closest('#mobile-nav')) return;
+            close();
+        });
+
+        /* the desktop nav replaces the drawer, so never leave it open past the breakpoint */
+        var wide = window.matchMedia('(min-width: 62rem)');
+        function onWide(e) { if (e.matches) close(); }
+        if (wide.addEventListener) wide.addEventListener('change', onWide);
+        else if (wide.addListener) wide.addListener(onWide);
+
+        close();
+    }
+
+    /* ============================================================
+       anchor highlight: brief outline flash when jumping to a section
+       ============================================================ */
+
+    function initAnchorFlash() {
+        $$('a[href^="#"]').forEach(function (anchor) {
+            anchor.addEventListener('click', function () {
+                var id = anchor.getAttribute('href');
+                if (!id || id === '#') return;
+                var target = document.querySelector(id);
+                if (!target) return;
+
+                target.classList.add('flash-target');
+                setTimeout(function () { target.classList.remove('flash-target'); }, 1100);
             });
         });
     }
 
     /* ============================================================
-       magnetic buttons
+       whatsapp
        ============================================================ */
 
-    function initMagnetic() {
-        if (window.matchMedia('(hover: none)').matches) return;
+    /*
+     * The number is held in split parts and assembled on click, so it never
+     * appears as visible text, in an href, or as one searchable string in
+     * the HTML. This raises the bar against naive scrapers that read page
+     * text or link targets.
+     *
+     * It does NOT make the number secret: anyone reading this file can
+     * reassemble it. Hiding it properly needs a server-side redirect.
+     */
+    var WA_PARTS = ['+56', '9521', '48204'];
 
-        $$('.magnetic-btn').forEach(function (btn) {
-            btn.addEventListener('mousemove', function (e) {
-                var r = btn.getBoundingClientRect();
-                var x = (e.clientX - r.left - r.width / 2) * 0.28;
-                var y = (e.clientY - r.top - r.height / 2) * 0.28;
-                btn.style.transform = 'translate(' + x + 'px,' + y + 'px)';
-            });
-            btn.addEventListener('mouseleave', function () { btn.style.transform = ''; });
+    function waNumber() {
+        return WA_PARTS.join('');
+    }
+
+    function waLink(message) {
+        return 'https://wa.me/' + waNumber() + '?text=' + encodeURIComponent(message);
+    }
+
+    /* open in a new tab on desktop, same tab on phones */
+    function sendToWhatsApp(message, button) {
+        var url = waLink(message);
+        var isPhone = window.matchMedia('(max-width: 48rem)').matches;
+
+        if (isPhone) {
+            window.location.href = url;
+            return;
+        }
+
+        var win = window.open(url, '_blank', 'noopener,noreferrer');
+        if (!win) {
+            // popup blocked: fall back to same-tab navigation
+            window.location.href = url;
+            return;
+        }
+        if (button) button.blur();
+    }
+
+    function initWhatsApp() {
+        var cta = document.getElementById('wa-cta');
+        if (!cta) return;
+
+        cta.addEventListener('click', function () {
+            sendToWhatsApp(
+                'Hola Javier, me interesa una sesión de consultoría de inglés. ' +
+                'Me gustaría saber disponibilidad y recibir una propuesta.',
+                cta
+            );
         });
     }
 
     /* ============================================================
-       pricing: pick a plan, prefill the form
+       pricing: pick a plan and carry it into the WhatsApp message
        ============================================================ */
 
     function initPlans() {
-        var message = document.getElementById('message');
-        if (!message) return;
-
-        function selectPlan(name) {
-            message.value = 'Hola Javier, me interesa el ' + name +
-                '. Me gustaría agendar mi primera sesión de estudio.';
-            scrollToId('reserva');
-            message.focus({ preventScroll: true });
-        }
-
         var map = {
             'pack-inicial-btn': 'Pack Inicial',
             'plan-consultoria-btn': 'Plan Consultoría',
@@ -209,7 +252,14 @@
 
         Object.keys(map).forEach(function (id) {
             var btn = document.getElementById(id);
-            if (btn) btn.addEventListener('click', function () { selectPlan(map[id]); });
+            if (!btn) return;
+            btn.addEventListener('click', function () {
+                sendToWhatsApp(
+                    'Hola Javier, me interesa el ' + map[id] +
+                    '. Me gustaría agendar mi primera sesión de estudio.',
+                    btn
+                );
+            });
         });
     }
 
@@ -321,66 +371,22 @@
 
         if (cta) {
             cta.addEventListener('click', function () {
-                var message = document.getElementById('message');
-                if (!message) return;
-                message.value = 'Hola Javier Perez, hice el quiz y mi nivel estimado es ' +
+                var goalMap = {
+                    'career': 'fines profesionales',
+                    'academic': 'fines académicos',
+                    'social': 'viajes y uso social'
+                };
+                var goalText = goalMap[answers.goal] || 'mis objetivos';
+                sendToWhatsApp(
+                    'Hola Javier Perez, hice el quiz y mi nivel estimado es ' +
                     levelOut.textContent + '. Me interesa la consultoría para ' +
-                    (answers.goal || 'consultoría') + '.';
-                scrollToId('reserva');
-                message.focus({ preventScroll: true });
+                    goalText + '.',
+                    cta
+                );
             });
         }
 
         gotoStep(0);
-    }
-
-    /* ============================================================
-       booking form
-       ============================================================ */
-
-    function initForm() {
-        var form = document.getElementById('strategy-session-form');
-        if (!form) return;
-
-        var levelOut = document.getElementById('cefr-level');
-
-        form.addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            if (!form.checkValidity()) {
-                form.reportValidity();
-                return;
-            }
-
-            // spam trap: real users never fill a hidden field
-            if (document.getElementById('_gotcha').value) return;
-
-            var submit = form.querySelector('button[type="submit"]');
-            var originalLabel = submit.textContent;
-            submit.disabled = true;
-            submit.textContent = 'Enviando...';
-
-            var payload = new FormData(form);
-            payload.append('level', (levelOut && levelOut.textContent) || 'No realizado');
-            payload.append('goal', payload.get('goal') || 'No especificado');
-
-            try {
-                var res = await fetch('https://formspree.io/f/xzdklrdv', {
-                    method: 'POST',
-                    body: payload,
-                    headers: { Accept: 'application/json' }
-                });
-                if (!res.ok) throw new Error('Request failed');
-
-                form.reset();
-                alert('¡Gracias! Te responderé dentro de 24 horas hábiles.');
-            } catch (err) {
-                alert('No pude enviar el formulario. Revisa tu conexión e intenta de nuevo.');
-            } finally {
-                submit.disabled = false;
-                submit.textContent = originalLabel;
-            }
-        });
     }
 
     /* ============================================================
@@ -407,13 +413,13 @@
 
     function init() {
         initNav();
+        initDrawer();
         initReveal();
         initHero();
-        initCursor();
-        initMagnetic();
+        initAnchorFlash();
+        initWhatsApp();
         initPlans();
         initQuiz();
-        initForm();
         initCtas();
     }
 

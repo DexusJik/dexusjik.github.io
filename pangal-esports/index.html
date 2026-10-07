@@ -3,14 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self'; object-src 'none'; base-uri 'self';">
+    <meta name="description" content="Pangal e-sports, equipo de Rocket League. Roster, calendario de partidos y memes.">
     <title>Pangal e-sports | Equipo de Rocket League</title>
-    <meta name="description" content="Pangal e-sports, equipo de Rocket League. Roster, calendario de partidos y syntactic synergy.">
 
-    <link rel="icon" type="image/png" href="pangal_esports_blue.webp">
+    <!-- In-group joke page: reachable from a tiny footer link, kept out of
+         search results so it never ranks next to the consultancy. -->
+    <meta name="robots" content="noindex, follow">
+
+    <link rel="canonical" href="https://dexusjik.github.io/pangal-esports/">
+
+    <!-- declared png but the file is webp -->
+    <link rel="icon" type="image/webp" href="pangal_esports_blue.webp">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Pangal e-sports">
+    <meta property="og:locale" content="es_CL">
+    <meta property="og:title" content="Pangal e-sports | Equipo de Rocket League">
+    <meta property="og:description" content="Pangal e-sports, equipo de Rocket League. Roster, calendario de partidos y memes.">
+    <meta property="og:url" content="https://dexusjik.github.io/pangal-esports/">
+    <meta property="og:image" content="https://dexusjik.github.io/pangal-esports/og-card.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Pangal e-sports, equipo de Rocket League">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Pangal e-sports | Equipo de Rocket League">
+    <meta name="twitter:description" content="Pangal e-sports, equipo de Rocket League. Roster, calendario de partidos y memes.">
+    <meta name="twitter:image" content="https://dexusjik.github.io/pangal-esports/og-card.jpg">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SportsTeam",
+          "@id": "https://dexusjik.github.io/pangal-esports/#team",
+          "name": "Pangal e-sports",
+          "url": "https://dexusjik.github.io/pangal-esports/",
+          "sport": "Rocket League",
+          "description": "Equipo de Rocket League con roster, calendario de partidos y una sección de memes.",
+          "image": "https://dexusjik.github.io/pangal-esports/og-card.jpg",
+          "logo": "https://dexusjik.github.io/pangal-esports/p_sports.webp",
+          "member": [
+            {
+              "@type": "Person",
+              "name": "Javier Perez",
+              "alternateName": "DexusJik",
+              "jobTitle": "Capitán del equipo"
+            },
+            {
+              "@type": "Person",
+              "name": "Alexis Pavez",
+              "alternateName": "Gorgonita",
+              "jobTitle": "Creador de juego"
+            },
+            {
+              "@type": "Person",
+              "name": "Ignacio Herrera",
+              "alternateName": "Nachulin",
+              "jobTitle": "Defensa"
+            },
+            {
+              "@type": "Person",
+              "name": "Souptrax",
+              "jobTitle": "Suplente"
+            },
+            {
+              "@type": "Person",
+              "name": "Nicolás",
+              "jobTitle": "Suplente"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="pangal.css">
+    <noscript><style>.reveal{opacity:1 !important;transform:none !important}</style></noscript>
     <script src="pangal.js" defer></script>
 </head>
 <body>
@@ -30,24 +104,32 @@
                 <a href="#partidos">Partidos</a>
                 <a href="#nosotros">Nosotros</a>
                 <a href="#memes">Memes</a>
-                <a href="../index.html">Inglés Sin Guion</a>
+                <a href="../">Inglés Sin Guion</a>
             </div>
 
-            <div class="social">
-                <a href="#" aria-label="Twitch">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2h17v12l-5 5h-4l-3 3H7v-3H4V2zm3 3v9h2v3l2-3h3l2-3V5H7zm11 0h-2v5h2V5zm-5 0h-2v5h2V5z"/></svg>
-                </a>
-                <a href="#" aria-label="Discord">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4.5A16 16 0 0 0 15.6 3l-.2.4a15 15 0 0 0-6.8 0L8.4 3A16 16 0 0 0 4 4.5C1.2 8.7.5 12.9.9 17a16 16 0 0 0 4.9 2.5l1-1.7c-.6-.2-1.1-.5-1.6-.8l.4-.3a11 11 0 0 0 8.8 0l.4.3c-.5.3-1 .6-1.6.8l1 1.7a16 16 0 0 0 4.9-2.5c.5-4.7-.6-8.8-3.1-12.5zM8.9 14.6c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.9.9 1.8 2c0 1.1-.8 2-1.8 2zm6.2 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.9.9 1.8 2c0 1.1-.8 2-1.8 2z"/></svg>
-                </a>
-            </div>
+            <button type="button" class="nav-toggle" id="nav-toggle"
+                    aria-expanded="false" aria-controls="mobile-nav">
+                <span class="sr-only">Abrir menú</span>
+                <span class="nav-toggle__bar" aria-hidden="true"></span>
+            </button>
         </div>
+
+        <nav class="nav-drawer" id="mobile-nav" aria-label="Menú móvil" hidden>
+            <a href="#home">Inicio</a>
+            <a href="#roster">Equipo</a>
+            <a href="#partidos">Partidos</a>
+            <a href="#nosotros">Nosotros</a>
+            <a href="#memes">Memes</a>
+            <a href="../">Inglés Sin Guion</a>
+            <a href="../english-daily/">1 Oración al Día</a>
+        </nav>
     </nav>
 
     <main>
         <!-- ================= HERO ================= -->
         <section class="hero" id="home">
-            <video class="hero__bg" id="hero-bg" src="no_enemies.mp4"
+            <video class="hero__bg" id="hero-bg" src="no_enemies_hero.mp4"
+                   poster="hero-poster.jpg" preload="metadata"
                    autoplay muted loop playsinline aria-hidden="true" tabindex="-1"></video>
 
             <div class="shell hero__inner">
@@ -82,7 +164,7 @@
                 </div>
 
                 <figure class="photo-frame reveal">
-                    <img src="team-photo.png" alt="Foto del equipo Pangal e-sports" loading="lazy">
+                    <img src="team-photo.webp" alt="Foto del equipo Pangal e-sports" loading="lazy" width="880" height="999">
                     <figcaption>
                         <span>DexusJik</span>
                         <span>Nachulin</span>
@@ -104,7 +186,7 @@
                 <div class="roster">
                     <article class="player player--captain reveal">
                         <div class="player__glow"></div>
-                        <img class="player__portrait" src="javier.png" alt="Javier Perez" loading="lazy">
+                        <img class="player__portrait" src="javier.webp" alt="Javier Perez" loading="lazy" width="468" height="533">
                         <div class="player__meta">
                             <span class="player__role">Capitán del equipo</span>
                             <h3 class="player__name">Javier Perez</h3>
@@ -114,16 +196,13 @@
                                 <a href="https://www.instagram.com/its_javierperez/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de Javier">
                                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.3 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .3-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.3-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.3 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.1 0-3.5 0-4.7.1-1.1 0-1.7.2-2.1.3-.5.2-.9.4-1.3.8-.4.4-.6.8-.8 1.3-.1.4-.2 1-.3 2.1-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.7.3 2.1.2.5.4.9.8 1.3.4.4.8.6 1.3.8.4.1 1 .2 2.1.3 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.3.5-.2.9-.4 1.3-.8.4-.4.6-.8.8-1.3.1-.4.2-1 .3-2.1.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.3-2.1-.2-.5-.4-.9-.8-1.3-.4-.4-.8-.6-1.3-.8-.4-.1-1-.2-2.1-.3-1.2-.1-1.6-.1-4.7-.1zm0 3.1a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 8.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zm6.3-8.4a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0z"/></svg>
                                 </a>
-                                <a href="#" aria-label="Twitch de Javier">
-                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2h17v12l-5 5h-4l-3 3H7v-3H4V2zm3 3v9h2v3l2-3h3l2-3V5H7zm11 0h-2v5h2V5zm-5 0h-2v5h2V5z"/></svg>
-                                </a>
-                            </div>
+</div>
                         </div>
                     </article>
 
                     <article class="player reveal">
                         <div class="player__glow"></div>
-                        <img class="player__portrait" src="alexis.png" alt="Alexis Pavez" loading="lazy">
+                        <img class="player__portrait" src="alexis.webp" alt="Alexis Pavez" loading="lazy" width="469" height="533">
                         <div class="player__meta">
                             <span class="player__role player__role--ghost">Creador de juego</span>
                             <h3 class="player__name">Alexis Pavez</h3>
@@ -133,16 +212,13 @@
                                 <a href="https://www.instagram.com/gorgonita_coach/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de Alexis">
                                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.3 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .3-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.3-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.3 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.1 0-3.5 0-4.7.1-1.1 0-1.7.2-2.1.3-.5.2-.9.4-1.3.8-.4.4-.6.8-.8 1.3-.1.4-.2 1-.3 2.1-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.7.3 2.1.2.5.4.9.8 1.3.4.4.8.6 1.3.8.4.1 1 .2 2.1.3 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.3.5-.2.9-.4 1.3-.8.4-.4.6-.8.8-1.3.1-.4.2-1 .3-2.1.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.3-2.1-.2-.5-.4-.9-.8-1.3-.4-.4-.8-.6-1.3-.8-.4-.1-1-.2-2.1-.3-1.2-.1-1.6-.1-4.7-.1zm0 3.1a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 8.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zm6.3-8.4a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0z"/></svg>
                                 </a>
-                                <a href="#" aria-label="Twitch de Alexis">
-                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2h17v12l-5 5h-4l-3 3H7v-3H4V2zm3 3v9h2v3l2-3h3l2-3V5H7zm11 0h-2v5h2V5zm-5 0h-2v5h2V5z"/></svg>
-                                </a>
-                            </div>
+</div>
                         </div>
                     </article>
 
                     <article class="player reveal">
                         <div class="player__glow"></div>
-                        <img class="player__portrait" src="ignacio.png" alt="Ignacio Herrera" loading="lazy">
+                        <img class="player__portrait" src="ignacio.webp" alt="Ignacio Herrera" loading="lazy" width="476" height="524">
                         <div class="player__meta">
                             <span class="player__role player__role--ghost">El muro</span>
                             <h3 class="player__name">Ignacio Herrera</h3>
@@ -152,10 +228,7 @@
                                 <a href="https://www.instagram.com/nachulinnn/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de Ignacio">
                                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.3 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .3-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.3-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.3 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.1 0-3.5 0-4.7.1-1.1 0-1.7.2-2.1.3-.5.2-.9.4-1.3.8-.4.4-.6.8-.8 1.3-.1.4-.2 1-.3 2.1-.1 1.2-.1 1.6-.1 4.7s0 3.5.1 4.7c.1 1.1.2 1.7.3 2.1.2.5.4.9.8 1.3.4.4.8.6 1.3.8.4.1 1 .2 2.1.3 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.3.5-.2.9-.4 1.3-.8.4-.4.6-.8.8-1.3.1-.4.2-1 .3-2.1.1-1.2.1-1.6.1-4.7s0-3.5-.1-4.7c-.1-1.1-.2-1.7-.3-2.1-.2-.5-.4-.9-.8-1.3-.4-.4-.8-.6-1.3-.8-.4-.1-1-.2-2.1-.3-1.2-.1-1.6-.1-4.7-.1zm0 3.1a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 8.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zm6.3-8.4a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0z"/></svg>
                                 </a>
-                                <a href="#" aria-label="Twitch de Ignacio">
-                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2h17v12l-5 5h-4l-3 3H7v-3H4V2zm3 3v9h2v3l2-3h3l2-3V5H7zm11 0h-2v5h2V5zm-5 0h-2v5h2V5z"/></svg>
-                                </a>
-                            </div>
+</div>
                         </div>
                     </article>
 
@@ -165,7 +238,16 @@
                             Suplentes: <strong>Souptrax</strong>, que no juega nunca pero está ahí,
                             y <strong>Nicolás</strong>, rango Oro con la stability de un muro.
                         </p>
-                        <div class="trophy" aria-hidden="true">🏆</div>
+                        <div class="trophy" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M7 4h10v5a5 5 0 0 1-10 0V4z"/>
+                                <path d="M17 5h3v2a3 3 0 0 1-3 3"/>
+                                <path d="M7 5H4v2a3 3 0 0 0 3 3"/>
+                                <path d="M12 14v4"/>
+                                <path d="M8.5 20h7"/>
+                                <path d="M9.5 18h5l1 2h-7l1-2z"/>
+                            </svg>
+                        </div>
                     </article>
                 </div>
             </div>
@@ -247,7 +329,8 @@
                 <div class="memes">
                     <figure class="meme reveal">
                         <div class="meme__frame">
-                            <video src="alexis_meme.mp4" loop muted playsinline controls
+                            <video src="alexis_meme.mp4" poster="meme-alexis-poster.jpg" preload="none"
+                                   loop muted playsinline controls
                                    aria-label="Meme de Alexis"></video>
                         </div>
                         <figcaption class="meme__meta">
@@ -258,7 +341,8 @@
 
                     <figure class="meme reveal">
                         <div class="meme__frame">
-                            <video src="no_enemies.mp4" loop muted playsinline controls
+                            <video src="no_enemies.mp4" poster="meme-noenemies-poster.jpg" preload="none"
+                                   loop muted playsinline controls
                                    aria-label="Meme No Tengo Enemigos"></video>
                         </div>
                         <figcaption class="meme__meta">
@@ -304,8 +388,8 @@
                 <div class="footer__col">
                     <h4>Otros</h4>
                     <ul>
-                        <li><a href="../index.html">Inglés Sin Guion</a></li>
-                        <li><a href="../english-daily/index.html">1 Oración al Día</a></li>
+                        <li><a href="../">Inglés Sin Guion</a></li>
+                        <li><a href="../english-daily/">1 Oración al Día</a></li>
                         <li><a href="#partidos">Calendario completo</a></li>
                     </ul>
                 </div>
