@@ -6,7 +6,12 @@
     --blue: #1cb0f6;
     --green: #58cc02;
     --green-dark: #46a302;
-    --green-cta: #2e8b03;
+    --green-cta: #2c8801;       /* was #2e8b03 = 4.37:1 on white, below AA. This is
+                               two steps darker and measures 4.54:1, so the
+                               white CTA label passes in BOTH themes */
+    /* hover was #359d04 = 3.51:1 on white. Darken it by the same proportion
+       so the label keeps its ratio when hovered */
+    --green-cta-hover: #2a7c01;
     --green-cta-shadow: #1f5f02;
     --red: #ff4b4b;
     --red-dark: #e63939;
@@ -21,6 +26,135 @@
     --muted: #595959;
     --correct-bg: #d7ffb8;
     --wrong-bg: #ffdfe0;
+
+    /* --- roles split out for dark mode ---
+       Each of these holds the exact light value it replaced, so light mode is
+       unchanged. Dark mode is free to give each one its own value, which is the
+       point: a single token cannot serve two roles across two themes. */
+    --heading: #1b1464;            /* text, was --navy */
+    --topbar: #fff;                /* sticky bar surfaces */
+    --surface-2: #f7f9fc;
+    --surface-3: #f8fafc;
+    --surface-warm: #fff8e1;
+    --hover: #f1f5f9;
+    --hover-2: #eef2f7;
+    --locked-bg: #d7dce4;
+    --track: #e8edf4;
+    --track-2: #e2e8f0;
+    --focus-ring: #1b1464;
+    /* text on the green CTA. #fff today; must not follow --card, which becomes
+       a dark surface and would put dark text on a dark green button */
+    --on-cta: #ffffff;
+    --streak-chip: #fff3e0;
+    --gems-chip: #e3f2fd;
+    --hearts-chip: #fce4ec;
+    /* text on a gold surface (goal button, completed nodes). #7a5c00 measured
+       3.86:1 on --gold, below AA; #725000 measures 4.53:1 and keeps the bronze */
+    --on-gold: #725000;
+    /* the hover state is a darker gold, so it needs a darker bronze to stay
+       readable: #5f3500 measures 4.60:1 where #725000 drops to 3.21:1 */
+    --on-gold-hover: #5f3500;
+    /* the 3D bottom edge under gold surfaces. separate from --on-gold so the
+       button keeps its raised look while the label stays readable */
+    --gold-edge: #d4a500;
+    --gold-hover: #ffd233;
+    --blue-tint: #eaf2ff;
+    --blue-tint-2: #e8f5fe;
+    --blue-tint-3: #e0f2fe;
+    --blue-line: #dbeafe;
+    --blue-line-2: #bfdbfe;
+    --amber-tint: #fff8db;
+    --amber-tint-2: #fdeeb0;
+    --amber-tint-3: #ffe9a8;
+    --amber-tint-4: #fffbeb;
+    --amber-tint-5: #ffedd5;
+    --correct-tint: #effbe6;
+    --correct-tint-soft: #f6fbf1;
+    --correct-line: #d7efc2;
+    --correct-fill: #a4ec73;
+    --wrong-tint: #fff1f1;
+    /* feedback TEXT, checked by check-contrast.js against the tint it sits on */
+    --correct-text: #2d6a00;
+    --wrong-text: #b91c1c;
+    --wrong-line: #ffb2b4;
+    --amber-text: #7a5c00;
+    --shadow-ambient: rgba(0, 0, 0, 0.25);
+    /* the scrim behind a modal. near-black with alpha, so it dims the same way
+       over a light and a dark page and needs no theme override */
+    --scrim: rgba(15, 23, 42, 0.5);
+    --scrim-strong: rgba(15, 23, 42, 0.75);
+}
+
+/*
+ * DARK THEME
+ *
+ * Deep slate, slightly blue. Kept separate from the palette above so a reader
+ * can see at a glance what changes.
+ *
+ * Brand accents (--blue --green --gold --purple --orange --red) are deliberately
+ * NOT redefined: they are already vivid enough on a dark background and holding
+ * them constant preserves recognition.
+ */
+[data-theme="dark"] {
+    color-scheme: dark;
+
+    --bg: #0f172a;
+    --card: #1e293b;
+    --surface-2: #172033;
+    --surface-3: #131c2e;
+    --surface-warm: #1d2436;
+    --topbar: #16203c;
+    --line: #334155;
+
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --heading: #f1f5f9;
+
+    /* --navy stays a surface colour only; every text use is --heading now */
+    --navy: #24304f;
+    --navy-dark: #16203c;
+
+    --correct-bg: #14351c;
+    --correct-tint: #16311d;
+    --correct-tint-soft: #142a1a;
+    --correct-line: #1f4a2a;
+    --correct-fill: #4fbf3a;
+    --correct-text: #a4ec73;
+
+    --wrong-bg: #3b1214;
+    --wrong-tint: #351416;
+    --wrong-text: #ffb2b4;
+
+    --amber-tint: #3a2f12;
+    --amber-tint-2: #332a10;
+    --amber-tint-3: #2f2810;
+    --amber-tint-4: #2a2411;
+    --amber-tint-5: #352b12;
+    --amber-text: #ffd75e;
+
+    --blue-tint: #14263f;
+    --blue-tint-2: #12263c;
+    --blue-tint-3: #152a3f;
+    --blue-line: #1e4a7a;
+    --blue-line-2: #1b4270;
+
+    --locked-bg: #263449;
+    --track: #263449;
+    --track-2: #2b3a52;
+    --focus-ring: #f1f5f9;
+
+    --hover: #24334a;
+    --hover-2: #223047;
+
+    /* the stat chips were pale pastels; they become muted dark tints */
+    --streak-chip: #3a2a12;
+    --gems-chip: #12283d;
+    --hearts-chip: #3a1620;
+    /* dark gold on hover, with its own label colour to match */
+    --gold-hover: #d4a500;
+    --on-gold-hover: #5f3500;
+
+    --shadow-ambient: rgba(0, 0, 0, 0.45);
 }
 
 * { box-sizing: border-box; }
@@ -40,7 +174,7 @@ body {
     min-height: 100vh;
 }
 
-h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--navy); margin: 0; }
+h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--heading); margin: 0; }
 
 .sr-only {
     position: absolute;
@@ -85,14 +219,31 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     justify-content: space-between;
     gap: 1rem;
     padding: 0.6rem 1rem;
-    background: #fff;
+    background: var(--card);
     border-bottom: 2px solid var(--line);
 }
 .brand { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; }
 .brand-img { width: 2.5rem; height: 2.5rem; border-radius: 50%; object-fit: cover; border: 2px solid var(--navy); }
-.brand-name { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--navy); font-size: 1.05rem; }
+.brand-name { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--heading); font-size: 1.05rem; }
 
 .stats { display: flex; align-items: center; gap: 0.5rem; }
+.theme-toggle {
+    flex: 0 0 auto;
+    width: 2.4rem;
+    height: 2.4rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    background: var(--card);
+    color: var(--text);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+}
+.theme-toggle:hover { background: var(--hover); }
+
 .stat { display: flex; align-items: center; gap: 0.3rem; font-weight: 800; font-size: 1rem; }
 .stat-icon {
     display: inline-flex;
@@ -104,11 +255,11 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     font-size: 0.85rem;
     line-height: 1;
 }
-.stat-streak .stat-icon { background: #fff3e0; }
+.stat-streak .stat-icon { background: var(--streak-chip); }
 .stat-streak .stat-value { color: #b36b00; }
-.stat-gems .stat-icon { background: #e3f2fd; }
+.stat-gems .stat-icon { background: var(--gems-chip); }
 .stat-gems .stat-value { color: #0b7ec2; }
-.stat-hearts .stat-icon { background: #fce4ec; }
+.stat-hearts .stat-icon { background: var(--hearts-chip); }
 .stat-hearts .stat-value { color: var(--red); }
 .stat-hearts.hurt { animation: shake 0.4s ease; }
 
@@ -126,7 +277,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     border-radius: 0.85rem;
     transition: background-color 0.15s ease, transform 0.1s ease;
 }
-.stat-btn:hover { background: #f1f5f9; }
+.stat-btn:hover { background: var(--hover); }
 .stat-btn:active { transform: scale(0.95); }
 
 @keyframes shake {
@@ -181,7 +332,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
 }
 .goal-total { font-size: 0.6rem; }
 .goal-copy { flex: 1; min-width: 0; }
-.goal-title { margin: 0; font-weight: 700; font-size: 0.95rem; color: var(--navy); }
+.goal-title { margin: 0; font-weight: 700; font-size: 0.95rem; color: var(--heading); }
 .goal-sub { margin: 0.15rem 0 0; font-size: 0.78rem; color: var(--muted); line-height: 1.35; }
 
 /* ---------- buttons ---------- */
@@ -200,17 +351,20 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
 .btn:hover:not(:disabled):not(:active) { transform: translateY(-2px); }
 .btn:active:not(:disabled) { transform: translateY(4px); box-shadow: none !important; }
 .btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.btn-primary { background: var(--green-cta); color: #fff; box-shadow: 0 5px 0 var(--green-cta-shadow); }
-.btn-primary:hover:not(:disabled) { background: #359d04; }
+/* --on-cta, not --card: the CTA text is white on green in light mode, but
+   --card becomes a dark surface in dark mode, which would put dark text on a
+   dark green button. This is the same one-token-two-roles trap as --navy. */
+.btn-primary { background: var(--green-cta); color: var(--on-cta); box-shadow: 0 5px 0 var(--green-cta-shadow); }
+.btn-primary:hover:not(:disabled) { background: var(--green-cta-hover); }
 .btn-secondary {
-    background: #fff;
-    color: var(--navy);
+    background: var(--card);
+    color: var(--heading);
     border: 2px solid var(--line);
     box-shadow: 0 4px 0 var(--line);
 }
-.btn-secondary:hover { background: #f1f5f9; }
-.btn-goal { background: var(--gold); color: #7a5c00; box-shadow: 0 4px 0 #d4a500; white-space: nowrap; }
-.btn-goal:hover { background: #ffd233; }
+.btn-secondary:hover { background: var(--hover); }
+.btn-goal { background: var(--gold); color: var(--on-gold); box-shadow: 0 4px 0 var(--gold-edge); white-space: nowrap; }
+.btn-goal:hover { background: var(--gold-hover); color: var(--on-gold-hover); }
 .btn-check { min-width: 12rem; }
 
 .icon-btn {
@@ -229,7 +383,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     cursor: pointer;
     border-radius: 50%;
 }
-.icon-btn:hover { background: #eef2f7; color: var(--navy); }
+.icon-btn:hover { background: var(--hover-2); color: var(--heading); }
 
 /* ---------- unit intro (Duolingo banner) ---------- */
 .unit-intro {
@@ -274,8 +428,8 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     align-items: center;
     gap: 0.4rem;
     padding: 0.6rem 1rem;
-    background: #fff;
-    color: var(--navy);
+    background: var(--card);
+    color: var(--heading);
     border: none;
     border-bottom: 3px solid var(--line);
     border-radius: 0.85rem;
@@ -287,7 +441,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     transition: transform 0.1s ease, background 0.15s ease;
 }
 .unit-guide-btn:hover {
-    background: #f8fafc;
+    background: var(--surface-3);
     transform: translateY(-1px);
 }
 .unit-guide-btn:active {
@@ -336,9 +490,9 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.05); }
 }
-.node.done { background: var(--gold); color: #7a5c00; box-shadow: 0 8px 0 #d4a500; }
+.node.done { background: var(--gold); color: var(--on-gold); box-shadow: 0 8px 0 var(--gold-edge); }
 .node.perfect { background: var(--purple); box-shadow: 0 8px 0 #7b3db8; }
-.node.locked { background: #d7dce4; color: #9aa5b1; box-shadow: 0 8px 0 #c3cad4; cursor: not-allowed; }
+.node.locked { background: var(--locked-bg); color: #9aa5b1; box-shadow: 0 8px 0 #c3cad4; cursor: not-allowed; }
 .node-star { position: absolute; top: -0.35rem; right: -0.35rem; font-size: 0.9rem; }
 
 /* floating tooltip above active next node */
@@ -347,7 +501,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     bottom: calc(100% + 14px);
     left: 50%;
     transform: translateX(-50%);
-    background: #fff;
+    background: var(--card);
     color: var(--green-dark);
     border: 2px solid var(--line);
     border-bottom: 3px solid #cbd5e1;
@@ -406,7 +560,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     letter-spacing: 0.06em;
 }
 /* wrap unit-marker in a centered container since it's inline-block now */
-.path .unit-marker { display: block; text-align: center; background: transparent; color: var(--navy); padding: 0; margin: 1.5rem auto 2.5rem; }
+.path .unit-marker { display: block; text-align: center; background: transparent; color: var(--heading); padding: 0; margin: 1.5rem auto 2.5rem; }
 .unit-marker span { display: block; font-family: 'Nunito', sans-serif; font-size: 0.72rem; font-weight: 800;
     letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 0.2rem; }
 
@@ -421,14 +575,14 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     font-family: inherit;
     font-size: 0.8125rem;
     font-weight: 700;
-    color: var(--navy);
-    background: #fff;
+    color: var(--heading);
+    background: var(--card);
     border: 1px solid var(--line);
     border-radius: 999px;
     cursor: pointer;
     transition: border-color 0.2s ease, background-color 0.2s ease;
 }
-.nick-chip:hover { background: #f1f5f9; border-color: #bfdbfe; }
+.nick-chip:hover { background: var(--hover); border-color: var(--blue-line-2); }
 .nick-chip__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .nick-chip__pencil { font-size: 0.6875rem; color: var(--muted); flex: 0 0 auto; }
 
@@ -445,12 +599,12 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     display: grid;
     place-items: center;
     padding: 1.25rem;
-    background: rgba(15, 23, 42, 0.5);
+    background: var(--scrim);
     backdrop-filter: blur(4px);
     animation: fade-in 0.25s ease;
 }
 .modal[data-mandatory="true"] {
-    background: rgba(15, 23, 42, 0.75);
+    background: var(--scrim-strong);
     backdrop-filter: blur(8px);
 }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
@@ -475,7 +629,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     font-family: inherit;
     font-weight: 900;
     font-size: 1.5rem;
-    color: var(--navy);
+    color: var(--heading);
 }
 .modal__desc {
     margin: 0 0 1.5rem;
@@ -491,11 +645,11 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     font-size: 1rem;
     text-align: center;
     color: var(--text);
-    background: #f7f9fc;
+    background: var(--surface-2);
     border: 2px solid var(--line);
     border-radius: 0.75rem;
 }
-.modal__input:focus { outline: none; border-color: var(--navy); background: #fff; }
+.modal__input:focus { outline: none; border-color: var(--navy); background: var(--card); }
 .modal__error { margin: 0 0 0.75rem; font-size: 0.75rem; font-weight: 600; color: var(--red); }
 .modal__submit { width: 100%; }
 
@@ -519,7 +673,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f1f5f9;
+    background: var(--hover);
     border: none;
     border-radius: 50%;
     color: var(--muted);
@@ -528,7 +682,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     cursor: pointer;
     transition: background-color 0.15s ease, color 0.15s ease;
 }
-.modal__close:hover { background: #e2e8f0; color: var(--navy); }
+.modal__close:hover { background: var(--track-2); color: var(--heading); }
 
 /* ---------- shop modal ---------- */
 .shop-panel {
@@ -540,7 +694,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    background: #e8f5fe;
+    background: var(--blue-tint-2);
     border: 2px solid #bce1fb;
     border-radius: 1rem;
     padding: 0.75rem 1rem;
@@ -555,7 +709,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     display: flex;
     align-items: center;
     gap: 0.9rem;
-    background: #fff;
+    background: var(--card);
     border: 2px solid var(--line);
     border-bottom-width: 4px;
     border-radius: 1rem;
@@ -563,7 +717,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
 }
 .shop-item__icon { font-size: 2.2rem; line-height: 1; flex-shrink: 0; }
 .shop-item__info { flex: 1; min-width: 0; }
-.shop-item__name { margin: 0 0 0.2rem; font-size: 0.95rem; font-weight: 900; color: var(--navy); }
+.shop-item__name { margin: 0 0 0.2rem; font-size: 0.95rem; font-weight: 900; color: var(--heading); }
 .shop-item__desc { margin: 0 0 0.35rem; font-size: 0.78rem; color: var(--muted); line-height: 1.35; }
 .shop-item__status { display: inline-block; font-size: 0.72rem; font-weight: 800; color: var(--green-dark); }
 .shop-item__btn {
@@ -597,7 +751,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
 
 .cal-stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.1rem; }
 .cal-stat-pill {
-    background: #f8fafc;
+    background: var(--surface-3);
     border: 2px solid var(--line);
     border-bottom-width: 3px;
     border-radius: 0.9rem;
@@ -605,15 +759,15 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     text-align: center;
 }
 .cal-stat-lbl { display: block; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 0.2rem; }
-.cal-stat-val { display: block; font-size: 1.05rem; font-weight: 900; color: var(--navy); }
+.cal-stat-val { display: block; font-size: 1.05rem; font-weight: 900; color: var(--heading); }
 
 .cal-grid-wrap {
-    background: #fff;
+    background: var(--card);
     border: 2px solid var(--line);
     border-radius: 1rem;
     padding: 0.9rem;
 }
-.cal-month-header { font-size: 0.95rem; font-weight: 900; color: var(--navy); margin-bottom: 0.65rem; text-transform: capitalize; }
+.cal-month-header { font-size: 0.95rem; font-weight: 900; color: var(--heading); margin-bottom: 0.65rem; text-transform: capitalize; }
 .cal-weekdays {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -638,13 +792,13 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     font-size: 0.8rem;
     font-weight: 800;
     color: var(--muted);
-    background: #f8fafc;
+    background: var(--surface-3);
     position: relative;
     user-select: none;
 }
 .cal-day--empty { background: transparent; }
 .cal-day.active {
-    background: #ffedd5;
+    background: var(--amber-tint-5);
     color: var(--orange);
     border: 1px solid #fed7aa;
     font-weight: 900;
@@ -657,7 +811,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     bottom: 2px;
 }
 .cal-day.frozen {
-    background: #e0f2fe;
+    background: var(--blue-tint-3);
     color: var(--blue);
     border: 1px solid #bae6fd;
 }
@@ -710,14 +864,14 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
 
 /* per-word result after a wrong attempt */
 .word-chip.slot-ok {
-    background: #d7ffb8;
-    border-color: #a4ec73;
-    color: #3f8a00;
+    background: var(--correct-bg);
+    border-color: var(--correct-fill);
+    color: var(--correct-text);
 }
 
 .word-chip.slot-bad {
-    background: #ffdfe0;
-    border-color: #ffb2b4;
+    background: var(--wrong-bg);
+border-color: var(--wrong-line);
     color: #c92a2a;
 }
 
@@ -748,16 +902,16 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     text-transform: uppercase;
     color: var(--muted);
 }
-.level-card__name { margin: 0.1rem 0 0; font-family: inherit; font-weight: 900; font-size: 1.375rem; color: var(--navy); }
-.level-card__xp { font-size: 1.1rem; font-weight: 800; color: var(--navy); white-space: nowrap; }
+.level-card__name { margin: 0.1rem 0 0; font-family: inherit; font-weight: 900; font-size: 1.375rem; color: var(--heading); }
+.level-card__xp { font-size: 1.1rem; font-weight: 800; color: var(--heading); white-space: nowrap; }
 .level-card__xp-max { font-size: 0.75rem; color: var(--muted); font-weight: 600; }
 
-.level-track { height: 0.7rem; background: #e8edf4; border-radius: 999px; overflow: hidden; }
+.level-track { height: 0.7rem; background: var(--track); border-radius: 999px; overflow: hidden; }
 .level-track__fill {
     height: 100%;
     width: 0;
     border-radius: 999px;
-    background: linear-gradient(90deg, #58cc02, #a4ec73);
+    background: linear-gradient(90deg, #58cc02, var(--correct-fill));
     transition: width 0.7s cubic-bezier(0.23, 1, 0.32, 1);
 }
 .level-card__goal { margin: 0.65rem 0 0; font-size: 0.8125rem; font-weight: 600; color: var(--muted); }
@@ -781,13 +935,13 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     transition: opacity 0.3s ease, color 0.3s ease;
 }
 .ladder li.reached { opacity: 1; color: var(--green); }
-.ladder li.current { opacity: 1; color: var(--navy); }
+.ladder li.current { opacity: 1; color: var(--heading); }
 .ladder li.current::after {
     content: '\25B2';
     display: block;
     margin-top: 0.2rem;
     font-size: 0.5rem;
-    color: var(--navy);
+    color: var(--heading);
 }
 
 /* ---------- rivals ---------- */
@@ -807,7 +961,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     flex-wrap: wrap;
     margin-bottom: 1rem;
 }
-.rivals__title { margin: 0; font-family: inherit; font-weight: 900; font-size: 1.125rem; color: var(--navy); }
+.rivals__title { margin: 0; font-family: inherit; font-weight: 900; font-size: 1.125rem; color: var(--heading); }
 .rivals__note { margin: 0; font-size: 0.6875rem; color: var(--muted); }
 
 .rivals__list { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.4rem; }
@@ -818,10 +972,10 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     gap: 0.75rem;
     padding: 0.6rem 0.75rem;
     border-radius: 0.75rem;
-    background: #f7f9fc;
+    background: var(--surface-2);
 }
-.rival--you { background: #eaf2ff; border: 1px solid #bfdbfe; font-weight: 700; }
-.rival--above { background: #fff8e1; }
+.rival--you { background: var(--blue-tint); border: 1px solid var(--blue-line-2); font-weight: 700; }
+.rival--above { background: var(--surface-warm); }
 
 .rival__rank { width: 1.35rem; flex: 0 0 auto; font-size: 0.75rem; font-weight: 800; color: var(--muted); text-align: center; }
 .rival__face {
@@ -831,7 +985,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     display: grid;
     place-items: center;
     font-size: 1.05rem;
-    background: #fff;
+    background: var(--card);
     border: 1px solid var(--line);
     border-radius: 50%;
 }
@@ -845,7 +999,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     font-size: 0.875rem;
     color: var(--text);
 }
-.rival--you .rival__name { color: var(--navy); }
+.rival--you .rival__name { color: var(--heading); }
 .rival__tag {
     display: inline-block;
     margin-left: 0.4rem;
@@ -854,13 +1008,13 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--navy);
-    background: #dbeafe;
+    color: var(--heading);
+    background: var(--blue-line);
     border-radius: 99px;
     vertical-align: middle;
 }
 .rival__xp { flex: 0 0 auto; font-size: 0.8125rem; font-weight: 800; color: var(--muted); }
-.rival--you .rival__xp { color: var(--navy); }
+.rival--you .rival__xp { color: var(--heading); }
 
 /* ---------- placement test ---------- */
 .modal__emoji { font-size: 2.5rem; line-height: 1; margin-bottom: 0.75rem; }
@@ -871,7 +1025,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     font-size: 0.75rem;
     line-height: 1.5;
     color: var(--muted);
-    background: #f7f9fc;
+    background: var(--surface-2);
     border-radius: 0.6rem;
     text-align: left;
 }
@@ -892,7 +1046,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     text-underline-offset: 3px;
 }
 
-.modal__link:hover { color: var(--navy); }
+.modal__link:hover { color: var(--heading); }
 
 .placement-tag {
     flex: 0 0 auto;
@@ -901,8 +1055,8 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     font-weight: 800;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #7a5c00;
-    background: #ffe9a8;
+    color: var(--amber-text);
+    background: var(--amber-tint-3);
     border-radius: 99px;
     white-space: nowrap;
 }
@@ -912,8 +1066,8 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     padding: 0.85rem 1rem;
     font-size: 0.875rem;
     line-height: 1.55;
-    color: var(--ink-soft);
-    background: #f7f9fc;
+    color: var(--muted);
+    background: var(--surface-2);
     border-radius: 0.75rem;
     text-align: left;
 }
@@ -933,7 +1087,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
 }
 
 .diagnostic__emoji { font-size: 1.25rem; line-height: 1; }
-.diagnostic strong { color: var(--navy); }
+.diagnostic strong { color: var(--heading); }
 
 /* storage warning: shown only when the browser refuses persistent storage */
 .storage-notice {
@@ -944,7 +1098,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     padding: 0.8rem 1rem;
     font-size: 0.8125rem;
     color: var(--text);
-    background: #fff8db;
+    background: var(--amber-tint);
     border: 1px solid #f2d675;
     border-radius: 0.9rem;
 }
@@ -952,21 +1106,21 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
 .storage-notice[hidden] { display: none; }
 .storage-notice__icon { font-size: 1.15rem; line-height: 1.2; }
 .storage-notice__text { flex: 1; margin: 0; line-height: 1.45; }
-.storage-notice__text strong { color: var(--navy); }
+.storage-notice__text strong { color: var(--heading); }
 
 .storage-notice__close {
     flex-shrink: 0;
     padding: 0.35rem 0.7rem;
     font: inherit;
     font-weight: 700;
-    color: var(--navy);
+    color: var(--heading);
     background: transparent;
     border: 1px solid #e3c55a;
     border-radius: 0.6rem;
     cursor: pointer;
 }
 
-.storage-notice__close:hover { background: #fdeeb0; }
+.storage-notice__close:hover { background: var(--amber-tint-2); }
 .storage-notice__close:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
 
 /* ---------- stats + badges ---------- */
@@ -984,7 +1138,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     padding: 1rem 0.5rem;
     text-align: center;
 }
-.stat-card-value { margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--navy); }
+.stat-card-value { margin: 0; font-size: 1.2rem; font-weight: 800; color: var(--heading); }
 .stat-card-label { margin: 0.25rem 0 0; font-size: 0.72rem; color: var(--muted); font-weight: 600; }
 
 .badges-section { padding-top: 0.5rem; }
@@ -1001,7 +1155,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     filter: grayscale(1);
     transition: opacity 0.3s ease, filter 0.3s ease;
 }
-.badge.earned { opacity: 1; filter: none; border-color: var(--gold); background: #fffbeb; }
+.badge.earned { opacity: 1; filter: none; border-color: var(--gold); background: var(--amber-tint-4); }
 .badge-icon { font-size: 1.5rem; line-height: 1; }
 .badge-name { margin: 0.4rem 0 0; font-size: 0.68rem; font-weight: 700; color: var(--muted); line-height: 1.25; }
 
@@ -1028,7 +1182,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
 
 .exercise-area { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 1.5rem 0; }
 
-.ex-prompt { font-size: 1.05rem; font-weight: 700; color: var(--navy); margin: 0 0 1.25rem; }
+.ex-prompt { font-size: 1.05rem; font-weight: 700; color: var(--heading); margin: 0 0 1.25rem; }
 .ex-sub { display: block; font-size: 0.82rem; font-weight: 500; color: var(--muted); margin-top: 0.3rem; }
 
 .sentence-card {
@@ -1057,13 +1211,13 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     justify-content: center;
     border-radius: 50%;
     border: none;
-    background: #eaf2ff;
-    color: var(--navy);
+    background: var(--blue-tint);
+    color: var(--heading);
     font-size: 1.1rem;
     cursor: pointer;
 }
-.speak-btn:hover { background: #dbeafe; }
-.speak-btn.playing { background: var(--navy); color: #fff; }
+.speak-btn:hover { background: var(--blue-line); }
+.speak-btn.playing { background: var(--navy); color: var(--card); }
 .slow-btn {
     width: auto;
     min-height: 44px;
@@ -1080,14 +1234,14 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
 .word-bank { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.25rem; min-height: 3rem; }
 .word-chip {
     border: 2px solid var(--line);
-    background: #fff;
+    background: var(--card);
     border-bottom-width: 4px;
     border-radius: 1rem;
     padding: 0.6rem 1rem;
     font-family: inherit;
     font-size: 0.95rem;
     font-weight: 700;
-    color: var(--navy);
+    color: var(--heading);
     cursor: pointer;
     transition: transform 0.08s ease;
 }
@@ -1110,7 +1264,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     color: var(--text);
     margin-bottom: 1.25rem;
 }
-.text-input:focus { outline: none; border-color: var(--navy); }
+.text-input:focus { outline: none; border-color: var(--focus-ring); }
 
 /* multiple choice */
 .choice-list { display: flex; flex-direction: column; gap: 0.75rem; }
@@ -1120,7 +1274,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     gap: 0.85rem;
     width: 100%;
     text-align: left;
-    background: #fff;
+    background: var(--card);
     border: 2px solid var(--line);
     border-bottom-width: 4px;
     border-radius: 1rem;
@@ -1136,7 +1290,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
 .choice:nth-child(2) { animation-delay: 0.05s; }
 .choice:nth-child(3) { animation-delay: 0.1s; }
 .choice:nth-child(4) { animation-delay: 0.15s; }
-.choice:hover { background: #f1f5f9; }
+.choice:hover { background: var(--hover); }
 .choice:active { transform: translateY(2px); border-bottom-width: 2px; }
 .choice-kbd {
     flex: 0 0 auto;
@@ -1151,10 +1305,10 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     font-weight: 800;
     color: var(--muted);
 }
-.choice.selected { background: #eaf2ff; border-color: #bfdbfe; color: var(--navy); }
+.choice.selected { background: var(--blue-tint); border-color: var(--blue-line-2); color: var(--heading); }
 .choice.selected .choice-kbd { border-color: var(--blue); color: var(--blue); }
-.choice.correct { background: #d7ffb8; border-color: #a4ec73; color: #2d6a00; }
-.choice.wrong { background: #ffdfe0; border-color: #ffb2b4; color: #b91c1c; }
+.choice.correct { background: var(--correct-bg); border-color: var(--correct-fill); color: var(--correct-text); }
+.choice.wrong { background: var(--wrong-bg); border-color: var(--wrong-line); color: var(--wrong-text); }
 
 .image-hint { display: flex; justify-content: center; font-size: 2.6rem; margin-bottom: 0.75rem; }
 
@@ -1162,7 +1316,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
 .lesson-footer {
     position: sticky;
     bottom: 0;
-    background: #fff;
+    background: var(--card);
     border-top: 2px solid var(--line);
     padding: 0.9rem 0 calc(0.9rem + env(safe-area-inset-bottom, 0px));
     display: flex;
@@ -1171,8 +1325,8 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     min-height: 5rem;
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
-.lesson-footer.ok-state { background: var(--correct-bg); border-top-color: #a4ec73; }
-.lesson-footer.bad-state { background: var(--wrong-bg); border-top-color: #ffb2b4; }
+.lesson-footer.ok-state { background: var(--correct-bg); border-top-color: var(--correct-fill); }
+.lesson-footer.bad-state { background: var(--wrong-bg); border-top-color: var(--wrong-line); }
 .feedback { flex: 1; font-weight: 800; display: flex; align-items: center; gap: 0.55rem; }
 .feedback.ok { color: var(--green-dark); }
 .feedback.bad { color: var(--red); }
@@ -1207,7 +1361,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--n
     font-size: 0.95rem;
 }
 .rs-label { color: var(--muted); font-weight: 600; }
-.rs-value { font-weight: 800; color: var(--navy); }
+.rs-value { font-weight: 800; color: var(--heading); }
 .rs-gold { color: var(--gold-text); }
 
 .result-review { text-align: left; margin-bottom: 1.5rem; }

@@ -30,11 +30,18 @@
     --ink-soft: #46586b;
     --ink-mute: #626c76;   /* was #7b8794 = 3.48:1 on sand, now 5.08:1 */
 
-    /* roles */
+    /* roles. named as tokens rather than left as raw palette references so the
+       dark block can remap them; the light values are the palette entries. */
     --bg: var(--sand-100);
     --surface: #ffffff;
     --line: rgba(20, 32, 46, 0.1);
     --line-strong: rgba(20, 32, 46, 0.18);
+
+    /* the sticky header is translucent so content shows through it, and
+       becomes more opaque once stuck. dark mode needs translucent-DARK, so
+       both are tokens rather than hardcoded rgba */
+    --header-bg: rgba(251, 249, 244, 0.82);
+    --header-bg-solid: rgba(251, 249, 244, 0.94);
 
     /* type */
     --serif: 'Fraunces', Georgia, serif;
@@ -56,6 +63,104 @@
     --shadow-lg: 0 8px 24px rgba(4, 24, 43, 0.08), 0 32px 64px rgba(4, 24, 43, 0.1);
     --shadow-navy: 0 24px 60px rgba(4, 24, 43, 0.28);
 }
+
+/*
+ * DARK THEME
+ *
+ * The palette is already built on a navy scale, so dark mode promotes the
+ * colours the light theme uses for its navy sections to page level rather than
+ * inventing a new palette.
+ */
+[data-theme="dark"] {
+    color-scheme: dark;
+
+    --bg: var(--navy-900);
+    --surface: var(--navy-800);
+    --ink: var(--navy-100);
+    --ink-soft: #9fb3c8;
+    --ink-mute: #8fa3b8;
+
+    --line: rgba(220, 231, 248, 0.14);
+    --line-strong: rgba(220, 231, 248, 0.24);
+    --header-bg: rgba(4, 24, 43, 0.82);
+    --header-bg-solid: rgba(4, 24, 43, 0.94);
+
+    /* #7d6418 clears 4.5:1 on sand, but drops below 3:1 on navy */
+    --gold-ink: var(--gold-300);
+    --gold-deep: #dfbb45;
+
+    /* shadows are nearly invisible against a dark surface, so they deepen */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.45);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45), 0 12px 32px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5), 0 32px 64px rgba(0, 0, 0, 0.55);
+    --shadow-navy: 0 24px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* a section that was lighter than the page in light mode reads as raised */
+[data-theme="dark"] .section--sand { background: var(--navy-800); color: var(--ink); }
+
+/*
+ * The hero title, proof values and portrait caption paint themselves with raw
+ * palette steps rather than --ink, so they do not follow the theme. --proof__value
+ * uses --navy-700 (#003580), which is 1.9:1 on navy: invisible.
+ */
+[data-theme="dark"] .hero__title { color: var(--ink); }
+[data-theme="dark"] .proof__value { color: var(--ink); }
+[data-theme="dark"] .proof__label { color: var(--ink-mute); }
+[data-theme="dark"] .portrait__name { color: var(--ink); }
+[data-theme="dark"] .quote-card__name { color: var(--ink); }
+[data-theme="dark"] .plan__name,
+[data-theme="dark"] .plan__price { color: var(--ink); }
+[data-theme="dark"] .plan__flag { color: var(--ink); }
+[data-theme="dark"] .faq summary { color: var(--ink); }
+[data-theme="dark"] .wa-card__name { color: var(--ink); }
+[data-theme="dark"] .card__icon { color: var(--gold-300); }
+[data-theme="dark"] .process__body h3 { color: var(--ink); }
+[data-theme="dark"] .quiz-step > p { color: var(--ink); }
+[data-theme="dark"] .quiz-option-button { color: var(--ink); }
+[data-theme="dark"] .nav-drawer a { color: var(--ink); }
+
+/* the ghost button sets its foreground to --navy-800, invisible on a dark page */
+[data-theme="dark"] .btn--ghost { --btn-fg: var(--ink); }
+[data-theme="dark"] .btn--ghost:hover { --btn-bg: rgba(255, 255, 255, 0.1); }
+
+/* the wordmark and wordmark-adjacent text set navy directly */
+[data-theme="dark"] .brand__name { color: var(--ink); }
+
+/* gold CTA: the gold glow reads as haze on a dark surface */
+[data-theme="dark"] .btn--gold { box-shadow: 0 10px 30px rgba(223, 187, 69, 0.18); }
+
+/*
+ * The gold CTA is white text on --gold-deep. In light that is 4.7:1; on the
+ * dark-mode gold (#dfbb45) it collapses to 1.85:1, which is unreadable. So dark
+ * inverts the polarity: navy text on bright gold.
+ */
+[data-theme="dark"] .btn--gold { --btn-fg: var(--navy-900); }
+
+/* ============================================================
+   theme toggle
+   ============================================================ */
+
+.theme-toggle {
+    width: 2.5rem;
+    height: 2.5rem;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    background: transparent;
+    color: var(--ink);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.theme-toggle:hover { background: rgba(20, 32, 46, 0.06); }
+
+[data-theme="dark"] .theme-toggle:hover { background: rgba(255, 255, 255, 0.08); }
 
 /* ============================================================
    reset
@@ -277,7 +382,7 @@ a { color: inherit; }
     position: sticky;
     top: 0;
     z-index: 60;
-    background: rgba(251, 249, 244, 0.82);
+    background: var(--header-bg);
     backdrop-filter: blur(16px) saturate(1.4);
     -webkit-backdrop-filter: blur(16px) saturate(1.4);
     border-bottom: 1px solid var(--line);
@@ -286,7 +391,7 @@ a { color: inherit; }
 
 .site-header.is-stuck {
     box-shadow: var(--shadow-sm);
-    background: rgba(251, 249, 244, 0.94);
+    background: var(--header-bg-solid);
 }
 
 .site-header__inner {

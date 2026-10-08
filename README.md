@@ -25,9 +25,8 @@ A server is required rather than `file://` because the app uses
 ## Tests
 
 ```bash
-npm test               # 11 validators, exits non-zero on failure
+npm test               # 15 validators, exits non-zero on failure
 npm run test:quiet     # only failures and the summary
-npm run test:dark      # adds the dark-mode report (see below)
 ```
 
 Runs in CI on every push to `main` and on every pull request.
@@ -44,12 +43,19 @@ Runs in CI on every push to `main` and on every pull request.
 | `validate-placement-count` | **a number shown to users disagreeing with `placement.js`** |
 | `check-jsonld` | malformed structured data, and product claims that overstate reality |
 | `check-asset-refs` | a page pointing at an image, icon or stylesheet that is not on disk |
+| `check-tokens` | a `var(--x)` reference to a token nothing defines |
+| `check-contrast` | a text/background pair below WCAG AA, in **either** theme |
+| `test-theme-resolve` | the theme preference resolving wrongly for any preference × OS combination |
+| `audit-dark-risk` | a light literal used as a background, or a `--navy` used as text colour |
 | `test-migration` | a state migration that loses or corrupts learner progress |
 
-`audit-dark-risk` is a **report, not a gate**: it lists colours that will look
-wrong in dark mode and currently reports 73 sites. It is excluded from
-`npm test` on purpose — dark mode is not built yet, so those findings are known
-and expected. `npm run test:dark` includes it.
+Fifteen checks, all gates. `audit-dark-risk` was a report while dark mode was
+unbuilt — it listed 73 known sites and was deliberately excluded. Now that dark
+mode ships, those are real defects, so it gates like the rest.
+
+The three theme checks exist because dark mode fails in ways light mode hides.
+`check-contrast` reads both token blocks straight out of the CSS, so it cannot
+drift from the stylesheet.
 
 `validate-placement-count` exists because of a specific bug: the placement modal
 and the JSON-LD both advertised "20 preguntas" while the test actually had 30.
@@ -138,8 +144,28 @@ tools/                  validators, run-all, icon generator, path helper
 ### Load order in the app
 
 `sentences.js` → `placement.js` → `migrations.js` → `game.js`. `migrations.js`
-must run before `game.js` reads state. In `index.html` the theme script would go
-in `<head>` when dark mode is built.
+must run before `game.js` reads state.
+
+`theme.js` is the exception: it lives at the site root and is loaded from
+`<head>`, **synchronously and before paint**, because a dark-mode visitor must
+not see a flash of the light theme. It must never be deferred and must never be
+inlined — the CSP is `script-src 'self'`. Both pages load the same file; each
+defines its own tokens.
+
+### Dark mode
+
+Preference lives in `localStorage['theme-pref']` as `auto` | `light` | `dark`,
+absent meaning `auto`. `theme.js` resolves it against the OS setting and writes
+a **concrete** `light`/`dark` to `data-theme` on `<html>`, so CSS needs only one
+`[data-theme="dark"]` block rather than duplicating every token in a media query.
+It also rewrites `<meta name="theme-color">` and re-resolves on an OS change,
+but only while the preference is `auto` — otherwise a deliberate choice would be
+overridden at sunset.
+
+The key is separate from `igsg_daily_v1` on purpose: a display preference is not
+learning progress, a corrupt app state must not be able to reset it, and sharing
+it means picking Dark in the app also darkens the marketing site. No migration is
+needed and no version bump.
 
 ### Known weaknesses
 
@@ -152,9 +178,6 @@ in `<head>` when dark mode is built.
   user's phone is invisible.
 - **`frame-ancestors` is not set**, because it cannot be sent from a `<meta>`
   CSP. Every page is framable. Needs a host in front of Pages.
-- **`HANDOFF.md` is tracked and therefore published.** It contains the
-  maintainer's local path and OS username. `robots.txt` disallows it, which keeps
-  it out of search indexes but does not stop Pages serving it. Untrack it.
 - **Spanish strings are hardcoded** in markup and JS. No i18n.
 - **The main site has no offline support**; only the app has a service worker.
 
@@ -164,16 +187,15 @@ in `<head>` when dark mode is built.
 
 GitHub Pages, from `main`. `/` is the repository root.
 
-`.gitattributes` marks `HANDOFF.md`, `package.json`, `tools/` and `.github/` as
-`export-ignore` so they stay out of a `git archive` tarball.
+`.gitattributes` marks `package.json`, `tools/` and `.github/` as
+`export-ignore` so they stay out of a `git archive` tarball. That does not affect
+what Pages serves, which is the branch content rather than an archive; those
+files are harmless in either case.
 
-**That does not protect the deployed site.** GitHub Pages publishes the branch
-content, not an archive, so `export-ignore` changes nothing about what is served.
-`package.json`, `tools/` and `.github/` being visible is harmless — they are not
-secrets. `HANDOFF.md` is not harmless: it is still published and still contains
-the maintainer's local path and OS username. The only things that actually work
-are untracking it, or hosting from a build step that excludes it. It has not been
-done, because untracking is an owner decision.
+`HANDOFF.md` was untracked, so Pages no longer serves it. It stays on disk as
+local working notes and is gitignored. It previously contained the maintainer's
+local path and OS username at a publicly reachable URL. `robots.txt` keeps the
+rule as a backstop.
 
 Never commit or push without the owner saying so. They review the live site
 before deciding.

@@ -13,7 +13,7 @@
 
 .srs-card--due { flex-wrap: wrap; justify-content: space-between; }
 .srs-copy { flex: 1 1 11rem; min-width: 0; }
-.srs-title { margin: 0; font-weight: 700; font-size: 0.9rem; color: var(--navy); }
+.srs-title { margin: 0; font-weight: 700; font-size: 0.9rem; color: var(--heading); }
 .srs-sub { margin: 0.1rem 0 0; font-size: 0.78rem; color: var(--muted); line-height: 1.35; }
 
 .srs-btn {

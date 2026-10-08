@@ -4,6 +4,12 @@
  * Scope is /english-daily/ only (the file lives there), so the main site
  * and Pangal are never intercepted.
  *
+ * One precache entry sits outside that scope: `../theme.js`, the shared theme
+ * resolver that lives at the site root. A service worker CAN cache a URL outside
+ * its own scope, it just never receives fetch events for it, so this is safe:
+ * the app always loads theme.js over the network like any other document
+ * script, and the precache copy only serves the offline case.
+ *
  * Strategy: network first, cache fallback. Online users always get the
  * latest deploy without anyone remembering to bump a version; offline
  * users get the last copy they loaded. A slow network falls back to the
@@ -11,13 +17,17 @@
  *
  * Bump CACHE_VERSION only when the PRECACHE list changes.
  */
-var CACHE_VERSION = 'daily-v5';
+var CACHE_VERSION = 'daily-v6';
 var NETWORK_TIMEOUT_MS = 4000;
 
 var PRECACHE = [
     './',
     './index.html',
     './daily.css',
+    /* theme.js lives at the site root and is shared with the main page. It must
+       be precached: it runs before paint, so offline it has to come from cache
+       or the app flashes light before discovering there is no network. */
+    '../theme.js',
     './sentences.js',
     './placement.js',
     './migrations.js',

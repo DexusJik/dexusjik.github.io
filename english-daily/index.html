@@ -10,7 +10,9 @@
     <link rel="canonical" href="https://dexusjik.github.io/english-daily/">
 
     <link rel="manifest" href="manifest.webmanifest">
-    <meta name="theme-color" content="#003580">
+    <!-- theme.js rewrites this to match the resolved theme. The light value is
+         correct on first paint; dark arrives before the page renders. -->
+<meta name="theme-color" content="#f7f7f7">
     <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
     <!-- iOS ignores manifest icons and needs a PNG here, not webp -->
@@ -29,7 +31,7 @@
     <meta property="og:description" content="365 oraciones en inglés ordenadas por dificultad. Una al día, todos los días.">
     <meta property="og:url" content="https://dexusjik.github.io/english-daily/">
     <!-- absolute: a relative ../ path does not resolve in most scrapers -->
-    <meta property="og:image" content="https://dexusjik.github.io/assets/images/og-card.jpg">
+    <meta property="og:image" content="https://dexusjik.github.io/english-daily/og-card.jpg">
     <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -38,7 +40,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="1 Oración al Día | Inglés Sin Guion">
     <meta name="twitter:description" content="365 oraciones en inglés ordenadas por dificultad. Una al día, todos los días.">
-    <meta name="twitter:image" content="https://dexusjik.github.io/assets/images/og-card.jpg">
+    <meta name="twitter:image" content="https://dexusjik.github.io/english-daily/og-card.jpg">
 
     <script type="application/ld+json">
     {
@@ -50,7 +52,7 @@
       "operatingSystem": "Any (web)",
       "inLanguage": "es-CL",
       "description": "Ruta de inglés de 365 oraciones en 73 lecciones, ordenadas de A1 a C1, con cinco ejercicios por lección: escuchar, elegir, traducir, ordenar palabras, traducir al revés y repetir en voz alta.",
-      "image": "https://dexusjik.github.io/assets/images/og-card.jpg",
+      "image": "https://dexusjik.github.io/english-daily/og-card.jpg",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -71,6 +73,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="daily.css">
+    <!-- theme.js resolves the preference and sets data-theme BEFORE paint, so a
+         dark-mode visitor never sees a flash of the light theme. Loaded from the
+         site root and shared with the main page. It must not be deferred and
+         must not be inline: the CSP is script-src 'self'. -->
+    <script src="../theme.js"></script>
     <link rel="stylesheet" href="features/tips.css">
     <link rel="stylesheet" href="features/fillblank.css">
     <link rel="stylesheet" href="features/challenge.css">
@@ -204,8 +211,11 @@
 
         <button type="button" class="nick-chip" id="nick-chip" aria-label="Cambiar tu primer nombre">
             <span class="nick-chip__label" id="nick-chip-name">Tú</span>
-            <span class="nick-chip__pencil" aria-hidden="true">✎</span>
-        </button>
+<span class="nick-chip__pencil" aria-hidden="true">✎</span>
+            </button>
+
+            <button type="button" class="theme-toggle" id="theme-toggle"
+                    aria-label="Cambiar tema"></button>
 
         <div class="stats" id="stats-bar">
             <button type="button" class="stat stat-streak stat-btn" id="streak-stat" title="Ver calendario de racha" aria-label="Ver calendario de racha">

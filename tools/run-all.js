@@ -4,9 +4,9 @@
    node tools/run-all.js            run everything
    node tools/run-all.js --quiet    only show failures and the summary
 
-   audit-dark-risk is EXCLUDED by default: it is a report for the dark-mode
-   work, not a pass/fail gate, and it currently reports 73 known sites. Run it
-   directly, or with --all, when working on the theme. */
+   audit-dark-risk is a GATE now that dark mode ships: a light literal used as a
+   background, or a --navy used as text colour, is a real defect rather than a
+   known-and-accepted finding. */
 'use strict';
 
 const { execFileSync } = require('child_process');
@@ -15,6 +15,9 @@ const path = require('path');
 const TOOLS = __dirname;
 
 const GATES = [
+    ['check-tokens', 'every var() token reference resolves'],
+    ['check-contrast', 'WCAG contrast met in both themes'],
+    ['test-theme-resolve', 'theme preference resolution is correct'],
     ['validate-sentences', 'sentence corpus is well formed'],
     ['check-options', 'no answer identical to a distractor'],
     ['validate-placement', 'placement items are structurally sound'],
@@ -25,12 +28,14 @@ const GATES = [
     ['validate-placement-count', 'advertised counts match placement.js'],
     ['check-jsonld', 'JSON-LD parses and claims are accurate'],
     ['check-asset-refs', 'every local asset reference resolves'],
+    ['check-light-unchanged', 'light theme still renders as it did before'],
+    ['audit-dark-risk', 'no colour that breaks in dark mode'],
     ['test-migration', 'state migrations preserve progress'],
 ];
 
-const REPORTS = [
-    ['audit-dark-risk', 'list colours that will break in dark mode'],
-];
+/* audit-dark-risk is now a gate, not a report: dark mode ships, so a light
+   literal used as a background or a --navy-as-text is a real defect */
+const REPORTS = [];
 
 const quiet = process.argv.indexOf('--quiet') >= 0;
 const runAll = process.argv.indexOf('--all') >= 0;

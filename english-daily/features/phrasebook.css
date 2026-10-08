@@ -11,7 +11,7 @@
 }
 .pb-entry__icon { flex: 0 0 auto; font-size: 1.75rem; line-height: 1; }
 .pb-entry__copy { flex: 1 1 auto; min-width: 0; }
-.pb-entry__title { margin: 0; font-size: 0.95rem; font-weight: 800; color: var(--navy); }
+.pb-entry__title { margin: 0; font-size: 0.95rem; font-weight: 800; color: var(--heading); }
 .pb-entry__sub { margin: 0.15rem 0 0; font-size: 0.8125rem; line-height: 1.4; color: var(--muted); }
 .pb-entry .btn { flex: 0 0 auto; min-height: 2.75rem; padding: 0.6rem 1.25rem; white-space: nowrap; }
 
@@ -56,7 +56,7 @@
     font-weight: 700;
     cursor: pointer;
 }
-.pb-close:hover { background: #eef2f7; color: var(--navy); }
+.pb-close:hover { background: var(--hover-2); color: var(--heading); }
 
 .pb-tools { padding: 0 1.25rem 0.5rem; }
 .pb-search {
@@ -67,11 +67,11 @@
     font-family: inherit;
     font-size: 1rem;
     color: var(--text);
-    background: #fff;
+    background: var(--card);
     border: 2px solid var(--line);
     border-radius: 0.75rem;
 }
-.pb-search:focus { outline: none; border-color: var(--navy); }
+.pb-search:focus { outline: none; border-color: var(--focus-ring); }
 
 .pb-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.65rem; }
 .pb-chip {
@@ -80,14 +80,14 @@
     font-family: inherit;
     font-size: 0.8125rem;
     font-weight: 700;
-    color: var(--navy);
-    background: #fff;
+    color: var(--heading);
+    background: var(--card);
     border: 2px solid var(--line);
     border-radius: 999px;
     cursor: pointer;
 }
-.pb-chip:hover { background: #f1f5f9; }
-.pb-chip[aria-pressed="true"] { color: #fff; background: var(--navy); border-color: var(--navy); }
+.pb-chip:hover { background: var(--hover); }
+.pb-chip[aria-pressed="true"] { color: var(--card); background: var(--navy); border-color: var(--navy); }
 
 .pb-count { margin: 0.5rem 0 0; font-size: 0.75rem; font-weight: 600; color: var(--muted); }
 
@@ -134,13 +134,13 @@
     height: 2.75rem;
     border: none;
     border-radius: 50%;
-    background: #eaf2ff;
-    color: var(--navy);
+    background: var(--blue-tint);
+    color: var(--heading);
     font-size: 1.05rem;
     cursor: pointer;
 }
-.pb-speak:hover { background: #dbeafe; }
-.pb-speak.playing { background: var(--navy); color: #fff; }
+.pb-speak:hover { background: var(--blue-line); }
+.pb-speak.playing { background: var(--navy); color: var(--card); }
 
 .pb-empty { margin: 1.5rem 0; padding: 1rem; text-align: center; font-size: 0.9375rem; color: var(--muted); }
 

@@ -1,9 +1,8 @@
 User-agent: *
 Allow: /
 
-# Internal working notes: not part of the published site. It contains the
-# maintainer's local path and OS username, plus internal do-not-touch rules.
-# GitHub Pages still serves the file, this only keeps it out of search indexes.
+# HANDOFF.md was untracked, so Pages no longer serves it. Kept here as a
+# belt-and-braces rule in case it is ever re-added by accident.
 Disallow: /HANDOFF.md
 Disallow: /docs/
 

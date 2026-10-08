@@ -28,7 +28,7 @@
     margin: 0 0 0.6rem;
     font-size: 1.25rem;
     line-height: 1.3;
-    color: var(--navy);
+    color: var(--heading);
 }
 
 .tips-body {
@@ -104,7 +104,7 @@
 }
 
 .tips-bad {
-    background: #fff1f1;
+    background: var(--wrong-tint);
     color: #b42318;
 }
 
@@ -114,7 +114,7 @@
 }
 
 .tips-good {
-    background: #effbe6;
+    background: var(--correct-tint);
     color: #2f6b00;
     font-weight: 600;
 }
