@@ -1,0 +1,20 @@
+{
+  "name": "ingles-sin-guion",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static site: main consultancy page, 1 Oracion al Dia app, Pangal e-sports.",
+  "license": "UNLICENSED",
+  "scripts": {
+    "test": "node tools/run-all.js",
+    "test:quiet": "node tools/run-all.js --quiet",
+    "test:dark": "node tools/run-all.js --all",
+    "icons": "python tools/gen-icons.py",
+    "icons:check": "python tools/gen-icons.py --check",
+    "serve": "python -m http.server 8000 --bind 127.0.0.1",
+    "audit:dark": "node tools/audit-dark-risk.js"
+  },
+  "comments": {
+    "dependencies": "Deliberately none. The site ships raw HTML, CSS and JS with no build step and no third-party JavaScript, which is also what lets the CSP stay at script-src 'self'. Adding a bundler or framework would undo that. This file exists so `npm test` and CI have a standard entry point; `npm install` installs nothing.",
+    "pillow": "Only needed for `npm run icons`, not for the tests."
+  }
+}

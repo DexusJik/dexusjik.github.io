@@ -1,0 +1,26 @@
+# Normalise line endings in the repository, check them out as LF.
+# Without this every commit on Windows prints "LF will be replaced by CRLF".
+* text=auto eol=lf
+
+# Images and fonts are binary: never let git try to normalise them.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.gif   binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
+*.mp4   binary
+*.webm  binary
+*.mp3   binary
+*.pdf   binary
+
+# Keep developer-only files out of `git archive`. NOTE: this has no effect on
+# GitHub Pages, which publishes the branch content rather than an archive. See
+# the README: the only thing that actually stops a file being served is not
+# tracking it in the first place.
+HANDOFF.md export-ignore
+package.json  export-ignore
+tools/**      export-ignore
+.github/**    export-ignore

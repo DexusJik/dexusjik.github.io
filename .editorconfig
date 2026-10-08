@@ -1,0 +1,29 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{js,css,json}]
+indent_style = space
+indent_size = 4
+
+[*.py]
+indent_style = space
+indent_size = 4
+
+# HTML in this repo is hand-written with deep visual nesting, so forcing an
+# indent size would produce enormous diffs. Only normalise whitespace.
+[*.{html,webmanifest,xml}]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = false
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2

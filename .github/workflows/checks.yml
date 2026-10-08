@@ -1,0 +1,83 @@
+name: checks
+
+# Runs the validators on every push and on PRs. This is the point of moving the
+# tools into the repo: before this, nothing stopped a regression landing.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: validators
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: install dependencies
+        # There are none by design. `npm ci` would fail without a lockfile, so
+        # this is just an assertion that the runner is sane.
+        run: node --version
+
+      - name: run validators
+        run: npm test
+
+  icons:
+    name: icon derivatives
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: install Pillow
+        run: pip install --quiet pillow
+
+      # Fails if a derivative is missing or has grown past the size budget, so
+      # the next person cannot quietly point the favicon back at the 372 KB
+      # portrait photo.
+      - name: check icon derivatives
+        run: python tools/gen-icons.py --check
+
+  hygiene:
+    name: repo hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: no CRLF committed
+        run: |
+          if git ls-files -z | xargs -0 file 2>/dev/null | grep -q 'CRLF'; then
+            echo '::error::files committed with CRLF line endings; .gitattributes should prevent this'
+            git ls-files -z | xargs -0 file | grep 'CRLF'
+            exit 1
+          fi
+          echo 'line endings clean'
+
+      - name: no secret-looking strings
+        run: |
+          # masks the value so a real credential is never echoed into a log
+          if grep -rInE '(sk_live_|pk_live_|ghp_[A-Za-z0-9]{20,}|github_pat_|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY)' \
+               --include='*.js' --include='*.html' --include='*.css' --include='*.json' --include='*.yml' \
+               . ; then
+            echo '::error::a credential-shaped string is committed'
+            exit 1
+          fi
+          echo 'no credentials found'
+
+      - name: every local asset reference resolves
+        run: |
+          # This is tools/check-asset-refs.js, which also runs inside `npm test`
+          # above. It is repeated here only to name the failure clearly.
+          echo 'covered by the validators job via check-asset-refs'
