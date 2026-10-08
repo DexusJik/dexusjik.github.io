@@ -119,9 +119,34 @@ still reach their own level (over-correcting would lock capable learners below
 their level on a one-shot test); `check-cuts-in-sync.js` asserts `game.js` and
 the band test declare identical thresholds.
 
-`migrations.js` is at **CURRENT_VERSION 3**: a v2 placement is cleared and the
-test re-offered once, because both the item count and the bands changed, so
-an old score no longer means what it meant. Skippers are never nagged.
+`migrations.js` is at **CURRENT_VERSION 4**: every stored placement is
+discarded so the whole cohort retakes the corrected paper. Only the placement
+is re-earned — xp, gems, streak, completed lessons, badges, first name and
+feature state all survive, verified on a seeded learner with 24 lessons and a
+21-day streak. Skippers are never nagged.
+
+## Quality process that caught the placement defects
+
+The first batch of 10 questions shipped in `de6517c` and was **wrong in ways
+my own review did not catch**. An independent native-level review then found
+six real defects, worst of all a **mistranslation**: "El resultado depende del
+clima." was answered "depends on the weather", but Spanish `el clima` is
+*climate* and `el tiempo` is *weather*, so a learner who answered correctly
+would have been marked wrong on a one-shot permanent test.
+
+The lesson worth carrying forward: **agent-authored content needs independent
+review by a different reviewer, not a second pass by the same author.** Three
+defects were false grammar rules stated in `why` fields, which read fluently
+and were wrong. On a placement test the cost of shipping those is a learner
+permanently mis-placed.
+
+Fixed in `65d26d1`: six defects corrected, four items replaced outright
+because they duplicated a topic or tested a point the app never teaches.
+Conditional items went from 7 of 30 to 5, each a distinct subtype.
+
+Second-round review then found two more defects in the *replacements*
+themselves, including one I wrote myself. Both fixed. The band comment and
+file header, which still said 20 questions, were corrected too.
 
 ## Open items
 
