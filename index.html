@@ -10,9 +10,12 @@
 
     <link rel="canonical" href="https://dexusjik.github.io/">
 
-    <!-- webp, so declare webp; the old type="image/jpg" was simply wrong -->
-    <link rel="icon" type="image/webp" href="assets/images/image4.webp">
-    <link rel="apple-touch-icon" href="assets/images/image4.webp">
+<!-- image4.webp is a 380 KB 3136x4224 portrait. Using it as a favicon or
+           home-screen icon fetched the whole photo for a 16 px glyph, and iOS
+           ignores WebP for apple-touch-icon. These are real derivatives. -->
+      <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png">
+      <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16.png">
+      <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
 
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Inglés Sin Guion">
@@ -51,7 +54,7 @@
           "name": "Inglés Sin Guion",
           "url": "https://dexusjik.github.io/",
           "image": "https://dexusjik.github.io/assets/images/og-card.jpg",
-          "logo": "https://dexusjik.github.io/assets/images/image4.webp",
+          "logo": "https://dexusjik.github.io/assets/images/image5.webp",
           "description": "Consultoría de inglés profesional en línea para Chile, desde nivel A1 hasta C2, basada en los documentos y correos reales del estudiante.",
           "founder": { "@id": "https://dexusjik.github.io/#person" },
           "areaServed": { "@type": "Country", "name": "Chile" },
@@ -160,7 +163,7 @@
     <header class="site-header" id="site-header">
         <div class="shell site-header__inner">
             <a href="#hero" id="logo-link" class="brand" aria-label="Inglés Sin Guion, inicio">
-                <img src="assets/images/image4.webp" alt="" class="brand__mark" width="44" height="44">
+                <img src="assets/images/avatar-96.webp" alt="" class="brand__mark" width="44" height="44">
                 <span class="brand__name">Inglés Sin Guion</span>
             </a>
 
@@ -447,8 +450,11 @@
                 </div>
 
                 <div class="quiz-card">
+                    <!-- role=progressbar so the step count is announced, not just drawn -->
                     <div class="progress-bar-container">
-                        <div class="progress-bar" id="quiz-progress-bar"></div>
+                        <div class="progress-bar" id="quiz-progress-bar" role="progressbar"
+                             aria-valuemin="1" aria-valuemax="4" aria-valuenow="1"
+                             aria-label="Pregunta 1 de 4"></div>
                     </div>
 
                     <div id="quiz-questions-container" class="quiz-container-relative">
@@ -489,15 +495,20 @@
                         </div>
                     </div>
 
-                    <div id="quiz-result" hidden>
+                    <!-- aria-live so the result is spoken when it appears -->
+                    <div id="quiz-result" hidden aria-live="polite">
                         <h3 class="quiz-result__level">CEFR: <span id="cefr-level"></span></h3>
                         <p class="quiz-result__desc" id="cefr-description"></p>
                         <div class="quiz-actions">
+                            <button type="button" id="quiz-restart-btn" class="btn btn--ghost">Repetir</button>
                             <button type="button" id="whatsapp-redirect-btn" class="btn btn--primary">Solicitar mi sesión</button>
                         </div>
                     </div>
 
+                    <!-- "Atrás" was missing entirely: once a step advanced it was
+                         display:none, so a mis-tap could not be revised -->
                     <div class="quiz-actions" id="quiz-actions">
+                        <button type="button" id="prev-step-btn" class="btn btn--ghost" hidden>Atrás</button>
                         <button type="button" id="next-step-btn" class="btn btn--primary">Siguiente</button>
                     </div>
                 </div>
@@ -641,7 +652,7 @@
             <div class="footer__grid">
                 <div class="footer__col">
                     <a href="#hero" class="footer__brand">
-                        <img src="assets/images/image4.webp" alt="" width="40" height="40">
+                        <img src="assets/images/avatar-96.webp" alt="" width="40" height="40">
                         <span>Inglés Sin Guion</span>
                     </a>
                     <p style="max-width:28rem;line-height:1.7">

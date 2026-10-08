@@ -1,4 +1,10 @@
 User-agent: *
 Allow: /
 
+# Internal working notes: not part of the published site. It contains the
+# maintainer's local path and OS username, plus internal do-not-touch rules.
+# GitHub Pages still serves the file, this only keeps it out of search indexes.
+Disallow: /HANDOFF.md
+Disallow: /docs/
+
 Sitemap: https://dexusjik.github.io/sitemap.xml

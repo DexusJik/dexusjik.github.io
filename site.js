@@ -39,10 +39,24 @@
         function onScroll() {
             if (header) header.classList.toggle('is-stuck', window.pageYOffset > 8);
 
+            /*
+             * Pick the section with the GREATEST offsetTop that has already
+             * been scrolled past. This is deliberately order-independent:
+             * `sections` is built in NAV order (Metodología, Planes, Sobre mí)
+             * but document order is different (Sobre mí, Metodología, Planes),
+             * so taking "the last one that matched" kept handing the highlight
+             * to Sobre mí for the whole lower page.
+             */
             var current = '';
-            sections.forEach(function (section) {
-                if (window.pageYOffset >= section.offsetTop - 140) current = section.id;
-            });
+            var probe = window.pageYOffset + 140;
+            var bestTop = -1;
+            for (var i = 0; i < sections.length; i++) {
+                var top = sections[i].offsetTop;
+                if (top <= probe && top > bestTop) {
+                    bestTop = top;
+                    current = sections[i].id;
+                }
+            }
 
             links.forEach(function (link) {
                 link.classList.toggle('active', link.getAttribute('href') === '#' + current);
@@ -66,6 +80,28 @@
                 if (!id || id === '#') return;
                 if (!document.querySelector(id)) return;
                 e.preventDefault();
+
+                /*
+                 * A link inside the open drawer scrolls twice: once here, and
+                 * again implicitly when initDrawer's own handler closes the
+                 * drawer and the document shrinks by the drawer height. The
+                 * target then ended up ~312px above the viewport. Close first,
+                 * then scroll on the next tick, once layout has settled.
+                 *
+                 * setTimeout rather than requestAnimationFrame: rAF is paused in
+                 * a backgrounded tab, which would leave the scroll unrun.
+                 */
+                if (anchor.closest('#mobile-nav')) {
+                    var toggle = document.getElementById('nav-toggle');
+                    if (toggle && toggle.getAttribute('aria-expanded') === 'true') {
+                        document.dispatchEvent(new CustomEvent('drawer:close'));
+                    }
+                    window.setTimeout(function () {
+                        scrollToId(id.slice(1));
+                    }, 0);
+                    return;
+                }
+
                 scrollToId(id.slice(1));
             });
         });
@@ -144,6 +180,16 @@
             if (e.target.closest('a')) close();
         });
 
+        /*
+         * initNav needs to close the drawer BEFORE it scrolls to an anchor
+         * inside it, otherwise the closing animation reflows the document and
+         * leaves the target off-screen. It cannot call close() directly, so it
+         * asks via this event.
+         */
+        document.addEventListener('drawer:close', function () {
+            if (isOpen()) close();
+        });
+
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && isOpen()) {
                 close();
@@ -196,11 +242,21 @@
      *
      * It does NOT make the number secret: anyone reading this file can
      * reassemble it. Hiding it properly needs a server-side redirect.
+     *
+     * The leading "+" lives in the *display* helper, not in the URL. wa.me
+     * wants digits only ("Omit any zeroes, brackets, or dashes", and the plus
+     * is explicitly called out as not wanted), so keeping it here produced
+     * wa.me/+5695... which is off-spec for every CTA on the site.
      */
-    var WA_PARTS = ['+56', '9521', '48204'];
+    var WA_PARTS = ['56', '9521', '48204'];
 
     function waNumber() {
         return WA_PARTS.join('');
+    }
+
+    /* human-readable form, for any visible text */
+    function waNumberDisplay() {
+        return '+' + waNumber();
     }
 
     function waLink(message) {
@@ -274,6 +330,8 @@
         var container = document.getElementById('quiz-questions-container');
         var progressBar = document.getElementById('quiz-progress-bar');
         var nextBtn = document.getElementById('next-step-btn');
+        var prevBtn = document.getElementById('prev-step-btn');
+        var restartBtn = document.getElementById('quiz-restart-btn');
         var actions = document.getElementById('quiz-actions');
         var result = document.getElementById('quiz-result');
         var levelOut = document.getElementById('cefr-level');
@@ -287,10 +345,14 @@
         var answers = {};
 
         function paintProgress() {
-            progressBar.style.width = ((step + 1) / total) * 100 + '%';
+            var pct = ((step + 1) / total) * 100;
+            progressBar.style.width = pct + '%';
+            progressBar.setAttribute('aria-valuenow', String(step + 1));
+            progressBar.setAttribute('aria-valuemax', String(total));
+            progressBar.setAttribute('aria-label', 'Pregunta ' + (step + 1) + ' de ' + total);
         }
 
-        function gotoStep(index) {
+        function gotoStep(index, moveFocus) {
             var previous = container.querySelector('.quiz-step.active');
             var incoming = container.querySelector('#quiz-step-' + (index + 1));
             if (!incoming) return;
@@ -301,6 +363,33 @@
             step = index;
             paintProgress();
             nextBtn.textContent = index === total - 1 ? 'Ver mi nivel' : 'Siguiente';
+            if (prevBtn) prevBtn.hidden = index === 0;
+
+            /* restore the choice already made for this question, so going back
+               and forward does not silently lose the answer */
+            var qid = incoming.querySelector('.quiz-option-button');
+            if (qid) {
+                var already = answers[qid.dataset.questionId];
+                $$('.quiz-option-button[data-question-id="' + qid.dataset.questionId + '"]', container)
+                    .forEach(function (b) {
+                        var on = b.dataset.value === already;
+                        b.classList.toggle('selected', on);
+                        b.setAttribute('aria-checked', on ? 'true' : 'false');
+                    });
+            }
+
+            /*
+             * Focus used to stay on "Siguiente", so Tab skipped the new
+             * question's options entirely and keyboard users had to Shift+Tab
+             * backwards to answer.
+             */
+            if (moveFocus) {
+                var heading = incoming.querySelector('p');
+                if (heading) {
+                    heading.setAttribute('tabindex', '-1');
+                    heading.focus();
+                }
+            }
         }
 
         function currentStepEl() {
@@ -313,10 +402,23 @@
 
             var qid = btn.dataset.questionId;
             $$('.quiz-option-button[data-question-id="' + qid + '"]', container)
-                .forEach(function (b) { b.classList.remove('selected'); });
+                .forEach(function (b) {
+                    b.classList.remove('selected');
+                    b.setAttribute('aria-checked', 'false');
+                });
 
             btn.classList.add('selected');
+            btn.setAttribute('aria-checked', 'true');
             answers[qid] = btn.dataset.value;
+        });
+
+        /* expose the option group as a radio group so the choice is announced */
+        $$('.quiz-options', container).forEach(function (group) {
+            group.setAttribute('role', 'radiogroup');
+        });
+        $$('.quiz-option-button', container).forEach(function (b) {
+            b.setAttribute('role', 'radio');
+            b.setAttribute('aria-checked', 'false');
         });
 
         function scoreProfile() {
@@ -357,7 +459,7 @@
             }
 
             if (step < total - 1) {
-                gotoStep(step + 1);
+                gotoStep(step + 1, true);
                 return;
             }
 
@@ -389,7 +491,27 @@
             });
         }
 
-        gotoStep(0);
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function () {
+                if (step > 0) gotoStep(step - 1, true);
+            });
+        }
+
+        if (restartBtn) {
+            restartBtn.addEventListener('click', function () {
+                answers = {};
+                $$('.quiz-option-button', container).forEach(function (b) {
+                    b.classList.remove('selected');
+                    b.setAttribute('aria-checked', 'false');
+                });
+                result.hidden = true;
+                container.hidden = false;
+                if (actions) actions.hidden = false;
+                gotoStep(0, true);
+            });
+        }
+
+        gotoStep(0, false);
     }
 
     /* ============================================================

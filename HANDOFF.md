@@ -1,12 +1,120 @@
 # HANDOFF — 1 Oración al Día / teaching webpage
 
 Date: 2026-10-07. Repo: `C:\Users\Dexus\Projects\Teaching\Webpage`.
-Last pushed commit: `27249d0` (main, in sync with origin). Working tree clean.
+Last pushed commit: `f0f9215` (v5 placement reset). This session's fixes are
+committed on top and pushed.
 
 **Never commit or push without the user saying so.** They have been
 approving each step explicitly, and they review the live site before deciding.
 
-## What this session did
+## Site-wide audit and fixes (2026-10-07, later)
+
+Three audit agents swept links/assets, SEO/security, and interactions. 37
+findings; the substantive ones are fixed and browser-verified. **One commit
+covers both the behaviour fixes and the asset/metadata changes**, because
+`index.html` carries both kinds of edit and splitting it by file would have
+produced two incoherent commits.
+
+**WhatsApp URL was off-spec.** `site.js` built `wa.me/+56952148204`. WhatsApp
+wants digits only ("Omit any zeroes, brackets, or dashes"; the `+` is
+explicitly unwanted), so every booking CTA on the site was off-spec. The `+`
+now lives only in `waNumberDisplay()`. Verified live: `wa.me` resolved it to
+"+56 9 5214 8204".
+
+**Mobile drawer anchors landed ~312px above the viewport.** Clicking a link in
+`#mobile-nav` scrolled while the drawer was still open; the drawer's own
+bubbling handler then closed it and the document shrank, shifting the target
+off-screen. `initNav` now dispatches `drawer:close` first, then scrolls on a
+`setTimeout(0)`. **`setTimeout`, not `requestAnimationFrame` on purpose** —
+rAF is paused in a backgrounded tab and does not fire in headless at all, which
+would silently drop the scroll. Now lands at 88px, the correct
+`scroll-padding-top` offset.
+
+**Scrollspy highlighted the wrong item.** `sections` is built in *nav* order
+(Metodología, Planes, Sobre mí) while document order differs, so "keep the last
+match" always resolved to Sobre mí from y≈1250 to the footer. Now picks the
+section with the **greatest `offsetTop` already passed**, which is
+order-independent. First attempt only rewrote the loop without sorting and was
+still broken — the browser probe caught it.
+
+**Quiz had no way back.** Once a step advanced it was `display:none`, so a
+mis-tap could not be revised and the result could not be retaken without a full
+reload. Added "Atrás" (`gotoStep(step - 1)`) and "Repetir" (clears `answers`,
+returns to step 0). Going back restores the previous choice for that question.
+
+**Quiz accessibility.** `#quiz-result` gets `aria-live="polite"`;
+`#quiz-progress-bar` becomes `role="progressbar"` with `aria-valuenow/max/label`;
+options become `role="radio"` + `aria-checked` inside `role="radiogroup"` groups;
+and `gotoStep` moves focus to the new question heading. Focus previously stayed
+on "Siguiente", so Tab skipped the new question entirely.
+
+**Icons were a 372 KB portrait photo.** `image4.webp` is 3136x4224 and was used
+as the favicon, the `apple-touch-icon` and a 40-44px avatar on every page, and
+was also in the service worker precache (half the install weight). Generated real
+derivatives from `image5.webp` (already a square 812x812 crop of the same photo):
+`avatar-96.webp` **1.4 KB**, `favicon-32.png`, `favicon-16.png`,
+`apple-touch-icon.png`. iOS silently ignores WebP for `apple-touch-icon`, so the
+home-screen icon was missing on iPhone/iPad. Same treatment applied to
+`pangal-esports` (its `p_sports.webp` was 230 KB for a 44px logo).
+
+**Metadata overstated the product.** The app advertised "A1 a C2" and "cuatro
+ejercicios por lección". Real ceiling is C1 (`game.js` LEVEL_META stops at 5) and
+there are five sentences per lesson drawn from six exercise types. Corrected in
+the meta description, the JSON-LD description and `featureList`. JSON-LD `logo`
+now points at the square `image5.webp` instead of the full portrait.
+
+**Privacy.** `HANDOFF.md` is tracked, so GitHub Pages publishes this file, which
+contains the maintainer's local path and OS username. Added `Disallow:
+/HANDOFF.md` and `Disallow: /docs/` to `robots.txt`. Note honestly: robots.txt
+only keeps a file out of search indexes, it does not stop Pages serving it.
+Untracking the file is the real fix and has not been done.
+
+**Placement copy.** The modal said "No se puede repetir", which v5 made
+self-contradictory. Reworded to explain that the level is set once and cannot be
+repeated to raise it, but a corrected paper can require a retake.
+
+**`sw.js`**: `CACHE_VERSION` had never been bumped since it was written, across 9
+later commits that changed precached files, so `install` never re-ran. Bumped to
+`daily-v5` and pointed the precache at `avatar-96.webp`.
+
+### New guard
+
+`validate-placement-count.js` (temp dir) derives the item count and max points
+from `placement.js` and fails if any user-facing string disagrees. It exists
+because the modal and the JSON-LD both advertised "20 preguntas" while the test
+had 30. It also asserts the band split is 6/8/8/8 and that every item has an
+answer, two wrong options and a `why`.
+
+### Verification
+
+- 26/26 browser assertions on the main site (drawer, scrollspy, quiz back,
+  restart, aria state, focus) via a real headless Edge run.
+- 9/9 node validators pass, including the new count guard.
+- Placement probe: 30 questions, 210 assertions, 0 failures.
+- Migration e2e: v4 holder reset, placement stamped `v:5`, 73 lessons intact,
+  XP 980 → 1040, no second prompt.
+
+**Headless testing notes that cost real time, so they are written down:**
+`--dump-dom` snapshots before an async chain finishes, so probe output must be
+flushed into the DOM incrementally and the page must **not** wait for `window.load`
+(the Google Fonts request stalls and load never fires). `requestAnimationFrame`
+does not fire in `headless=new` — use `setTimeout` in probes and in app code that
+must work in a background tab. `--dump-dom` output is lost when piped through
+PowerShell redirection; use node's `spawnSync`. Pass
+`--force-prefers-reduced-motion` when asserting scroll positions so smooth
+scrolling is instant and measurable.
+
+### Still open
+
+- `frame-ancestors` cannot be set from a `<meta>` CSP, so every page is framable.
+  Needs a real HTTP header, i.e. Cloudflare or another host in front of Pages.
+- `/english-daily/` reuses the main site's `og-card.jpg`, so shares of the app
+  show the consultancy card. Needs a dedicated 1200x630 app card.
+- `HANDOFF.md` is still served; only disallowed to crawlers.
+- Formspree endpoint `xzdklrdv` is still live in git history; user must deactivate
+  it in the Formspree dashboard.
+
+## Earlier session: v5 placement reset
 
 Started from `94877cb`, which had shipped a "prominent banner contact
 section" that printed the phone number in plain text and left a missing

@@ -11,7 +11,7 @@
  *
  * Bump CACHE_VERSION only when the PRECACHE list changes.
  */
-var CACHE_VERSION = 'daily-v4';
+var CACHE_VERSION = 'daily-v5';
 var NETWORK_TIMEOUT_MS = 4000;
 
 var PRECACHE = [
@@ -38,7 +38,7 @@ var PRECACHE = [
     './icons/maskable-512.png',
     './icons/apple-touch-icon.png',
     './icons/favicon-32.png',
-    '../assets/images/image4.webp'
+    '../assets/images/avatar-96.webp'
 ];
 
 self.addEventListener('install', function (event) {
