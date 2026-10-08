@@ -1,5 +1,5 @@
 /*
- * placement.js - test de nivel inicial (20 preguntas, un solo intento).
+ * placement.js - test de nivel inicial (30 preguntas, un solo intento).
  *
  * Load order: sentences.js, placement.js, game.js
  *
@@ -171,7 +171,7 @@ window.PLACEMENT_ITEMS = [
     },
 
     /* ---- ADICIONALES: 10 preguntas para afinar la medicion ---- */
-    /* Banda 2: 1 | Banda 3: 2 | Banda 4: 2 | Banda 5: 5 */
+    /* Banda 2: 1 | Banda 3: 4 | Banda 4: 3 | Banda 5: 2 */
 
     /* ---------------- BANDA 2 ---------------- */
     {
@@ -180,7 +180,15 @@ window.PLACEMENT_ITEMS = [
         a: 'Por favor, cierra la ventana.',
         w: ['Por favor, cierras la ventana.',
           'Por favor, cerrar la ventana.'],
-        why: 'Cuando "por favor" pide algo, el español usa el imperativo de tú: "cierra". "Cierras" es la forma del indicativo, la que sirve para hablar de lo que haces tú, y "cerrar" es un infinitivo que por sí solo no forma una orden.'
+        why: '"Please" va dirigido a una persona, así que en español responde el imperativo de tú: "cierra". "Cierras" es el indicativo, que narraría una costumbre tuya. Y "cerrar" a secas no es imposible en español, pero solo funciona en un rótulo o en una lista, no en un pedido directo a alguien.'
+    },
+    {
+        lv: 3, pts: 2, dir: 'es',
+        q: 'Nunca había montado una bici de montaña.',
+        a: 'I had never ridden a mountain bike before.',
+        w: ['I had never ride a mountain bike before.',
+          'I have never rode a mountain bike before.'],
+        why: 'Después de "had" el verbo va en participio, no en infinitivo: "had never ridden". Y con "have/has" también se usa el participio, no el pasado: "have never rode" mezcla el presente perfecto con el pasado simple. En las dos opciones el participio que corresponde es "ridden".'
     },
     {
         lv: 3, pts: 2, dir: 'en',
@@ -188,23 +196,15 @@ window.PLACEMENT_ITEMS = [
         a: 'Si salimos ahora, alcanzaremos el último bus.',
         w: ['Si saldremos ahora, alcanzaremos el último bus.',
           'Si salíamos ahora, alcanzaremos el último bus.'],
-        why: 'La condición en presente con "si" pide subjuntivo y el resultado va en futuro: "alcanzaremos". Detrás de "si" nunca aparece el futuro "saldremos", porque eso da por hecho que nos vamos, y el imperfecto "salíamos" describe una costumbre pasada, no una hipótesis.'
+        why: '"If" con presente en inglés describe una condición real y posible, así que va en presente de indicativo: "si salimos". El futuro "saldremos" detrás de "si" presenta la ida como algo ya decidido. Y el imperfecto "salíamos" junto con "ahora" describe una costumbre del pasado, no una posibilidad de aquí y ahora.'
     },
     {
         lv: 3, pts: 2, dir: 'es',
-        q: 'El resultado depende del clima.',
+        q: 'El resultado depende del tiempo atmosférico.',
         a: 'The result depends on the weather.',
         w: ['The result depends in the weather.',
-          'The result depends for the weather.'],
-        why: '"Depender" va siempre con "on" en inglés: "depends on". "Depends in" y "depends for" son calcos del español "depender de" y ninguna de las dos formas existe en inglés.'
-    },
-    {
-        lv: 3, pts: 2, dir: 'en',
-        q: 'He used to smoke, but he stopped last year.',
-        a: 'Solía fumar, pero dejó el año pasado.',
-        w: ['Usaba fumar, pero dejó el año pasado.',
-          'Está acostumbrado a fumar, pero dejó el año pasado.'],
-        why: '"Used to" marca una costumbre del pasado que ya no existe: "solía". El imperfecto "usaba" en inglés se construye con el verbo "use" más el infinitivo, no con "usaba fumar". Y "be used to" es "estar acostumbrado a", o sea un hábito que sigue vigente, justo lo contrario de "solía".'
+          'The result depends of the weather.'],
+        why: '"Depender de" se traduce con "depend on", nunca "in" ni "of": en inglés no existen esas dos formas. Ojo además con el vocabulario: "el tiempo atmosférico" es "the weather", porque habla del tiempo de hoy, mientras que "el clima" sería "the climate", el patrón de años.'
     },
     {
         lv: 4, pts: 3, dir: 'en',
@@ -224,35 +224,35 @@ window.PLACEMENT_ITEMS = [
     },
     {
         lv: 4, pts: 3, dir: 'es',
-        q: 'Ojalá hubiera estudiado medicina.',
-        a: 'I wish I had studied medicine.',
-        w: ['I wish I studied medicine.',
-          'I would have studied medicine.'],
-        why: '"Wish" sobre un arrepentimiento pasado pide pluscuamperfecto de subjuntivo en inglés: "I had studied". Con el presente "studied" queda un deseo sobre el presente, no un arrepentimiento. Y sin "I wish", "I would have studied" por sí solo es una frase incompleta, sin ningún deseo que expresar.'
+        q: 'Por más que llueva, saldremos a tiempo.',
+        a: 'Even if it rains, we will still make it on time.',
+        w: ['However much it rains, we will still make it on time.',
+          'Even if it rains, we made it on time.'],
+        why: '"Por más que" con un hecho que puede cumplirse o no introduce una concesión real, que en inglés es "even if": "Even if it rains". "However much" se usa para cantidades ("However much it costs"), no para este tipo de concesión. Y "we made it on time" ya cuenta un hecho pasado, cuando el original habla de lo que va a pasar.'
     },
     {
         lv: 5, pts: 4, dir: 'en',
-        q: 'If the team had trained harder, they would be playing in the final now.',
-        a: 'Si el equipo hubiera entrenado más, ahora estaría jugando en la final.',
-        w: ['Si el equipo había entrenado más, ahora estaría jugando en la final.',
-          'Si el equipo hubiera entrenado más, ahora habría jugado en la final.'],
-        why: 'En una hipótesis sobre el pasado la condición va en pretérito pluscuamperfecto de subjuntivo: "hubiera entrenado". El "había entrenado" afirma que en realidad sí entrenó, así que ya no hay hipótesis. Y la consecuencia describe el presente: "estaría jugando". El "habría jugado" cuenta un resultado ya pasado.'
+        q: 'Not until the audit ends will the board approve the budget.',
+        a: 'La junta no aprobará el presupuesto hasta que termine la auditoría.',
+        w: ['La junta no aprobará el presupuesto hasta que la auditoría terminó.',
+          'Hasta que la auditoría termine, la junta aprobará el presupuesto.'],
+        why: '"Not until" invierte el orden de las cláusulas: el sujeto va primero ("the board will approve") y la condición con "until", al final, en una construcción que en inglés es obligadamente negativa. La primera opción quita ese "no" y por eso pasa a decir que la junta SÍ aprobará el presupuesto hasta que la auditoría termine, que es justo lo contrario. Y "terminó" en pretérito afirma que la auditoría ya acabó, cuando el original la da por pendiente.'
     },
     {
         lv: 5, pts: 4, dir: 'es',
-        q: 'Es fundamental que todos los directores voten por el plan mañana.',
-        a: 'It is essential that all the directors vote for the plan tomorrow.',
-        w: ['It is essential that all the directors voted for the plan tomorrow.',
-          'It is essential that all the directors will vote for the plan tomorrow.'],
-        why: 'Después de "es fundamental que" el verbo va en subjuntivo y en presente: "vote". El "voted" cuenta una votación ya pasada y el "will vote" ya no es subjuntivo. En los dos casos desaparece la exigencia: lo que era obligatorio pasa a ser un hecho.'
+        q: 'No es que el plan sea perfecto; es que no hay alternativa.',
+        a: 'It is not that the plan is perfect; it is that there is no alternative.',
+        w: ['The plan is not perfect because there is no alternative.',
+          'It is not only that the plan is perfect; it is also that there is no alternative.'],
+        why: '"No es que... es que" no expresa una causa, sino una corrección de la idea anterior, y en inglés lleva "It is not that... it is that". La primera opción convierte todo en un "because", que sí es una relación causal. Y "not only... also" suma una afirmación adicional, cuando el original va a corregir, no a acumular.'
     },
     {
         lv: 5, pts: 4, dir: 'en',
-        q: 'The regulations were so convoluted that nobody could follow them.',
-        a: 'Las normas eran tan enrevesadas que nadie podía seguirlas.',
-        w: ['Las normas eran tan enrevesadas que nadie las seguía.',
-          'Las normas eran tan enrevesadas porque nadie podía seguirlas.'],
-        why: 'El "so...that" de resultado se traduce con "tan...que" y termina en una consecuencia: "podía seguirlas". Sin el "podía" queda "nadie las seguía", que afirma que nadie las siguió. Y con "porque" la relación se da vuelta: la complicación pasa a ser la causa en vez del efecto.'
+        q: 'The data were so inconsistent that nobody trusted the analysis.',
+        a: 'Los datos eran tan inconsistentes que nadie confiaba en el análisis.',
+        w: ['Los datos eran inconsistentes que nadie confiaba en el análisis.',
+          'Los datos eran tan inconsistentes porque nadie confiaba en el análisis.'],
+        why: 'Un "so" seguido de un adjetivo de resultado exige "tan" antes del adjetivo y "que" después: "tan inconsistentes que". La primera opción se queda sin "tan" y "inconsistentes que" no forma una oración, porque el "so" se queda sin la consecuencia que debe introducir. Y "porque" invierte la relación lógica: presenta la desconfianza como causa, cuando el inglés dice que la causa es la inconsistencia y el efecto es que nadie confiara.'
     }
 
 ];

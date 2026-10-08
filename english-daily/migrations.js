@@ -16,8 +16,11 @@
     /*
      * Bump when a migration below changes meaning. Each saved record carries
      * the version it was written under; anything older gets upgraded.
+     *
+     * v4 deliberately clears a CURRENT placement rather than only a stale
+     * one. See the note on migratePlacement.
      */
-    var CURRENT_VERSION = 3;
+    var CURRENT_VERSION = 4;
 
     /*
      * v2: the placement test used to render the correct answer as the prompt
@@ -37,6 +40,34 @@
      * one placed at C1 under the old bands may not. Both are re-offered the
      * test once rather than left with a level the current scoring would not
      * produce.
+     *
+     * v4: a full content pass over the 30 items found six defects, one of
+     * them a mistranslation that marked a correct answer wrong ("el clima"
+     * answered as "the weather"), and three items whose explanation argued
+     * about a feature the options did not actually vary on. A placement
+     * result is only as trustworthy as its items, so EVERY stored result is
+     * discarded and the whole cohort retakes the test against the corrected
+     * paper. There is deliberately no attempt to salvage or rescale an old
+     * score: the question set changed too much for the number to mean
+     * anything, and a quiet partial retake would leave the worst-placed
+     * learners with the least chance to correct it.
+     *
+     * What is NOT discarded: xp, gems, streak, completed lessons, badges and
+     * the first name. Only the level placement is re-earned. Someone who has
+     * been studying for months keeps their progress and their unlocked
+     * lessons; they simply sit the test again.
+     */
+    /*
+     * v4 clears even a placement stamped with the current version.
+     *
+     * The v2 and v3 rules were "clear anything older than me", which is safe
+     * when the only change is scoring. v4 is different: the 30 questions
+     * themselves were corrected, including a mistranslation that marked a
+     * correct answer wrong. So the rule is inverted on purpose: only a result
+     * that is already stamped v4 survives.
+     *
+     * The stamp is therefore no longer "how old is this result" but "has this
+     * learner sat the current paper".
      */
     function migratePlacement(state) {
         if (!state.placement) return false;
