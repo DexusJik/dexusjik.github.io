@@ -208,11 +208,11 @@ window.PLACEMENT_ITEMS = [
     },
     {
         lv: 4, pts: 3, dir: 'en',
-        q: 'If she had studied medicine, she would be a doctor now.',
-        a: 'Si hubiera estudiado medicina, ahora sería médica.',
-        w: ['Si había estudiado medicina, ahora sería médica.',
-          'Si hubiera estudiado medicina, ahora habría sido médica.'],
-        why: 'Condicional mixto: la causa es pasada ("hubiera estudiado") y el efecto es presente ("sería"). "Si había estudiado" es el pluscuamperfecto de indicativo, que en español no abre una hipótesis: ahí va el pluscuamperfecto de subjuntivo. Y "habría sido" cuenta el efecto en pasado, cuando el original lo sitúa ahora.'
+        q: 'If she had studied medicine, she would be working in a hospital now.',
+        a: 'Si hubiera estudiado medicina, ahora estaría trabajando en un hospital.',
+        w: ['Si había estudiado medicina, ahora estaría trabajando en un hospital.',
+          'Si hubiera estudiado medicina, ahora habría trabajado en un hospital.'],
+        why: 'Condicional mixto: la causa es pasada ("hubiera estudiado") y el efecto es presente ("estaría trabajando"). "Si había estudiado" es el pluscuamperfecto de indicativo, que en español no abre una hipótesis: ahí va el pluscuamperfecto de subjuntivo. Y "habría trabajado" cuenta el efecto en pasado, cuando el original lo sitúa ahora.'
     },
     {
         lv: 4, pts: 3, dir: 'es',
@@ -224,11 +224,11 @@ window.PLACEMENT_ITEMS = [
     },
     {
         lv: 4, pts: 3, dir: 'es',
-        q: 'Por más que llueva, saldremos a tiempo.',
+        q: 'Aunque llueva, saldremos a tiempo.',
         a: 'Even if it rains, we will still make it on time.',
         w: ['However much it rains, we will still make it on time.',
           'Even if it rains, we made it on time.'],
-        why: '"Por más que" con un hecho que puede cumplirse o no introduce una concesión real, que en inglés es "even if": "Even if it rains". "However much" se usa para cantidades ("However much it costs"), no para este tipo de concesión. Y "we made it on time" ya cuenta un hecho pasado, cuando el original habla de lo que va a pasar.'
+        why: '"Aunque" seguido de subjuntivo expresa una concesión real en inglés, y eso es "even if": "Even if it rains". "However much" se usa para cantidades ("however much it costs"), no para este tipo de concesión. Y "we made it on time" ya cuenta un hecho pasado, cuando el original habla de lo que va a pasar.'
     },
     {
         lv: 5, pts: 4, dir: 'en',
