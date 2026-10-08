@@ -67,9 +67,27 @@ jobs:
 
       - name: no secret-looking strings
         run: |
-          # masks the value so a real credential is never echoed into a log
-          if grep -rInE '(sk_live_|pk_live_|ghp_[A-Za-z0-9]{20,}|github_pat_|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY)' \
-               --include='*.js' --include='*.html' --include='*.css' --include='*.json' --include='*.yml' \
+          # The patterns are built by concatenation on purpose. Written
+          # literally, this workflow file matches its own scan, which is how the
+          # first version of this job failed: grep found the pattern inside the
+          # very command doing the grepping.
+          #
+          #   sk_live  = 'sk' + '_live_'
+          #   pk_live  = 'pk' + '_live_'
+          #   ghp      = 'gh' + 'p_'
+          #   github_pat = 'github' + '_pat_'
+          #   AKIA     = 'AKI' + 'A'
+          #   PEM      = 'BEGIN ' + 'PRIVATE KEY'
+          PATTERNS="sk${D}_live_|pk${D}_live_|gh${D}p_[A-Za-z0-9]{20,}|github${D}_pat_|AKI${D}A[0-9A-Z]{16}|-----BEGIN ${D}[A-Z ]*PRIVATE KEY"
+          PATTERNS="${PATTERNS//$D/}"
+          # tools/check-secret-scan.js needs no exclusion: it holds its example
+          # credentials as two halves joined at run time, so no contiguous
+          # secret-shaped string exists in it for this scan (or GitHub push
+          # protection) to find. It is the gate proving this scan still works.
+          if grep -rInE "$PATTERNS" \
+               --include='*.js' --include='*.html' --include='*.css' \
+               --include='*.json' --include='*.yml' \
+               --exclude-dir=node_modules --exclude-dir=.git \
                . ; then
             echo '::error::a credential-shaped string is committed'
             exit 1

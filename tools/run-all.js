@@ -28,6 +28,8 @@ const GATES = [
     ['validate-placement-count', 'advertised counts match placement.js'],
     ['check-jsonld', 'JSON-LD parses and claims are accurate'],
     ['check-asset-refs', 'every local asset reference resolves'],
+    ['check-secret-scan', 'the CI secret scan still catches real credentials'],
+    ['check-line-endings', 'no file would commit a CRLF line ending'],
     ['check-light-unchanged', 'light theme still renders as it did before'],
     ['audit-dark-risk', 'no colour that breaks in dark mode'],
     ['test-migration', 'state migrations preserve progress'],
