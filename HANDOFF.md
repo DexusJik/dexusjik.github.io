@@ -90,6 +90,39 @@ root, then `node run-<x>-probe.js`. Delete every `zz_*` file and stop the
 server afterwards. `Start-Process` + `RedirectStandardOutput` is the only
 reliable way to read Edge's stdout on this machine.
 
+## Placement test (30 questions, re-cut scoring)
+
+The test grew from 20 questions / 50 points to **30 questions / 78 points**,
+distributed 6/8/8/8 across A2/B1/B2/C1 so the upper bands carry most of the
+weight (32 of 78 points are C1).
+
+**The real cause of "placement feels too generous" was a threshold bug, not
+question quality.** Every item offers three options, so a learner choosing at
+random scores an expected `max/3` = 26 of 78, about **33%**. The old level-3
+cut was `>=14 of 50` = **28%, below that floor**, so answering everything at
+random placed someone in B1. With 30 questions the old cuts were worse: a
+guesser landed in level 4.
+
+| Level | Old cut | New cut | Share |
+|---|---|---|---|
+| 5 | 36 of 50 (72%) | **60 of 78 (77%)** | harder |
+| 4 | 24 of 50 (48%) | **44 of 78 (56%)** | harder |
+| 3 | 14 of 50 (28%) | **34 of 78 (44%)** | **above the 33% floor** |
+| 2 | 5 of 50 (10%) | **10 of 78 (13%)** | slightly higher |
+
+`PLACEMENT_MAX` is now summed from the item data on boot rather than
+hardcoded, so adding a question cannot silently invalidate every cut.
+
+Two guards keep this honest: `test-placement-bands.js` asserts a random
+guesser lands below level 3 **and** that honest B1, B2 and C1 learners each
+still reach their own level (over-correcting would lock capable learners below
+their level on a one-shot test); `check-cuts-in-sync.js` asserts `game.js` and
+the band test declare identical thresholds.
+
+`migrations.js` is at **CURRENT_VERSION 3**: a v2 placement is cleared and the
+test re-offered once, because both the item count and the bands changed, so
+an old score no longer means what it meant. Skippers are never nagged.
+
 ## Open items
 
 1. **Deactivate the Formspree form.** Endpoint ID `xzdklrdv` is in four
