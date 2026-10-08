@@ -168,5 +168,91 @@ window.PLACEMENT_ITEMS = [
         w: ['Sin tener en cuenta las objeciones, la resolución está en pie.',
           'Sin tener en cuenta las objeciones, el fallo sigue en pie.'],
         why: '"Notwithstanding" es una preposición culta, "pese a"; "sin tener en cuenta" es una locución verbal y no equivale. Y "ruling" aquí es "resolución" o "fallo", no "regla".'
+    },
+
+    /* ---- ADICIONALES: 10 preguntas para afinar la medicion ---- */
+    /* Banda 2: 1 | Banda 3: 2 | Banda 4: 2 | Banda 5: 5 */
+
+    /* ---------------- BANDA 2 ---------------- */
+    {
+        lv: 2, pts: 1, dir: 'en',
+        q: 'Please close the window.',
+        a: 'Por favor, cierra la ventana.',
+        w: ['Por favor, cierras la ventana.',
+          'Por favor, cerrar la ventana.'],
+        why: 'Cuando "por favor" pide algo, el español usa el imperativo de tú: "cierra". "Cierras" es la forma del indicativo, la que sirve para hablar de lo que haces tú, y "cerrar" es un infinitivo que por sí solo no forma una orden.'
+    },
+    {
+        lv: 3, pts: 2, dir: 'en',
+        q: 'If we leave now, we will catch the last bus.',
+        a: 'Si salimos ahora, alcanzaremos el último bus.',
+        w: ['Si saldremos ahora, alcanzaremos el último bus.',
+          'Si salíamos ahora, alcanzaremos el último bus.'],
+        why: 'La condición en presente con "si" pide subjuntivo y el resultado va en futuro: "alcanzaremos". Detrás de "si" nunca aparece el futuro "saldremos", porque eso da por hecho que nos vamos, y el imperfecto "salíamos" describe una costumbre pasada, no una hipótesis.'
+    },
+    {
+        lv: 3, pts: 2, dir: 'es',
+        q: 'El resultado depende del clima.',
+        a: 'The result depends on the weather.',
+        w: ['The result depends in the weather.',
+          'The result depends for the weather.'],
+        why: '"Depender" va siempre con "on" en inglés: "depends on". "Depends in" y "depends for" son calcos del español "depender de" y ninguna de las dos formas existe en inglés.'
+    },
+    {
+        lv: 3, pts: 2, dir: 'en',
+        q: 'He used to smoke, but he stopped last year.',
+        a: 'Solía fumar, pero dejó el año pasado.',
+        w: ['Usaba fumar, pero dejó el año pasado.',
+          'Está acostumbrado a fumar, pero dejó el año pasado.'],
+        why: '"Used to" marca una costumbre del pasado que ya no existe: "solía". El imperfecto "usaba" en inglés se construye con el verbo "use" más el infinitivo, no con "usaba fumar". Y "be used to" es "estar acostumbrado a", o sea un hábito que sigue vigente, justo lo contrario de "solía".'
+    },
+    {
+        lv: 4, pts: 3, dir: 'en',
+        q: 'If she had studied medicine, she would be a doctor now.',
+        a: 'Si hubiera estudiado medicina, ahora sería médica.',
+        w: ['Si había estudiado medicina, ahora sería médica.',
+          'Si hubiera estudiado medicina, ahora habría sido médica.'],
+        why: 'Condicional mixto: la causa es pasada ("hubiera estudiado") y el efecto es presente ("sería"). "Si había estudiado" es el pluscuamperfecto de indicativo, que en español no abre una hipótesis: ahí va el pluscuamperfecto de subjuntivo. Y "habría sido" cuenta el efecto en pasado, cuando el original lo sitúa ahora.'
+    },
+    {
+        lv: 4, pts: 3, dir: 'es',
+        q: 'No puede ser que el equipo haya llegado tarde.',
+        a: 'The team can\'t have arrived late.',
+        w: ['The team must have arrived late.',
+          'The team can\'t arrive late.'],
+        why: '"No puede ser que" descarta una suposición sobre algo que ya pasó, así que en inglés va "can\'t have" más participio: "can\'t have arrived". "Must have" afirma que sí llegaron tarde, o sea lo contrario de lo que dice el enunciado, y "can\'t arrive" habla del futuro o de una falta de permiso, no de una deducción sobre el pasado.'
+    },
+    {
+        lv: 4, pts: 3, dir: 'es',
+        q: 'Ojalá hubiera estudiado medicina.',
+        a: 'I wish I had studied medicine.',
+        w: ['I wish I studied medicine.',
+          'I would have studied medicine.'],
+        why: '"Wish" sobre un arrepentimiento pasado pide pluscuamperfecto de subjuntivo en inglés: "I had studied". Con el presente "studied" queda un deseo sobre el presente, no un arrepentimiento. Y sin "I wish", "I would have studied" por sí solo es una frase incompleta, sin ningún deseo que expresar.'
+    },
+    {
+        lv: 5, pts: 4, dir: 'en',
+        q: 'If the team had trained harder, they would be playing in the final now.',
+        a: 'Si el equipo hubiera entrenado más, ahora estaría jugando en la final.',
+        w: ['Si el equipo había entrenado más, ahora estaría jugando en la final.',
+          'Si el equipo hubiera entrenado más, ahora habría jugado en la final.'],
+        why: 'En una hipótesis sobre el pasado la condición va en pretérito pluscuamperfecto de subjuntivo: "hubiera entrenado". El "había entrenado" afirma que en realidad sí entrenó, así que ya no hay hipótesis. Y la consecuencia describe el presente: "estaría jugando". El "habría jugado" cuenta un resultado ya pasado.'
+    },
+    {
+        lv: 5, pts: 4, dir: 'es',
+        q: 'Es fundamental que todos los directores voten por el plan mañana.',
+        a: 'It is essential that all the directors vote for the plan tomorrow.',
+        w: ['It is essential that all the directors voted for the plan tomorrow.',
+          'It is essential that all the directors will vote for the plan tomorrow.'],
+        why: 'Después de "es fundamental que" el verbo va en subjuntivo y en presente: "vote". El "voted" cuenta una votación ya pasada y el "will vote" ya no es subjuntivo. En los dos casos desaparece la exigencia: lo que era obligatorio pasa a ser un hecho.'
+    },
+    {
+        lv: 5, pts: 4, dir: 'en',
+        q: 'The regulations were so convoluted that nobody could follow them.',
+        a: 'Las normas eran tan enrevesadas que nadie podía seguirlas.',
+        w: ['Las normas eran tan enrevesadas que nadie las seguía.',
+          'Las normas eran tan enrevesadas porque nadie podía seguirlas.'],
+        why: 'El "so...that" de resultado se traduce con "tan...que" y termina en una consecuencia: "podía seguirlas". Sin el "podía" queda "nadie las seguía", que afirma que nadie las siguió. Y con "porque" la relación se da vuelta: la complicación pasa a ser la causa en vez del efecto.'
     }
+
 ];
