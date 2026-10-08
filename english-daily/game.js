@@ -598,15 +598,37 @@
      * Scoring low is a legitimate result, not a failure: it just means the
      * route starts at the beginning.
      */
-    var PLACEMENT_MAX = 50; // 5*(1+2+3+4)
+    /*
+     * Recomputed from the item data on every boot, never hardcoded: adding a
+     * question changes the maximum and every cut below depends on it.
+     */
+    function placementMax() {
+        var items = window.PLACEMENT_ITEMS || [];
+        var sum = 0;
+        for (var i = 0; i < items.length; i++) sum += items[i].pts || 0;
+        return sum;
+    }
 
-    /* score -> starting level. Tuned so roughly 72% of the weighted score is
-       needed to start at the top, which is deliberately demanding. */
+    var PLACEMENT_MAX = placementMax();
+
+    /*
+     * Score -> starting level.
+     *
+     * Every item offers three options, so a learner choosing at random scores
+     * an expected PLACEMENT_MAX/3 = 26 of 78, about 33%. Every cut from
+     * level 3 upward therefore has to sit ABOVE that floor, or coin flips buy
+     * a level. The old cuts (>=14 of 50, 28%) were below it, which is how a
+     * random guesser ended up placed in B1.
+     *
+     * Cuts are verified by test-placement-bands.js, which asserts that a
+     * guesser lands below level 3 while an honest B1, B2 and C1 learner each
+     * still reach their own level.
+     */
     var PLACEMENT_CUTS = [
-        { min: 36, level: 5 },
-        { min: 24, level: 4 },
-        { min: 14, level: 3 },
-        { min: 5, level: 2 },
+        { min: 60, level: 5 },   // 77%
+        { min: 44, level: 4 },   // 56%
+        { min: 34, level: 3 },   // 44% - above the 33% guessing floor
+        { min: 10, level: 2 },   // 13%
         { min: 0, level: 1 }
     ];
 
