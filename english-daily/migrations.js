@@ -17,10 +17,16 @@
      * Bump when a migration below changes meaning. Each saved record carries
      * the version it was written under; anything older gets upgraded.
      *
-     * v4 deliberately clears a CURRENT placement rather than only a stale
-     * one. See the note on migratePlacement.
+     * v5 also clears `placementSkipped`, which until now was permanent. Two
+     * states were permanently exempt from ever being asked, and both are
+     * wrong for a test whose content had a mistranslation:
+     *   - anyone holding a v4 result, because v4 went live BEFORE the item
+     *     content was corrected, so that result was earned on the defective
+     *     paper, and
+     *   - anyone who ever pressed "Prefiero empezar desde el principio",
+     *     which set a flag nothing ever cleared.
      */
-    var CURRENT_VERSION = 4;
+    var CURRENT_VERSION = 5;
 
     /*
      * v2: the placement test used to render the correct answer as the prompt
@@ -56,6 +62,17 @@
      * the first name. Only the level placement is re-earned. Someone who has
      * been studying for months keeps their progress and their unlocked
      * lessons; they simply sit the test again.
+     *
+     * v5: the owner asked for a clean reset for everyone. Two groups were
+     * still being spared and should not have been:
+     *   - holders of a v4 result. v4 shipped before the item content was
+     *     corrected, so those scores came from the paper containing the
+     *     "el clima" / "weather" mistranslation.
+     *   - learners who pressed "Prefiero empezar desde el principio". That
+     *     wrote `placementSkipped`, which until now nothing ever cleared, so
+     *     skipping was permanent and silent.
+     * Both are cleared. A skip is still offered as a choice, but it no longer
+     * locks someone out of a corrected test permanently.
      */
     /*
      * v4 clears even a placement stamped with the current version.
@@ -70,15 +87,28 @@
      * learner sat the current paper".
      */
     function migratePlacement(state) {
-        if (!state.placement) return false;
-        if (state.placement.v === CURRENT_VERSION) return false;
-        state.placement = null;
-        return true;
+        if (state.placement && state.placement.v === CURRENT_VERSION) {
+            /* already sat the current paper: nothing to re-earn */
+        } else if (state.placement) {
+            state.placement = null;
+        }
+        /*
+         * v5: a skip is a choice for one sitting, not a permanent exemption.
+         * Clearing it here means everyone is asked at least once more, and the
+         * offer comes back on a later visit if they decline again.
+         */
+        if (state.placementSkipped === true) state.placementSkipped = false;
     }
 
     function run(state) {
         var changed = [];
-        if (migratePlacement(state)) changed.push('placement');
+        var hadPlacement = !!state.placement;
+        var hadSkip = state.placementSkipped === true;
+
+        migratePlacement(state);
+
+        if (hadPlacement && !state.placement) changed.push('placement');
+        if (hadSkip && !state.placementSkipped) changed.push('placementSkipped');
         return changed;
     }
 

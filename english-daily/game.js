@@ -873,6 +873,13 @@
             startPlacement();
         });
 
+        /*
+         * Skipping defers the offer, it does not waive it. Historically this
+         * wrote a permanent flag that no migration ever cleared, so a learner
+         * who pressed it once was never asked again and their level stayed
+         * whatever it was. Now the flag is cleared by migrations.js on the
+         * next version bump, and the prompt returns on a later visit.
+         */
         $('placement-skip').addEventListener('click', function () {
             state.placementSkipped = true;
             save();
