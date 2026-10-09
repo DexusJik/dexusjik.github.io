@@ -130,22 +130,84 @@
 
     var state = load();
 
+    /*
+     * Whitelist merge plus type validation.
+     *
+     * The whitelist alone handled a MISSING key (it takes the default) and an
+     * UNKNOWN key (ignored). It did not handle a key of the wrong TYPE: a
+     * hand-edited `hearts: "5"` or a half-written `completed: []` used to flow
+     * straight into arithmetic.
+     *
+     * IF THE SCHEMA IS NOT LOADED, FALL BACK TO THE PLAIN WHITELIST MERGE.
+     *
+     * This used to `return base`, which discarded the learner's saved state
+     * entirely. A 404 on state-schema.js, a service-worker cache race, or any
+     * CSP change that stopped it executing would silently reset every learner's
+     * XP, gems, streak and completed lessons to defaults, and the next save()
+     * would overwrite the real state permanently. A failed script must never be
+     * able to destroy progress, so the old behaviour is the fallback.
+     */
     function load() {
+        var base = defaultState();
         try {
             var raw = localStorage.getItem(STORAGE_KEY);
-            if (!raw) return defaultState();
+            if (!raw) return base;
             var saved = JSON.parse(raw);
-            var base = defaultState();
+            if (!window.DailyStateSchema) return whitelistMerge(saved, base);
+
+            var repaired = validateState(saved, base);
+            /* backfill the study history exactly as the merge branch does */
+            if (repaired.lastStudyDate &&
+                (!repaired.studyHistory || !repaired.studyHistory[repaired.lastStudyDate])) {
+                if (!repaired.studyHistory) repaired.studyHistory = {};
+                repaired.studyHistory[repaired.lastStudyDate] = true;
+            }
+            return repaired;
+        } catch (e) {
+            return base;
+        }
+    }
+
+    /* the pre-schema behaviour, kept as the safe fallback */
+    function whitelistMerge(saved, base) {
+        if (base != null && typeof base === 'object' && saved != null && typeof saved === 'object') {
             Object.keys(base).forEach(function (k) {
                 if (saved[k] !== undefined && saved[k] !== null) base[k] = saved[k];
             });
-            if (base.lastStudyDate && (!base.studyHistory || !base.studyHistory[base.lastStudyDate])) {
-                if (!base.studyHistory) base.studyHistory = {};
-                base.studyHistory[base.lastStudyDate] = true;
-            }
-            return base;
-        } catch (e) {
-            return defaultState();
+        }
+        return base;
+    }
+
+    function validateState(saved, base) {
+        var result = window.DailyStateSchema.repair(saved, base);
+        var state = result.state;
+
+        if (result.repairs.length) {
+            /*
+             * Persist the repair immediately, but keep a backup of the blob we
+             * started from. A false positive in the schema is otherwise
+             * unrecoverable learner-progress loss, and the whole point of this
+             * file is that a repair must never cost progress.
+             */
+            try {
+                var raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) localStorage.setItem(STORAGE_KEY + '_backup', raw);
+            } catch (e) { /* private mode: the in-memory repair still applies */ }
+
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            } catch (e) { /* private mode: the in-memory repair still applies */ }
+
+            logStateRepairs(result.repairs);
+        }
+
+        return state;
+    }
+
+    function logStateRepairs(repairs) {
+        /* visible in the console so a fault on a phone is diagnosable at all */
+        if (window.console && console.warn) {
+            console.warn('[1 Oración al Día] repaired saved progress: ' + repairs.join('; '));
         }
     }
 

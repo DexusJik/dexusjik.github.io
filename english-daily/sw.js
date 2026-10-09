@@ -17,7 +17,7 @@
  *
  * Bump CACHE_VERSION only when the PRECACHE list changes.
  */
-var CACHE_VERSION = 'daily-v6';
+var CACHE_VERSION = 'daily-v8';
 var NETWORK_TIMEOUT_MS = 4000;
 
 var PRECACHE = [
@@ -30,6 +30,9 @@ var PRECACHE = [
     '../theme.js',
     './sentences.js',
     './placement.js',
+    './errors.js',
+    './errors-ui.js',
+    './state-schema.js',
     './migrations.js',
     './game.js',
     './features/tips.js',

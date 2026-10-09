@@ -256,6 +256,18 @@
 
         <section class="storage-notice" id="storage-notice" role="note" hidden></section>
 
+        <!-- surfaced only when something actually failed; errors.js fills the body -->
+        <section class="error-notice" id="error-notice" role="status" hidden>
+            <span class="error-notice__icon" aria-hidden="true">⚠️</span>
+            <p class="error-notice__text" id="error-notice-text"></p>
+            <button type="button" class="btn btn-secondary error-notice__btn" id="error-details-btn">
+                Ver detalles
+            </button>
+            <button type="button" class="btn btn-secondary error-notice__btn" id="error-dismiss-btn">
+                Ocultar
+            </button>
+        </section>
+
         <!-- filled by features/*.js through DailyGame.slot('top') -->
         <div class="feature-slot" id="feature-slot-top"></div>
 
@@ -405,8 +417,12 @@
         </div>
     </main>
 
+    <!-- errors.js first: it must be listening before anything else can throw -->
+    <script src="errors.js"></script>
     <script src="sentences.js"></script>
     <script src="placement.js"></script>
+    <!-- state-schema must load before game.js: game.js load() calls it -->
+    <script src="state-schema.js"></script>
     <script src="migrations.js"></script>
     <script src="game.js"></script>
     <!-- optional features: each plugs in through window.DailyGame -->
@@ -415,5 +431,6 @@
     <script src="features/challenge.js"></script>
     <script src="features/review.js"></script>
     <script src="features/phrasebook.js"></script>
+    <script src="errors-ui.js"></script>
 </body>
 </html>
