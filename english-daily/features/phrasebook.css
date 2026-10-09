@@ -169,7 +169,7 @@
 .pb-close:focus-visible,
 .pb-chip:focus-visible,
 .pb-speak:focus-visible,
-.pb-entry .btn:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.pb-entry .btn:focus-visible { outline: 3px solid var(--focus-ring-strong); outline-offset: 2px; }
 
 @media (min-width: 720px) {
     .pb-overlay { align-items: center; padding: 1.5rem; backdrop-filter: blur(4px); }

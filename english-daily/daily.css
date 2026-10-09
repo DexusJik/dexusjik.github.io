@@ -58,6 +58,76 @@
        button keeps its raised look while the label stays readable */
     --gold-edge: #d4a500;
     --gold-hover: #ffd233;
+
+    /*
+     * The three top-bar stat values.
+     *
+     * Each was a hardcoded hex with no dark rule, so in dark mode they were
+     * measured at 3.33:1 (gems), 3.50:1 (streak) and 4.43:1 (hearts) against
+     * the dark topbar. All three are darkened here to clear 4.5:1 on BOTH the
+     * light topbar and the dark one, since they share a light value.
+     */
+    --streak-ink: #9a5800;   /* was #b36b00 = 4.18:1 on white */
+    --gems-ink: #0a6ea8;     /* was #0b7ec2 = 4.40:1 on white */
+    --hearts-ink: #c62828;   /* was --red #ff4b4b = 3.30:1 on white */
+    --orange-ink: #a03408;   /* was #c2410c, 2.18:1 at 28px */
+
+    /*
+     * TEXT-role tokens for the brand accents.
+     *
+     * --blue, --green and --orange are FILL colours: they are what a disc or a
+     * progress bar is painted with, and they are chosen to be vivid, not legible.
+     * Used as lettering they fail badly — blue on a pale blue tint measured
+     * 2.20:1, and orange on the active calendar day measured 1.91:1. Both were
+     * live failures on the light theme that no gate saw, because the shop and
+     * calendar modals were never opened by any measurement.
+     *
+     * These are the same one-token-two-roles split that --green needed, and the
+     * lighter of each pair is discarded once the value below clears AA on every
+     * surface it actually lands on.
+     */
+    --blue-ink: #0a6ea8;    /* 5.51:1 on white, 4.97:1 on the blue tint */
+    --green-ink: #25750a;   /* 5.79:1 on white */
+
+    /*
+     * The focus ring. WCAG 2.4.7 needs 3:1 against BOTH the page and the card.
+     *
+     * No single colour does it: --gold (#ffc200) is 1.51:1 on the light page
+     * and 9.03:1 on the dark one; #725000 is the reverse at 6.85 and 1.99. So
+     * this is a per-theme token, like --hearts-ink. Five rules used --gold or
+     * --blue here and all failed in light mode, and no gate could see it because
+     * no scene ever focused anything.
+     */
+    --focus-ring-strong: #0a6ea8;
+
+    /* node labels on the coloured discs. white on --green measured 2.09:1 and
+       white on --blue 2.44:1, both on a 17.6px/900 numeral. */
+    --on-node: #1b1464;
+    --on-node-blue: #082f49;
+
+    /*
+     * The unit banner sits on --green-cta, so its labels are white on green.
+     * Measured 3.89:1 and 4.09:1 with a translucent white, because the 0.88 and
+     * 0.92 alphas composite toward the green underneath. Full --on-cta white
+     * measures 4.54:1 on #2c8801, which clears AA.
+     */
+    --on-green-band: #ffffff;
+
+    /*
+     * Green used as TEXT on the page background. --green (#58cc02) is a bright
+     * lime that only works as a fill, not as lettering: it measured 2.09:1 on
+     * white as the ladder labels and 3.23:1 for the node tooltip. #25750a
+     * measures 5.79:1 on white while staying recognisably the same green.
+     */
+    --green-ink: #25750a;
+
+    /*
+     * The locked badge dims itself with opacity, which multiplies whatever text
+     * colour it uses. At the original 0.42 opacity, --muted composited down to
+     * 1.96:1 on white and 2.17:1 on the dark card. The label needs its own
+     * token because no existing muted grey survives the multiplier.
+     */
+    --badge-locked-ink: #3d4450;
     --blue-tint: #eaf2ff;
     --blue-tint-2: #e8f5fe;
     --blue-tint-3: #e0f2fe;
@@ -78,6 +148,16 @@
     --wrong-text: #b91c1c;
     --wrong-line: #ffb2b4;
     --amber-text: #7a5c00;
+    /* 3D bottom edges and outline colours. Audited by audit-dark-risk: a pale
+       hairline is still a bright hairline on a dark surface. */
+    --edge-raised: #cbd5e1;
+    --edge-arrow: #ffffff;
+    --blue-edge: #bce1fb;
+    --blue-edge-2: #bae6fd;
+    --blue-edge-3: #1499d6;   /* the 3D bottom edge under the blue discs */
+    --amber-edge: #f2d675;
+    --amber-edge-2: #fed7aa;
+    --amber-edge-3: #e3c55a;
     --shadow-ambient: rgba(0, 0, 0, 0.25);
     /* the scrim behind a modal. near-black with alpha, so it dims the same way
        over a light and a dark page and needs no theme override */
@@ -150,9 +230,41 @@
     --streak-chip: #3a2a12;
     --gems-chip: #12283d;
     --hearts-chip: #3a1620;
+
+    /*
+     * The stat values on the dark topbar. #9a5800 measures 4.5:1 on --topbar
+     * and #0a6ea8 clears 7:1; --hearts-ink already clears both, so the
+     * darkening from :root carries over.
+     */
+    --streak-ink: #f0a44a;
+    --gems-ink: #5cc0f5;
+    /* no single red can clear 4.5:1 on both white and dark navy: white needs
+       luminance <= 0.172 and the dark topbar is 0.015, so the window is empty.
+       --hearts-ink must therefore differ per theme, unlike the other two. */
+    --hearts-ink: #ff6b6b;
+    --orange-ink: #ff9a5c;
+    --green-ink: #7ed957;
+    /* the blue TEXT role in dark. The fill stays #1cb0f6, which is unreadable as
+       lettering on the dark surfaces. */
+    --blue-ink: #5cc0f5;
+    /* the focus ring in dark: 8.77:1 on the dark page, 7.18:1 on the dark card */
+    --focus-ring-strong: #5cc0f5;
+    /* the locked badge is dimmed by opacity, so its label must start brighter
+       than a normal muted grey to survive the multiplier */
+    --badge-locked-ink: #cbd5e1;
     /* dark gold on hover, with its own label colour to match */
     --gold-hover: #d4a500;
     --on-gold-hover: #5f3500;
+
+    /* edges on dark: a pale hairline reads as a bright hairline */
+    --edge-raised: #3d4a63;
+    --edge-arrow: #e2e8f0;
+    --blue-edge: #1e4a7a;
+    --blue-edge-2: #1b4270;
+    --blue-edge-3: #1499d6;
+    --amber-edge: #6b5518;
+    --amber-edge-2: #7a5f1c;
+    --amber-edge-3: #6b5518;
 
     --shadow-ambient: rgba(0, 0, 0, 0.45);
 }
@@ -160,7 +272,7 @@
 * { box-sizing: border-box; }
 
 :focus-visible {
-    outline: 3px solid var(--gold);
+    outline: 3px solid var(--focus-ring-strong);
     outline-offset: 2px;
 }
 
@@ -256,11 +368,11 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
     line-height: 1;
 }
 .stat-streak .stat-icon { background: var(--streak-chip); }
-.stat-streak .stat-value { color: #b36b00; }
+.stat-streak .stat-value { color: var(--streak-ink); }
 .stat-gems .stat-icon { background: var(--gems-chip); }
-.stat-gems .stat-value { color: #0b7ec2; }
+.stat-gems .stat-value { color: var(--gems-ink); }
 .stat-hearts .stat-icon { background: var(--hearts-chip); }
-.stat-hearts .stat-value { color: var(--red); }
+.stat-hearts .stat-value { color: var(--hearts-ink); }
 .stat-hearts.hurt { animation: shake 0.4s ease; }
 
 .stat-btn {
@@ -408,7 +520,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
     font-weight: 800;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.88);
+    color: var(--on-green-band);
 }
 .unit-title {
     margin: 0;
@@ -419,7 +531,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
 }
 .unit-sub {
     margin: 0.25rem 0 0;
-    color: rgba(255, 255, 255, 0.92);
+    color: var(--on-green-band);
     font-size: 0.85rem;
     font-weight: 600;
 }
@@ -470,7 +582,10 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
     font-family: inherit;
     font-size: 1.25rem;
     font-weight: 900;
-    color: #fff;
+    /* the numeral sits on a coloured disc, so it needs a token rather than
+       white: white on --green measured 2.09:1 and white on --blue 2.44:1 at
+       this size and weight. --on-node is overridden per disc below. */
+    color: var(--on-node);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -483,6 +598,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
 .node:active:not(.locked) { transform: translateY(4px); box-shadow: 0 2px 0 var(--navy-dark); }
 .node.current {
     background: var(--green);
+    color: var(--on-node);
     box-shadow: 0 8px 0 var(--green-dark), 0 0 0 8px rgba(88, 204, 2, 0.18);
     animation: bounce-node 2s ease-in-out infinite;
 }
@@ -502,9 +618,9 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
     left: 50%;
     transform: translateX(-50%);
     background: var(--card);
-    color: var(--green-dark);
+    color: var(--green-ink);
     border: 2px solid var(--line);
-    border-bottom: 3px solid #cbd5e1;
+    border-bottom: 3px solid var(--edge-raised);
     border-radius: 0.85rem;
     padding: 0.35rem 0.85rem;
     font-family: 'Nunito', sans-serif;
@@ -527,7 +643,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
     height: 0;
     border-left: 7px solid transparent;
     border-right: 7px solid transparent;
-    border-top: 7px solid #cbd5e1;
+    border-top: 7px solid var(--edge-raised);
 }
 .node-tooltip__arrow::after {
     content: '';
@@ -538,7 +654,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
     height: 0;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
-    border-top: 6px solid #fff;
+    border-top: 6px solid var(--edge-arrow);
 }
 @keyframes tooltip-bob {
     0%, 100% { transform: translate(-50%, 0); }
@@ -650,7 +766,8 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
     border-radius: 0.75rem;
 }
 .modal__input:focus { outline: none; border-color: var(--navy); background: var(--card); }
-.modal__error { margin: 0 0 0.75rem; font-size: 0.75rem; font-weight: 600; color: var(--red); }
+/* the TEXT role: --red is a fill and measured 3.13:1 on --surface-2 */
+.modal__error { margin: 0 0 0.75rem; font-size: 0.75rem; font-weight: 600; color: var(--wrong-text); }
 .modal__submit { width: 100%; }
 
 /* ---------- modal head + close ---------- */
@@ -695,13 +812,13 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
     align-items: center;
     gap: 0.6rem;
     background: var(--blue-tint-2);
-    border: 2px solid #bce1fb;
+    border: 2px solid var(--blue-edge);
     border-radius: 1rem;
     padding: 0.75rem 1rem;
     margin-bottom: 1.25rem;
 }
 .shop-balance__icon { font-size: 1.5rem; line-height: 1; }
-.shop-balance__val { font-size: 1.4rem; font-weight: 900; color: var(--blue); }
+.shop-balance__val { font-size: 1.4rem; font-weight: 900; color: var(--blue-ink); }
 .shop-balance__lbl { font-size: 0.82rem; font-weight: 700; color: var(--muted); margin-left: auto; }
 
 .shop-items { display: flex; flex-direction: column; gap: 0.85rem; }
@@ -719,7 +836,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
 .shop-item__info { flex: 1; min-width: 0; }
 .shop-item__name { margin: 0 0 0.2rem; font-size: 0.95rem; font-weight: 900; color: var(--heading); }
 .shop-item__desc { margin: 0 0 0.35rem; font-size: 0.78rem; color: var(--muted); line-height: 1.35; }
-.shop-item__status { display: inline-block; font-size: 0.72rem; font-weight: 800; color: var(--green-dark); }
+.shop-item__status { display: inline-block; font-size: 0.72rem; font-weight: 800; color: var(--green-ink); }
 .shop-item__btn {
     padding: 0.6rem 0.9rem;
     font-size: 0.88rem;
@@ -746,7 +863,7 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.1); }
 }
-.cal-streak-count { margin: 0; font-size: 1.75rem; font-weight: 900; color: var(--orange); }
+.cal-streak-count { margin: 0; font-size: 1.75rem; font-weight: 900; color: var(--orange-ink); }
 .cal-streak-desc { margin: 0.35rem 0 0; font-size: 0.85rem; color: var(--muted); font-weight: 600; max-width: 20rem; }
 
 .cal-stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.1rem; }
@@ -799,8 +916,10 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
 .cal-day--empty { background: transparent; }
 .cal-day.active {
     background: var(--amber-tint-5);
-    color: var(--orange);
-    border: 1px solid #fed7aa;
+    /* the TEXT role: --orange is a fill, and as lettering on the amber tint it
+       measured 1.91:1. --orange-ink clears 6.13:1 on the same surface. */
+    color: var(--orange-ink);
+    border: 1px solid var(--amber-edge-2);
     font-weight: 900;
 }
 .cal-day.active::after {
@@ -812,8 +931,9 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
 }
 .cal-day.frozen {
     background: var(--blue-tint-3);
-    color: var(--blue);
-    border: 1px solid #bae6fd;
+    /* the TEXT role: --blue is a fill and measured 2.13:1 on this tint */
+    color: var(--blue-ink);
+    border: 1px solid var(--blue-edge-2);
 }
 .cal-day.frozen::after {
     content: '🧊';
@@ -860,7 +980,8 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
     transition: color 0.2s ease, border-color 0.2s ease;
 }
 
-.bank-clear:hover { color: var(--red); border-color: var(--red); }
+/* the TEXT role: --red is a fill and measured 2.65:1 on --wrong-bg */
+.bank-clear:hover { color: var(--wrong-text); border-color: var(--red); }
 
 /* per-word result after a wrong attempt */
 .word-chip.slot-ok {
@@ -872,7 +993,9 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
 .word-chip.slot-bad {
     background: var(--wrong-bg);
 border-color: var(--wrong-line);
-    color: #c92a2a;
+    /* the TEXT role. A hardcoded #c92a2a bypassed --wrong-text, which exists
+       precisely for this and clears AA on the tint it sits on. */
+    color: var(--wrong-text);
 }
 
 .bank-hint {
@@ -934,7 +1057,7 @@ border-color: var(--wrong-line);
     opacity: 0.55;
     transition: opacity 0.3s ease, color 0.3s ease;
 }
-.ladder li.reached { opacity: 1; color: var(--green); }
+.ladder li.reached { opacity: 1; color: var(--green-ink); }
 .ladder li.current { opacity: 1; color: var(--heading); }
 .ladder li.current::after {
     content: '\25B2';
@@ -1099,7 +1222,7 @@ border-color: var(--wrong-line);
     font-size: 0.8125rem;
     color: var(--text);
     background: var(--amber-tint);
-    border: 1px solid #f2d675;
+    border: 1px solid var(--amber-edge);
     border-radius: 0.9rem;
 }
 
@@ -1115,13 +1238,43 @@ border-color: var(--wrong-line);
     font-weight: 700;
     color: var(--heading);
     background: transparent;
-    border: 1px solid #e3c55a;
+    border: 1px solid var(--amber-edge-3);
     border-radius: 0.6rem;
     cursor: pointer;
 }
 
 .storage-notice__close:hover { background: var(--amber-tint-2); }
-.storage-notice__close:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+.storage-notice__close:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+/* ---------- error notice ----------
+   Shown only after a fault was recorded; errors-ui.js fills the text. Styled
+   from the same tokens as the storage notice so both read as one system. */
+.error-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+    padding: 0.8rem 1rem;
+    font-size: 0.8125rem;
+    color: var(--text);
+    background: var(--wrong-bg);
+    border: 1px solid var(--wrong-line);
+    border-radius: 0.9rem;
+}
+
+.error-notice[hidden] { display: none; }
+.error-notice__icon { font-size: 1.15rem; line-height: 1.2; }
+.error-notice__text { flex: 1; min-width: 12rem; margin: 0; line-height: 1.45; }
+
+.error-notice__btn {
+    flex-shrink: 0;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+    background: var(--card);
+}
+.error-notice__btn:hover { background: var(--hover); }
+.error-notice__btn:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 
 /* ---------- stats + badges ---------- */
 .stats-grid {
@@ -1151,13 +1304,16 @@ border-color: var(--wrong-line);
     border-radius: 1rem;
     padding: 0.9rem 0.4rem;
     text-align: center;
-    opacity: 0.42;
+    /* 0.42 was too dim to read: the opacity multiplies the label colour, so
+       the badge name composited down to 1.96:1. The locked signal comes from
+       the grayscale filter and the flat border, so it survives at 0.75. */
+    opacity: 0.75;
     filter: grayscale(1);
     transition: opacity 0.3s ease, filter 0.3s ease;
 }
 .badge.earned { opacity: 1; filter: none; border-color: var(--gold); background: var(--amber-tint-4); }
 .badge-icon { font-size: 1.5rem; line-height: 1; }
-.badge-name { margin: 0.4rem 0 0; font-size: 0.68rem; font-weight: 700; color: var(--muted); line-height: 1.25; }
+.badge-name { margin: 0.4rem 0 0; font-size: 0.68rem; font-weight: 700; color: var(--badge-locked-ink); line-height: 1.25; }
 
 /* ---------- lesson screen ---------- */
 .lesson-screen { display: flex; flex-direction: column; min-height: 100vh; max-width: 46rem; padding-bottom: 0; }
@@ -1306,7 +1462,7 @@ border-color: var(--wrong-line);
     color: var(--muted);
 }
 .choice.selected { background: var(--blue-tint); border-color: var(--blue-line-2); color: var(--heading); }
-.choice.selected .choice-kbd { border-color: var(--blue); color: var(--blue); }
+.choice.selected .choice-kbd { border-color: var(--blue); color: var(--blue-ink); }
 .choice.correct { background: var(--correct-bg); border-color: var(--correct-fill); color: var(--correct-text); }
 .choice.wrong { background: var(--wrong-bg); border-color: var(--wrong-line); color: var(--wrong-text); }
 
@@ -1328,8 +1484,11 @@ border-color: var(--wrong-line);
 .lesson-footer.ok-state { background: var(--correct-bg); border-top-color: var(--correct-fill); }
 .lesson-footer.bad-state { background: var(--wrong-bg); border-top-color: var(--wrong-line); }
 .feedback { flex: 1; font-weight: 800; display: flex; align-items: center; gap: 0.55rem; }
-.feedback.ok { color: var(--green-dark); }
-.feedback.bad { color: var(--red); }
+/* the TEXT role. --green-dark is a box-shadow edge that dark mode never
+   overrides, so it measured 2.91:1 on --correct-bg in light and 4.18:1 in dark
+   — failing AA in BOTH themes. --correct-text clears 5.95 and 9.53. */
+.feedback.ok { color: var(--correct-text); }
+.feedback.bad { color: var(--wrong-text); }
 .feedback-detail { display: block; font-weight: 500; font-size: 0.82rem; color: var(--muted); margin-top: 0.15rem; }
 
 /* ---------- result ---------- */
@@ -1428,9 +1587,10 @@ border-color: var(--wrong-line);
 /* ---------- available node (placement unlocked) ---------- */
 .node.available {
     background: var(--blue);
-    box-shadow: 0 8px 0 #1499d6;
+    color: var(--on-node-blue);
+    box-shadow: 0 8px 0 var(--blue-edge-3);
 }
-.node.available:active { box-shadow: 0 2px 0 #1499d6; }
+.node.available:active { box-shadow: 0 2px 0 var(--blue-edge-3); }
 
 /* ---------- mobile overrides ---------- */
 @media (max-width: 480px) {

@@ -45,7 +45,7 @@
     line-height: 1.35;
 }
 
-.dc-streak { color: #c2410c; font-weight: 600; }
+.dc-streak { color: var(--orange-ink); font-weight: 600; }
 
 .dc-play.btn {
     flex: 0 0 auto;
@@ -56,7 +56,7 @@
 }
 
 .dc-play:focus-visible {
-    outline: 3px solid var(--blue);
+    outline: 3px solid var(--focus-ring-strong);
     outline-offset: 2px;
 }
 

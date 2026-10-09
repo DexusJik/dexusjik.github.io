@@ -24,7 +24,7 @@
 .fillblank-slot.correct {
     background: var(--correct-bg);
     border-bottom: 3px solid var(--green);
-    color: #58a700;
+    color: var(--correct-text);
 }
 
 .fillblank-hint { margin-top: 0.9rem; padding-right: 0; }

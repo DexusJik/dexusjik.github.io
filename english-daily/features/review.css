@@ -23,7 +23,7 @@
     font-size: 0.82rem;
     box-shadow: 0 3px 0 var(--line);
 }
-.srs-btn:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+.srs-btn:focus-visible { outline: 3px solid var(--focus-ring-strong); outline-offset: 2px; }
 
 .srs-card--calm {
     background: transparent;

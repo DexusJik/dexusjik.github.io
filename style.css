@@ -43,6 +43,110 @@
     --header-bg: rgba(251, 249, 244, 0.82);
     --header-bg-solid: rgba(251, 249, 244, 0.94);
 
+    /*
+     * Text tokens.
+     *
+     * --heading exists because h1..h4 painted themselves with the raw palette
+     * step --navy-800. In dark mode --surface becomes that same navy, so the
+     * headings landed on exactly their own colour: measured 1.00:1, which is
+     * invisible rather than merely low contrast. Light value is unchanged, so
+     * this is invisible to anyone on the light theme.
+     */
+    --heading: var(--navy-800);
+
+    /*
+     * Surface tokens for panels that used a raw sand step and were therefore
+     * never themed. Each dark override previously themed the TEXT over one of
+     * these without theming the SURFACE, which is what produced 1.09:1 and
+     * 1.19:1. Tokenising the surface lets both halves flip together.
+     */
+    --drawer-bg: var(--sand-100);
+    --plate-bg: var(--sand-200);
+    --card-raised: var(--surface);
+
+    /*
+     * Small raised surfaces: the step-number disc, the WhatsApp pill list, the
+     * photo frame, card icons. Each was a raw sand step, so all of them stayed
+     * pale in dark mode while the text on them flipped to a light palette.
+     * Measured 1.19:1 and 1.88:1 in dark before this token.
+     */
+    --chip-bg: var(--sand-200);
+    --sand-hover: var(--sand-200);
+
+    /* the label on a secondary button. --navy-700 on navy was 1.56:1 */
+    --on-btn-secondary: var(--navy-700);
+
+    /* the hover fill for a secondary button. Light uses navy-100 as it always
+       has. Dark cannot: the label becomes navy-100 there too, so a navy-100
+       fill measured 1.00:1 — an invisible button on hover. The dark value is a
+       step off the surface ladder, giving 10.78:1. */
+    --btn-secondary-hover: var(--navy-100);
+
+    /* the label on a gold fill. The fill flips from a deep bronze in light
+       (#856b1a, 5.10:1 with white) to a bright gold in dark (#dfbb45, only
+       1.85:1 with white), so the label must invert with it. Same polarity trap
+       as --navy and --card. */
+    --on-gold-deep: #ffffff;
+
+    /*
+     * Every text role that used to be written as a raw palette step.
+     *
+     * The sweep that finished this is the whole reason 20 per-selector dark
+     * overrides existed: a rule writing `color: var(--navy-800)` does not
+     * follow the theme, because --navy-800 is a fixed palette entry. In dark
+     * those rules put navy text on a navy surface and measured 1.00:1.
+     *
+     * --heading already existed for exactly this and 11 rules bypassed it.
+     * --section-band is the surface half: `.section--sand` set a raw
+     * `--sand-200`, so the band stayed pale in dark while its text flipped.
+     */
+    --section-band: var(--sand-200);
+
+    /*
+     * The featured plan and the selected quiz option are a distinct surface in
+     * dark mode only. In light they are the same navy they have always been, so
+     * these two tokens exist purely to give dark a step of elevation; defining
+     * them here means the light rules need no override of their own.
+     */
+    --surface-featured: var(--navy-800);
+    --surface-selected: var(--navy-800);
+
+    /* text on a gold surface. The featured-plan flag and the CTA both sit on
+       gold; in dark the gold stays bright, so a light heading colour would read
+       at 1.49:1. --navy-800 on --gold-400 is 4.96:1 and is also what the light
+       theme has always used. */
+    --on-gold-surface: var(--navy-800);
+
+    /* the proof figures are a lighter navy than a heading (#003580 vs #0a2540).
+       Both clear AA in light, so this keeps its own token rather than being
+       folded into --heading and shifting the light rendering. */
+    --proof-value-ink: var(--navy-700);
+
+    /*
+ * Hairlines and scrollbar parts.
+ *
+ * --sand-400 (#d6c9ab) was never remapped in dark, so the step-number disc
+ * kept a pale ring on a navy chip and the scrollbar thumb stayed a light bar
+ * on a dark page. daily.css already solved this with an --edge-* family; this
+ * is the same fix for the main site.
+ */
+    --edge-hairline: var(--sand-400);
+    --scroll-thumb: var(--sand-400);
+    --scroll-track: var(--chip-bg);
+
+    /* the gradient that caps the process section. Both stops are pale sand in
+       light and a warm dark gold in dark. */
+    --gold-fade: var(--sand-400);
+
+/* a translucent wash laid OVER a surface, as distinct from a filled
+       surface. --sand-hover is a fill: navy-800 on a navy-900 page would make
+       a hover state invisible, which is why the two had to be separate. */
+    --hover-wash: rgba(20, 32, 46, 0.06);
+    --btn-ghost-hover: var(--sand-300);
+
+    /* the gold CTA's glow is a per-theme literal with no token */
+    --shadow-gold: 0 10px 30px rgba(201, 162, 39, 0.28);
+
     /* type */
     --serif: 'Fraunces', Georgia, serif;
     --sans: 'Inter', system-ui, -apple-system, sans-serif;
@@ -75,7 +179,27 @@
     color-scheme: dark;
 
     --bg: var(--navy-900);
-    --surface: var(--navy-800);
+    /*
+     * Surfaces are a LADDER, not one value. --surface used to be navy-800, and
+     * --section-band was navy-800 too, so the section band, the plain plan
+     * cards and the featured card all rendered the same colour and merged into
+     * the page with no separation.
+     *
+     * On a dark ground elevation reads as going LIGHTER, so the ordering is
+     * deliberately inverted from light mode. Adjacent levels separate at
+     * 1.09 / 1.22 / 1.14:1, and every text token clears AA on all four:
+     *   page      #04182b  heading 14.38  soft 8.33
+     *   band      #0d2036  heading 13.18  soft 7.64
+     *   card      #12304f  heading 10.78  soft 6.25
+     *   featured  #16395d  heading  9.47  soft 5.49
+     */
+    --section-band: #0d2036;
+    --surface: #12304f;
+    --surface-featured: #16395d;
+    /* the selected quiz option was --navy-800, which IS the unselected
+       background, so the selected state was invisible in dark mode. */
+    --surface-selected: #245687;
+    --on-gold-surface: var(--navy-800);
     --ink: var(--navy-100);
     --ink-soft: #9fb3c8;
     --ink-mute: #8fa3b8;
@@ -89,6 +213,26 @@
     --gold-ink: var(--gold-300);
     --gold-deep: #dfbb45;
 
+    /* the panel surfaces above, now dark */
+    --heading: var(--navy-100);
+    --drawer-bg: var(--navy-800);
+    --plate-bg: var(--navy-800);
+    --card-raised: var(--navy-800);
+    --chip-bg: var(--navy-800);
+    --sand-hover: var(--navy-800);
+    --on-btn-secondary: var(--navy-100);
+    --btn-secondary-hover: #12304f;
+    --on-gold-deep: var(--navy-900);
+    /* --section-band is set with the surface ladder above, not here */
+    --proof-value-ink: var(--navy-100);
+    --edge-hairline: #3d4a63;
+    --scroll-thumb: #46587a;
+    --scroll-track: var(--navy-800);
+    --gold-fade: #4a3a12;
+    --hover-wash: rgba(255, 255, 255, 0.08);
+    --btn-ghost-hover: rgba(255, 255, 255, 0.1);
+    --shadow-gold: 0 10px 30px rgba(223, 187, 69, 0.18);
+
     /* shadows are nearly invisible against a dark surface, so they deepen */
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.45);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45), 0 12px 32px rgba(0, 0, 0, 0.45);
@@ -97,46 +241,34 @@
 }
 
 /* a section that was lighter than the page in light mode reads as raised */
-[data-theme="dark"] .section--sand { background: var(--navy-800); color: var(--ink); }
 
 /*
  * The hero title, proof values and portrait caption paint themselves with raw
  * palette steps rather than --ink, so they do not follow the theme. --proof__value
  * uses --navy-700 (#003580), which is 1.9:1 on navy: invisible.
  */
-[data-theme="dark"] .hero__title { color: var(--ink); }
-[data-theme="dark"] .proof__value { color: var(--ink); }
-[data-theme="dark"] .proof__label { color: var(--ink-mute); }
-[data-theme="dark"] .portrait__name { color: var(--ink); }
-[data-theme="dark"] .quote-card__name { color: var(--ink); }
-[data-theme="dark"] .plan__name,
-[data-theme="dark"] .plan__price { color: var(--ink); }
-[data-theme="dark"] .plan__flag { color: var(--ink); }
-[data-theme="dark"] .faq summary { color: var(--ink); }
-[data-theme="dark"] .wa-card__name { color: var(--ink); }
-[data-theme="dark"] .card__icon { color: var(--gold-300); }
-[data-theme="dark"] .process__body h3 { color: var(--ink); }
-[data-theme="dark"] .quiz-step > p { color: var(--ink); }
-[data-theme="dark"] .quiz-option-button { color: var(--ink); }
-[data-theme="dark"] .nav-drawer a { color: var(--ink); }
 
+/*
+ * The tick in .about__list li::before is an inline SVG data URI with a
+ * hardcoded navy stroke. A url() cannot take var(), so dark mode needs the
+ * whole url swapped. The original stroke measures 1.36:1 on --chip-bg: the
+ * checkmark was literally invisible. The replacement needs no token because a
+ * data URI is already a fixed literal.
+ */
+[data-theme="dark"] .about__list li::before {
+    background: var(--chip-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23efd582' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 0.75rem no-repeat;
+}
 /* the ghost button sets its foreground to --navy-800, invisible on a dark page */
-[data-theme="dark"] .btn--ghost { --btn-fg: var(--ink); }
-[data-theme="dark"] .btn--ghost:hover { --btn-bg: rgba(255, 255, 255, 0.1); }
 
 /* the wordmark and wordmark-adjacent text set navy directly */
-[data-theme="dark"] .brand__name { color: var(--ink); }
 
 /* gold CTA: the gold glow reads as haze on a dark surface */
-[data-theme="dark"] .btn--gold { box-shadow: 0 10px 30px rgba(223, 187, 69, 0.18); }
 
 /*
  * The gold CTA is white text on --gold-deep. In light that is 4.7:1; on the
  * dark-mode gold (#dfbb45) it collapses to 1.85:1, which is unreadable. So dark
  * inverts the polarity: navy text on bright gold.
  */
-[data-theme="dark"] .btn--gold { --btn-fg: var(--navy-900); }
-
 /* ============================================================
    theme toggle
    ============================================================ */
@@ -158,9 +290,8 @@
     transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
-.theme-toggle:hover { background: rgba(20, 32, 46, 0.06); }
+.theme-toggle:hover { background: var(--hover-wash); }
 
-[data-theme="dark"] .theme-toggle:hover { background: rgba(255, 255, 255, 0.08); }
 
 /* ============================================================
    reset
@@ -211,7 +342,7 @@ h1, h2, h3, h4 {
     font-weight: 700;
     line-height: 1.05;
     letter-spacing: -0.025em;
-    color: var(--navy-800);
+    color: var(--heading);
     text-wrap: balance;
 }
 
@@ -230,11 +361,11 @@ a { color: inherit; }
    ============================================================ */
 
 ::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: var(--sand-200); }
+::-webkit-scrollbar-track { background: var(--scroll-track); }
 ::-webkit-scrollbar-thumb {
-    background: var(--sand-400);
+    background: var(--scroll-thumb);
     border-radius: 99px;
-    border: 3px solid var(--sand-200);
+    border: 3px solid var(--scroll-track);
 }
 ::-webkit-scrollbar-thumb:hover { background: var(--ink-mute); }
 
@@ -250,7 +381,7 @@ a { color: inherit; }
 }
 
 .section { padding-block: var(--section-y); position: relative; }
-.section--sand { background: var(--sand-200); }
+.section--sand { background: var(--section-band); }
 .section--navy { background: var(--navy-800); color: var(--sand-200); }
 .section--navy h2,
 .section--navy h3 { color: #fff; }
@@ -344,18 +475,18 @@ a { color: inherit; }
 
 .btn--gold {
     --btn-bg: var(--gold-deep);
-    --btn-fg: #fff;
-    box-shadow: 0 10px 30px rgba(201, 162, 39, 0.28);
+    --btn-fg: var(--on-gold-deep);
+    box-shadow: var(--shadow-gold);
 }
 .btn--gold:hover { --btn-bg: var(--gold-ink); }
 
 .btn--ghost {
     --btn-bg: transparent;
-    --btn-fg: var(--navy-800);
+    --btn-fg: var(--on-btn-secondary);
     border-color: var(--line-strong);
 }
 .btn--ghost:hover {
-    --btn-bg: var(--sand-300);
+    --btn-bg: var(--btn-ghost-hover);
     border-color: transparent;
 }
 
@@ -427,7 +558,7 @@ a { color: inherit; }
     font-size: 1.0625rem;
     font-weight: 700;
     letter-spacing: -0.02em;
-    color: var(--navy-800);
+    color: var(--heading);
     white-space: nowrap;
 }
 
@@ -473,10 +604,10 @@ a { color: inherit; }
     transition: transform 0.45s var(--ease);
 }
 
-.nav-link:hover { color: var(--navy-800); }
+.nav-link:hover { color: var(--heading); }
 .nav-link:hover::after { transform: scaleX(1); transform-origin: left; }
 
-.nav-link.active { color: var(--navy-800); font-weight: 600; }
+.nav-link.active { color: var(--heading); font-weight: 600; }
 .nav-link.active::after { transform: scaleX(1); }
 
 .header-actions { display: flex; align-items: center; gap: 0.6rem; }
@@ -504,7 +635,9 @@ a { color: inherit; }
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.nav-toggle:hover { background: var(--sand-200); }
+/* a WASH, not a fill. --sand-hover is navy-800 in dark, which on the
+   navy-900 header produced a hover state that was almost invisible. */
+.nav-toggle:hover { background: var(--hover-wash); }
 
 .nav-toggle__bar,
 .nav-toggle__bar::before,
@@ -533,7 +666,7 @@ a { color: inherit; }
 
 .nav-drawer {
     padding: 0.5rem var(--gutter) 1.5rem;
-    background: var(--sand-100);
+    background: var(--drawer-bg);
     border-bottom: 1px solid var(--line);
     box-shadow: var(--shadow-md);
     animation: drawer-in 0.35s var(--ease-out-expo);
@@ -551,7 +684,7 @@ a { color: inherit; }
     padding-inline: 0.25rem;
     font-size: 1rem;
     font-weight: 500;
-    color: var(--navy-800);
+    color: var(--heading);
     text-decoration: none;
     border-bottom: 1px solid var(--line);
     transition: color 0.25s ease, padding-left 0.35s var(--ease);
@@ -572,10 +705,11 @@ a { color: inherit; }
 
 .btn--secondary {
     --btn-bg: transparent;
-    --btn-fg: var(--navy-700);
+    --btn-fg: var(--on-btn-secondary);
     border-color: var(--line-strong);
 }
-.btn--secondary:hover { --btn-bg: var(--navy-100); border-color: transparent; }
+/* the token, not a raw step: the label is navy-100 in dark, so a navy-100 fill\n       here measured 1.00:1 and the button vanished on hover. */
+.btn--secondary:hover { --btn-bg: var(--btn-secondary-hover); border-color: transparent; }
 
 /* ============================================================
    hero
@@ -651,7 +785,7 @@ a { color: inherit; }
     font-family: var(--serif);
     font-size: 1.75rem;
     line-height: 1;
-    color: var(--navy-700);
+    color: var(--proof-value-ink);
 }
 
 .proof__label {
@@ -675,7 +809,7 @@ a { color: inherit; }
     aspect-ratio: 4 / 5;
     border-radius: 14rem 14rem 1.5rem 1.5rem;
     overflow: hidden;
-    background: var(--sand-300);
+    background: var(--chip-bg);
     box-shadow: var(--shadow-lg);
 }
 
@@ -694,7 +828,7 @@ a { color: inherit; }
     bottom: -1.25rem;
     right: 1.75rem;
     padding: 1.1rem 1.35rem;
-    background: var(--sand-200);
+    background: var(--plate-bg);
     border: 1px solid var(--line-strong);
     border-radius: 1rem;
     box-shadow: var(--shadow-md);
@@ -703,7 +837,7 @@ a { color: inherit; }
 .portrait__name {
     font-family: var(--serif);
     font-size: 1.25rem;
-    color: var(--navy-800);
+    color: var(--heading);
 }
 
 .portrait__role {
@@ -798,8 +932,8 @@ a { color: inherit; }
     height: 3rem;
     margin-bottom: 1.5rem;
     border-radius: 0.85rem;
-    background: var(--sand-200);
-    color: var(--navy-700);
+    background: var(--chip-bg);
+    color: var(--on-btn-secondary);
     transition: background-color 0.4s ease, color 0.4s ease;
 }
 
@@ -848,7 +982,7 @@ a { color: inherit; }
     top: 2.5rem;
     bottom: 2.5rem;
     width: 2px;
-    background: linear-gradient(180deg, var(--gold-400), var(--sand-400));
+    background: linear-gradient(180deg, var(--gold-400), var(--gold-fade));
     opacity: 0.5;
 }
 
@@ -877,20 +1011,20 @@ a { color: inherit; }
     font-weight: 700;
     color: var(--gold-ink);
     line-height: 1;
-    background: var(--sand-200);
+    background: var(--chip-bg);
     width: 2.75rem;
     height: 2.75rem;
     border-radius: 50%;
     display: grid;
     place-items: center;
-    border: 1px solid var(--sand-400);
+    border: 1px solid var(--edge-hairline);
     flex-shrink: 0;
 }
 
 .process__body h3 {
     font-size: 1.2rem;
     margin-bottom: 0.45rem;
-    color: var(--navy-800);
+    color: var(--heading);
 }
 
 .process__body p {
@@ -921,7 +1055,7 @@ a { color: inherit; }
 .progress-bar-container {
     height: 0.5rem;
     border-radius: 99px;
-    background: var(--sand-300);
+    background: var(--chip-bg);
     overflow: hidden;
     margin-bottom: 2.5rem;
 }
@@ -947,7 +1081,7 @@ a { color: inherit; }
 .quiz-step > p {
     font-family: var(--serif);
     font-size: clamp(1.25rem, 3vw, 1.75rem);
-    color: var(--navy-800);
+    color: var(--heading);
     margin-bottom: 1.75rem;
     max-width: 30ch;
 }
@@ -962,7 +1096,7 @@ a { color: inherit; }
     font-family: var(--sans);
     font-size: 0.9375rem;
     font-weight: 500;
-    color: var(--navy-800);
+    color: var(--heading);
     background: var(--surface);
     border: 1px solid var(--line-strong);
     border-radius: 0.9rem;
@@ -972,13 +1106,15 @@ a { color: inherit; }
 }
 
 .quiz-option-button:hover {
-    background: var(--sand-100);
+    background: var(--sand-hover);
     border-color: var(--navy-400);
     transform: translateX(4px);
 }
 
 .quiz-option-button.selected {
-    background: var(--navy-800);
+    /* was --navy-800, which is the unselected background: the selected state
+       had no visible difference in dark mode */
+    background: var(--surface-selected);
     border-color: var(--navy-800);
     color: #fff;
     box-shadow: 0 10px 26px rgba(10, 37, 64, 0.24);
@@ -1079,7 +1215,7 @@ a { color: inherit; }
     height: 1.4rem;
     margin-top: 0.2rem;
     border-radius: 50%;
-    background: var(--sand-300) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23003580' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 0.75rem no-repeat;
+    background: var(--chip-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23003580' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center / 0.75rem no-repeat;
 }
 
 /* ============================================================
@@ -1192,8 +1328,11 @@ a { color: inherit; }
     border-top-color: var(--gold-400);
 }
 
+/* the gold-surface TEXT token, not a raw navy step. This is a gold pill, and a
+   raw navy step is what the audit-tool complains about — not because it fails
+   (navy-900 on gold-400 is 9.68:1) but because it bypasses the role contract. */
 .promo__day--today {
-    color: var(--navy-900);
+    color: var(--on-gold-surface);
     background: var(--gold-400);
     border-color: var(--gold-400);
     border-top-color: var(--sand-100);
@@ -1228,7 +1367,8 @@ a { color: inherit; }
 .plan:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
 
 .plan--featured {
-    background: var(--navy-800);
+    /* one step above the plain cards, so the featured plan reads as raised */
+    background: var(--surface-featured);
     border-color: var(--navy-800);
     box-shadow: var(--shadow-navy);
 }
@@ -1247,7 +1387,10 @@ a { color: inherit; }
     font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--navy-800);
+    /* the flag is a GOLD PILL, so it needs the gold-surface text role, not
+       --heading. Pointing it at --heading measured 1.49:1 in dark: navy-100 on
+       gold. Same shape as the app's --on-gold. */
+    color: var(--on-gold-surface);
     background: var(--gold-400);
     border-radius: 99px;
 }
@@ -1255,7 +1398,7 @@ a { color: inherit; }
 .plan__name {
     font-family: var(--serif);
     font-size: 1.375rem;
-    color: var(--navy-800);
+    color: var(--heading);
 }
 
 .plan--featured .plan__name { color: #fff; }
@@ -1268,7 +1411,7 @@ a { color: inherit; }
     font-family: var(--serif);
     font-size: clamp(2rem, 5vw, 2.5rem);
     line-height: 1;
-    color: var(--navy-800);
+    color: var(--heading);
 }
 
 .plan--featured .plan__price { color: #fff; }
@@ -1310,7 +1453,7 @@ a { color: inherit; }
     width: 0.85rem;
     height: 0.85rem;
     border-radius: 50%;
-    background: var(--sand-300);
+    background: var(--chip-bg);
 }
 
 .plan--featured .plan__list li::before { background: rgba(223, 187, 69, 0.9); }
@@ -1322,12 +1465,17 @@ a { color: inherit; }
     color: var(--ink-mute);
 }
 
-.plan--featured .plan__note { color: rgba(244, 239, 227, 0.55); }
+.plan--featured .plan__note {
+    /* 0.55 was tuned against navy-800. The featured surface is now a step
+       lighter (#16395d) so elevation reads, and 0.55 composited down to
+       4.26:1 on it. 0.75 measures 6.53:1 and 8.16:1 on the light navy. */
+    color: rgba(244, 239, 227, 0.75);
+}
 
 .plan .btn { width: 100%; }
 .plan--featured .btn {
     --btn-bg: var(--gold-deep);
-    --btn-fg: #fff;
+    --btn-fg: var(--on-gold-deep);
 }
 
 /* ============================================================
@@ -1376,7 +1524,7 @@ a { color: inherit; }
 .quote-card__name {
     font-weight: 700;
     font-size: 0.9375rem;
-    color: var(--navy-800);
+    color: var(--heading);
 }
 
 .quote-card__role {
@@ -1414,7 +1562,7 @@ a { color: inherit; }
     padding: 1.15rem 1.35rem;
     font-weight: 600;
     font-size: 0.9375rem;
-    color: var(--navy-800);
+    color: var(--heading);
     cursor: pointer;
     list-style: none;
 }
@@ -1449,7 +1597,7 @@ a { color: inherit; }
     margin-inline: auto;
     padding: clamp(1.75rem, 5vw, 2.75rem);
     text-align: center;
-    background: var(--surface);
+    background: var(--card-raised);
     border: 1px solid var(--line);
     border-radius: 1.5rem;
     box-shadow: var(--shadow-md);
@@ -1472,7 +1620,7 @@ a { color: inherit; }
 .wa-card__name {
     font-family: var(--serif);
     font-size: 1.5rem;
-    color: var(--navy-800);
+    color: var(--heading);
 }
 
 .wa-card__role {
@@ -1498,7 +1646,7 @@ a { color: inherit; }
     padding: 0.4rem 0.85rem;
     font-size: 0.8125rem;
     color: var(--ink-soft);
-    background: var(--sand-200);
+    background: var(--chip-bg);
     border-radius: 99px;
 }
 
@@ -1615,10 +1763,13 @@ a { color: inherit; }
 .footer__legal a { text-decoration: none; }
 .footer__legal a:hover { color: #fff; }
 
-/* Pangal link: intentionally tiny and quiet, present for those who know. */
+/* Pangal link: intentionally tiny and quiet, present for those who know.
+   The quiet comes from the size, not from illegibility. Opacity 0.45 stacked
+   with the 0.7 colour alpha and measured 2.60:1, which is below AA for an
+   11px label. 0.7 measures 8.06:1 and still reads as quiet. */
 .footer__legal .footer__joke {
     font-size: 0.6875rem;
-    opacity: 0.45;
+    opacity: 0.7;
     letter-spacing: 0.02em;
 }
 .footer__legal .footer__joke:hover,
