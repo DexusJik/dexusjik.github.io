@@ -25,8 +25,9 @@ A server is required rather than `file://` because the app uses
 ## Tests
 
 ```bash
-npm test               # 15 validators, exits non-zero on failure
-npm run test:quiet     # only failures and the summary
+npm test                    # 21 gates, exits non-zero on failure
+npm run test:quiet          # only failures and the summary
+npm run test:browser         # 21 gates plus the measured contrast probe
 ```
 
 Runs in CI on every push to `main` and on every pull request.
@@ -44,19 +45,67 @@ Runs in CI on every push to `main` and on every pull request.
 | `check-jsonld` | malformed structured data, and product claims that overstate reality |
 | `check-asset-refs` | a page pointing at an image, icon or stylesheet that is not on disk |
 | `check-tokens` | a `var(--x)` reference to a token nothing defines |
-| `check-contrast` | a text/background pair below WCAG AA, in **either** theme |
+| `check-light-unchanged` | a colour in the light theme changed without being recorded as intended |
 | `test-theme-resolve` | the theme preference resolving wrongly for any preference × OS combination |
 | `audit-dark-risk` | a light literal used as a background, or a `--navy` used as text colour |
 | `test-migration` | a state migration that loses or corrupts learner progress |
+| `test-state-schema` | a corrupt saved field flowing into logic as the wrong type |
+| `test-errors-buffer` | an error buffer that grows without bound or loses entries |
+| `probe-contrast-browser` | **measured** contrast on every visible text element: both themes, every screen, mobile and desktop, hover and focus states |
+| `check-secret-scan` | the CI secret scan quietly ceasing to match real credentials |
+| `check-line-endings` | a file that would commit CRLF and break the CI diff |
 
-Fifteen checks, all gates. `audit-dark-risk` was a report while dark mode was
-unbuilt — it listed 73 known sites and was deliberately excluded. Now that dark
-mode ships, those are real defects, so it gates like the rest.
+Nineteen gates in `npm test`, plus the contrast probe in CI. `audit-dark-risk`
+was a report while dark mode was unbuilt — it listed 73 known sites and was
+deliberately excluded. Now that dark mode ships, those are real defects, so it
+gates like the rest.
 
-The three theme checks exist because dark mode fails in ways light mode hides.
-`check-contrast` reads both token blocks straight out of the CSS, so it cannot
-drift from the stylesheet.
+The theme checks exist because dark mode fails in ways light mode hides.
 
+### `probe-contrast-browser` is the contrast gate
+
+It replaced `check-contrast.js`, which compared ~35 token pairs chosen by hand.
+**That hand-picking was the defect, not the tool.** A rule that paints text with
+a *raw palette step* instead of a token is invisible to a pair check by
+construction: the bug is precisely that the token is not used. Every gate was
+green while 19 dark-mode elements on the main site sat below AA, several at
+1.00:1, because `h1, h2, h3, h4` set `color: var(--navy-800)` and `--surface`
+becomes that same navy in dark mode. The headings were invisible, not faint.
+
+It runs in CI on `ubuntu-latest`, where Chrome is preinstalled, and **fails**
+rather than passing quietly if no browser is found — a contrast gate that
+silently stops running is the exact failure this work was about.
+
+It drives the browser over the DevTools Protocol and reads computed styles, so
+the CSP does not block it (`Runtime.evaluate` injects without writing a file).
+The static server is in Node and the browser is discovered across Windows, macOS
+and Linux, so there is no Python or PowerShell dependency.
+
+**Coverage, and each piece is there because its absence hid a defect:**
+
+| What it covers | What it caught |
+|---|---|
+| 1280px and 390px | the mobile drawer links navy-on-navy at 1.00:1 in dark. Invisible, because the drawer is `display: none` above 62rem and a desktop-only sweep reported them as passing |
+| every screen, drawer open, quiz step, modals | only the landing state was ever measured |
+| hover and focus-visible, via dispatched input events | colour bugs live in hover states, where the background changes under text chosen for a different background |
+| pre- AND post-animation | the probe skips `opacity: 0` and force-finishes reveals, so an opacity-multiplied bug like the locked badge (1.96:1) was invisible. Measuring twice catches anything that only passes once animations finish |
+| pixel sampling of a screenshot | 16 elements sit over the portrait photo and a gradient, which the DOM genuinely cannot resolve. Each is scrolled to, its text hidden, and the real rendered pixel behind it sampled |
+
+**Things it must not do, each learned the hard way.** Client-to-server WebSocket
+frames must be masked or the server silently drops them and the first command
+hangs forever. The screenshot is in device pixels while the collector reports
+CSS pixels, and the viewport is narrower than the window because of the scrollbar
+— so coordinates must be scaled by `devicePixelRatio` read from the page, never
+compared against the requested window width. Elements must be re-found by
+**index**, not by selector: `p.eyebrow` matches the first eyebrow on the page,
+which is in a different light section, and sampling that produced a confident,
+completely fictional "1.36:1 failure" for text that was fine. And
+`scrollIntoView` must pass `behavior: "instant"`, or the position read back is
+still in flight and the sampler measures the page background instead.
+
+**What it cannot measure is reported rather than hidden:** disabled controls, which
+WCAG 1.4.3 exempts, and emoji, which render from a colour font that ignores the
+CSS colour property entirely. Both are counted and listed on every run.
 `validate-placement-count` exists because of a specific bug: the placement modal
 and the JSON-LD both advertised "20 preguntas" while the test actually had 30.
 Real numbers now live in one place, and the validator fails if any user-facing
@@ -167,19 +216,61 @@ learning progress, a corrupt app state must not be able to reset it, and sharing
 it means picking Dark in the app also darkens the marketing site. No migration is
 needed and no version bump.
 
+**Dark mode is 100% token-driven on both sites.** `daily.css` was always; the
+main site was not, and the gap caused this whole episode. It carried 20
+hand-written `[data-theme="dark"] .selector` overrides, each one a place where a
+foreground had been themed while the surface behind it was not. They existed
+because 14 base rules wrote a raw palette step as a text colour — `color:
+var(--navy-800)` — which does not follow the theme, because `--navy-800` is a
+fixed palette entry. So the sweep was finished instead of the overrides being
+patched. One survives, and cannot be removed: the tick in `.about__list
+li::before` is an inline SVG data URI, and `url()` cannot take `var()`.
+
+`style.css` now has exactly one `[data-theme="dark"]` block, redefining tokens.
+To check that the per-selector overrides have not crept back:
+
+```bash
+grep -c '^\[data-theme="dark"\] \.' style.css   # must print 1
+```
+
+(`git grep` searches the index rather than the working tree, so it will report
+nothing for a change you have not staged. Use `grep`.)
+
+**Dark surfaces are a ladder, not one value.** `--bg`, `--section-band`,
+`--surface`, `--surface-featured` and `--surface-selected` are five steps. On a
+dark ground elevation reads as going *lighter*, so the ordering is deliberately
+inverted from light mode. Adjacent steps separate at 1.09 / 1.22 / 1.14:1, and
+every text token clears AA on all five. Before this, the section band, the plan
+cards and the featured card were all the same navy and merged into the page.
+
 ### Known weaknesses
 
 - **`game.js` is one ~2600-line file.** Everything reaches shared state through a
   global `DailyGame` hook. It works, but it is hard to test and hard to delete
   features from. Splitting it is the biggest refactor available.
-- **`localStorage` state has no schema validation.** `load()` whitelists keys but
-  does not check types, so a hand-edited `hearts: "5"` flows into logic.
-- **No error reporting.** 7 `console.error` calls, no global handler. A fault on a
-  user's phone is invisible.
+- **Errors are captured but not sent anywhere.** `errors.js` buffers the last 20
+  in `localStorage`, aged out at 14 days, and shows them on demand behind a
+  "Ver detalles" button. That fixes diagnosability without a third party, which
+  the CSP forbids. It does mean nobody is *told*: you only see faults a learner
+chooses to report.
+- **One dead CSS block remains by decision.** `.card`, `.card--lift` and
+  `.card__icon` in `style.css` match no element in `index.html` or `404.html`,
+  and the matching `[data-theme="dark"] .card__icon` override was removed as a
+  no-op. The block was kept deliberately in case those classes are wanted back;
+  it is roughly 35 lines and renders nothing.
+- **Two raw-navy text sites had no dark override at all** when the sweep
+  finished: `.nav-link:hover` and `.nav-drawer a`. Both put navy-800 on the navy
+  header or drawer. They are fixed now, and `audit-dark-risk` covers the class,
+  but the audit only checks backgrounds and `var(--navy)`, so a raw
+  `color: var(--navy-800)` in *text* is caught by the browser probe alone.
 - **`frame-ancestors` is not set**, because it cannot be sent from a `<meta>`
   CSP. Every page is framable. Needs a host in front of Pages.
 - **Spanish strings are hardcoded** in markup and JS. No i18n.
 - **The main site has no offline support**; only the app has a service worker.
+- **The 404 has no dark mode.** It ships `script-src 'none'` and contains no
+  script at all, so `theme.js` cannot run there. That is deliberate — a static
+  error page has nothing to execute — but a visitor who chose Dark sees a light
+  404. The contrast probe prints this on every run rather than hiding it.
 
 ---
 

@@ -7,12 +7,15 @@
   "scripts": {
     "test": "node tools/run-all.js",
     "test:quiet": "node tools/run-all.js --quiet",
+    "test:browser": "node tools/run-all.js --browser",
+    "contrast": "node tools/probe-contrast-browser.js",
     "icons": "python tools/gen-icons.py",
     "icons:check": "python tools/gen-icons.py --check",
     "serve": "python -m http.server 8000 --bind 127.0.0.1"
   },
   "comments": {
     "dependencies": "Deliberately none. The site ships raw HTML, CSS and JS with no build step and no third-party JavaScript, which is also what lets the CSP stay at script-src 'self'. Adding a bundler or framework would undo that. This file exists so `npm test` and CI have a standard entry point; `npm install` installs nothing.",
-    "pillow": "Only needed for `npm run icons`, not for the tests."
+    "pillow": "Only needed for `npm run icons`, not for the tests.",
+    "test:browser": "Adds probe-contrast-browser, the contrast gate. It needs a Chromium-family browser (found on Windows, macOS and Linux, or via CHROME_PATH) and about 90 seconds for every screen, viewport, hover and focus state in both themes. It also runs in CI, where Chrome is preinstalled on ubuntu-latest. The static gates cannot see a rule that paints text with a raw palette step instead of a token, which is exactly how 19 dark-mode elements passed a green suite while rendering at 1.00:1."
   }
 }

@@ -1,9 +1,25 @@
-/* Proves light mode is unchanged by the dark-mode work.
-
-   The tokenisation replaced 65+ hardcoded literals with tokens. Each token's
-   LIGHT value was set to the literal it replaced, so light mode should render
-   identically. This checks that claim mechanically: every colour that appears
-   in light mode now must trace back to a value that was in :root at HEAD.
+/* Catches UNINTENDED changes to the light theme.
+ *
+ * THIS GATE WAS RENAMED IN SUBSTANCE, NOT IN WORDS. It used to claim "light
+ * theme still renders as it did before". That claim became false by decision:
+ * all contrast failures in both themes get fixed, so light mode was changed on
+ * purpose - stat values darkened, lesson numerals navy on the discs, the locked
+ * badge less dim, the footer link more visible.
+ *
+ * Leaving a gate asserting something that is no longer true is worse than no
+ * gate, because it reads as protection that is not there. So the claim is now
+ * what is actually enforceable:
+ *
+ *   1. The shared accent and surface tokens are byte-identical to HEAD. These
+ *      define the whole palette, so an accidental edit is a real regression.
+ *   2. Every token that DELIBERATELY replaced a light literal still holds its
+ *      recorded value, and the literal it replaced really was in the tree at
+ *      HEAD. A token can therefore never drift without it being recorded.
+ *   3. No colour literal sits inline in a background outside :root.
+ *   4. Both token blocks are present and non-trivial.
+ *
+ * Intended light changes are listed in REPLACED below. Adding a token there is
+ * how you change light on purpose; anything not listed is caught.
 
    node tools/check-light-unchanged.js  */
 'use strict';
@@ -29,6 +45,28 @@ function rootOf(text) {
 }
 
 const FILES = ['english-daily/daily.css', 'style.css'];
+
+/* every stylesheet tracked at HEAD, so a claim about a replaced literal can be
+   checked wherever that literal actually lived */
+function allCssAtHead() {
+    let names;
+    try {
+        names = execFileSync('git', ['ls-files', '*.css'], {
+            encoding: 'utf8', cwd: REPO.REPO,
+        }).split(/\r?\n/).filter(Boolean);
+    } catch (e) {
+        return '';
+    }
+    return names.map(function (f) {
+        try {
+            return execFileSync('git', ['show', 'HEAD:' + f], {
+                encoding: 'utf8', cwd: REPO.REPO, maxBuffer: 16 * 1024 * 1024,
+            }).replace(/\/\*[\s\S]*?\*\//g, '');
+        } catch (e) {
+            return '';
+        }
+    }).join('\n');
+}
 
 /* ---- 1. accent tokens must be byte-identical to HEAD ---- */
 const ACCENTS = ['--navy', '--navy-dark', '--blue', '--green', '--green-dark',
@@ -77,9 +115,68 @@ FILES.forEach(function (rel) {
         }
     });
     console.log('  ok  ' + rel + ': accent and surface tokens unchanged');
-});
 
-/* ---- 2. no light-literal background should exist outside :root ---- */
+    /*
+     * ---- 1b. tokens that REPLACED a light literal ----
+     *
+     * The contrast work turned hardcoded colours into tokens. Where the
+     * replacement darkened the light value to reach WCAG AA, light mode
+     * deliberately renders differently. Each such token is recorded here with
+     * the literal it replaced, and the gate asserts BOTH that the token still
+     * holds the recorded value and that the replaced literal really was in the
+     * file at HEAD.
+     *
+     * Without this list these tokens are new names the ACCENTS scan has never
+     * seen, so light mode could drift freely and this gate would still report
+     * green while its own description claimed otherwise.
+     */
+    const REPLACED = {
+        'english-daily/daily.css': {
+            '--streak-ink': { was: '#b36b00', now: '#9a5800' },
+            '--gems-ink': { was: '#0b7ec2', now: '#0a6ea8' },
+            '--hearts-ink': { was: '#ff4b4b', now: '#c62828' },
+            '--orange-ink': { was: '#c2410c', now: '#a03408' },
+            '--green-ink': { was: '#58cc02', now: '#25750a' },
+            '--badge-locked-ink': { was: '#595959', now: '#3d4450' },
+        },
+        'style.css': {
+            '--on-gold-deep': { was: '#fff', now: '#ffffff' },
+            '--on-gold-surface': { was: '#0a2540', now: 'var(--navy-800)' },
+            '--surface-featured': { was: '#0a2540', now: 'var(--navy-800)' },
+            '--surface-selected': { was: '#0a2540', now: 'var(--navy-800)' },
+        },
+    };
+
+    const replaced = REPLACED[rel] || {};
+
+    /*
+     * The literal a token replaced need not live in the same file, and it need
+     * not live in a file this gate scans: #c2410c sat in features/challenge.css
+     * while its replacement, --orange-ink, is defined in daily.css. So search
+     * every stylesheet in the tree at HEAD.
+     */
+    const headCss = allCssAtHead();
+
+    Object.keys(replaced).forEach(function (token) {
+        const spec = replaced[token];
+        const now = value(newRoot, token);
+
+        if (now !== spec.now) {
+            failures++;
+            console.log('  CHANGED  ' + rel + '  ' + token + ': expected ' + spec.now +
+                ', found ' + now);
+        }
+        if (headCss.indexOf(spec.was) < 0) {
+            failures++;
+            console.log('  SUSPECT  ' + rel + '  ' + token + ' claims to replace ' +
+                spec.was + ' but that literal is not in any stylesheet at HEAD');
+        }
+    });
+    if (Object.keys(replaced).length) {
+        console.log('  ok  ' + rel + ': ' + Object.keys(replaced).length +
+            ' token(s) that replaced a light literal still hold their recorded value');
+    }
+});
 console.log('');
 const app = css('english-daily/daily.css');
 const body = app.replace(rootOf(app), '');

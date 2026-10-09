@@ -31,6 +31,40 @@ jobs:
       - name: run validators
         run: npm test
 
+  contrast:
+    name: measured contrast
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Chrome is preinstalled on ubuntu-latest, so nothing needs installing.
+      # The probe finds it itself via CHROME_PATH or its own search list, and
+      # exits 2 with a clear message if it genuinely cannot, rather than
+      # silently passing.
+      - name: report which browser the probe will use
+        run: |
+          CHROME="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          echo "candidate: ${CHROME:-none found on PATH}"
+          if [ -n "$CHROME" ]; then
+            echo "CHROME_PATH=$CHROME" >> "$GITHUB_ENV"
+            "$CHROME" --version
+          fi
+
+      # This is the contrast gate. It replaced a static check that compared ~35
+      # token pairs chosen by hand, which could not see a rule painting text
+      # with a raw palette step instead of a token. That blind spot let 19
+      # dark-mode elements land below AA while every static gate was green.
+      #
+      # If no browser is found the step FAILS rather than passing quietly. A
+      # contrast gate that silently stops running is exactly the failure mode
+      # this whole exercise was about.
+      - name: measured contrast, every screen and viewport
+        run: node tools/probe-contrast-browser.js
+
   icons:
     name: icon derivatives
     runs-on: ubuntu-latest
