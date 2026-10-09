@@ -48,7 +48,7 @@ const FILES = ['english-daily/daily.css', 'style.css'];
 
 /* every stylesheet tracked at HEAD, so a claim about a replaced literal can be
    checked wherever that literal actually lived */
-function allCssAtHead() {
+function allCssAtStyleAt(rev) {
     let names;
     try {
         names = execFileSync('git', ['ls-files', '*.css'], {
@@ -59,7 +59,7 @@ function allCssAtHead() {
     }
     return names.map(function (f) {
         try {
-            return execFileSync('git', ['show', 'HEAD:' + f], {
+            return execFileSync('git', ['show', rev + ':' + f], {
                 encoding: 'utf8', cwd: REPO.REPO, maxBuffer: 16 * 1024 * 1024,
             }).replace(/\/\*[\s\S]*?\*\//g, '');
         } catch (e) {
@@ -155,7 +155,22 @@ FILES.forEach(function (rel) {
      * while its replacement, --orange-ink, is defined in daily.css. So search
      * every stylesheet in the tree at HEAD.
      */
-    const headCss = allCssAtHead();
+    /*
+     * The replaced-literal check compares against a PINNED BASE, not HEAD.
+     *
+     * HEAD moves. The first version of this gate searched HEAD, which worked
+     * exactly once: it described "the change that is about to land". After that
+     * change was committed, the tokens it named were IN HEAD, so the topbar
+     * values matched and the pass was vacuous, while a wrongly-recorded literal
+     * started failing for the wrong reason -- and the gate went red on the first
+     * push with a message that named tokens nobody had just touched.
+     *
+     * The base is therefore explicit: the recorded substitutions are facts about
+     * the transition INTO dark mode, and they are checked against that commit so
+     * they keep meaning what they say.
+     */
+    const REVIEW_BASE = process.env.IGSG_LIGHT_BASE || '3c5fe77';
+    const headCss = allCssAtStyleAt(REVIEW_BASE);
 
     Object.keys(replaced).forEach(function (token) {
         const spec = replaced[token];
