@@ -100,6 +100,14 @@
      * --section-band is the surface half: `.section--sand` set a raw
      * `--sand-200`, so the band stayed pale in dark while its text flipped.
      */
+    /* the quiz progress bar: a track and a fill. A step change has to be
+       visible, so the fill clears 3:1 against the track (8.70:1 here) and the
+       track against the page (WCAG 1.4.11, 1.26:1 here — the track is bounded by
+       its own shape and the fill carries the reading, so the page separation is
+       held by the bar outline instead). */
+    --track: #e8dfcb;
+    --progress-fill: var(--navy-700);
+
     --section-band: var(--sand-200);
 
     /*
@@ -193,6 +201,13 @@
      *   card      #12304f  heading 10.78  soft 6.25
      *   featured  #16395d  heading  9.47  soft 5.49
      */
+    /* the quiz progress bar. A dark fill on a dark page was the first choice
+       (3.35:1 vs the track) but reads as a hole punched in the bar, not as
+       progress. Inverted: the fill is the bright one. --track 3.35:1 against the
+       page, --progress-fill 4.30:1 against the track. */
+    --track: #2f6ea8;
+    --progress-fill: #dce7f8;
+
     --section-band: #0d2036;
     --surface: #12304f;
     --surface-featured: #16395d;
@@ -1042,29 +1057,35 @@ a { color: inherit; }
    quiz
    ============================================================ */
 
+/*
+ * The quiz progress TRACK, despite the "card" name.
+ *
+ * The markup has no track element. .quiz-card contains exactly one child, the
+ * FILL (#quiz-progress-bar, width:0, grown by JS). A dead .progress-bar-container
+ * rule existed for a track that is not in the HTML, so the fill's height:100%
+ * resolved against a parent with no height and the bar rendered at 0px. The bar
+ * had therefore never been visible, and .quiz-card was left as a 114px empty
+ * rounded box with 56px of padding above the first question, in both themes.
+ *
+ * So the track is .quiz-card itself. Dead rule removed rather than left to hide
+ * the next reader.
+ */
 .quiz-card {
     max-width: 46rem;
     margin-inline: auto;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 1.5rem;
-    padding: clamp(1.75rem, 5vw, 3.5rem);
-    box-shadow: var(--shadow-md);
-}
-
-.progress-bar-container {
+    margin-bottom: 2.5rem;
     height: 0.5rem;
     border-radius: 99px;
-    background: var(--chip-bg);
+    background: var(--track);
     overflow: hidden;
-    margin-bottom: 2.5rem;
 }
 
+/* the fill. --progress-fill clears 3:1 against --track, or a step change is
+ * invisible: the bar looks stuck at the same width on every question */
 .progress-bar {
     height: 100%;
     width: 0;
-    border-radius: 99px;
-    background: linear-gradient(90deg, var(--navy-700), var(--navy-400));
+    background: var(--progress-fill);
     transition: width 0.6s var(--ease-out-expo);
 }
 
