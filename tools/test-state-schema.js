@@ -36,6 +36,8 @@ function defaults() {
         badges: {}, nickname: '', nicknameSkipped: false, rivals: [], placement: null,
         placementSkipped: false, placementSkipVersion: 0, dailyLessonDoneDate: null,
         storageNoticeDismissed: false, features: {},
+        goalXp: 50, audioSlow: false, typingFree: false, focusArea: 'general',
+        skillStats: {}, weeklyXp: 0, weekStart: null, lastStreak: 0,
     };
 }
 
@@ -84,6 +86,23 @@ console.log('\nstate-schema: out-of-range values are clamped');
     check('negative xp raised to 0', r.state.xp, 0);
     check('absurd currentLesson lowered', r.state.currentLesson, 9999);
     check('negative gems raised to 0', r.state.gems, 0);
+}
+
+console.log('\nstate-schema: learner profile fields');
+{
+    const d = defaults();
+    const r = S.repair({
+        goalXp: 500, audioSlow: 'yes', typingFree: 1, focusArea: 42,
+        skillStats: [], weeklyXp: -5, weekStart: 'not-a-date', lastStreak: '7',
+    }, d);
+    check('goalXp clamped to its maximum', r.state.goalXp, 100);
+    check('audioSlow resets to its default', r.state.audioSlow, false);
+    check('typingFree resets to its default', r.state.typingFree, false);
+    check('focusArea resets to its default', r.state.focusArea, 'general');
+    check('skillStats array resets to a map', r.state.skillStats, {});
+    check('negative weeklyXp raised to 0', r.state.weeklyXp, 0);
+    check('invalid weekStart resets to null', r.state.weekStart, null);
+    check('lastStreak text becomes a number', r.state.lastStreak, 7);
 }
 
 console.log('\nstate-schema: dates');

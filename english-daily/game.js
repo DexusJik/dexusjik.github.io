@@ -10,9 +10,12 @@
     var LESSONS = window.DAILY_LESSONS || [];
     var TOTAL_LESSONS = LESSONS.length;
     var XP_PER_SENTENCE = 2;
-    var DAILY_GOAL_XP = 50;
     var MAX_HEARTS = 5;
     var HEART_REFILL_MS = 30 * 60 * 1000;
+
+    /* profile.js is the source of truth for goals, skills and adaptation. It is
+       loaded before this file; the fallbacks keep the app usable if it is not. */
+    function profile() { return window.DailyProfile || null; }
 
     var LEVEL_META = {
         1: { name: 'Nivel 1', label: 'A1 · Primeros pasos', emoji: '🌱' },
@@ -126,7 +129,15 @@
             placementSkipVersion: 0,
             dailyLessonDoneDate: null,
             storageNoticeDismissed: false,
-            features: {}
+            features: {},
+            goalXp: 50,
+            audioSlow: false,
+            typingFree: false,
+            focusArea: 'general',
+            skillStats: {},
+            weeklyXp: 0,
+            weekStart: null,
+            lastStreak: 0
         };
     }
 
@@ -224,6 +235,38 @@
         return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
     }
 
+    function dailyGoalXp() {
+        var p = profile();
+        return p && p.goal ? p.goal(state.goalXp) : 50;
+    }
+
+    function weeklyGoalXp() {
+        var p = profile();
+        return p && p.weeklyTarget ? p.weeklyTarget(state.goalXp) : dailyGoalXp() * 5;
+    }
+
+    function currentWeekStart() {
+        var p = profile();
+        if (p && p.weekStartKey) return p.weekStartKey(new Date());
+        return todayKey();
+    }
+
+    function addWeeklyXp(amount) {
+        var week = currentWeekStart();
+        if (state.weekStart !== week) {
+            state.weekStart = week;
+            state.weeklyXp = 0;
+        }
+        state.weeklyXp = (state.weeklyXp || 0) + Math.max(0, Number(amount) || 0);
+    }
+
+    /* Yesterday's key, used by streak repair. */
+    function yesterdayKey() {
+        var d = new Date();
+        d.setDate(d.getDate() - 1);
+        return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+    }
+
     /*
      * todayKey() is unpadded ('2026-10-7'), which `new Date('...T00:00:00')`
      * cannot parse (NaN), so the streak never advanced. Parse the parts and
@@ -245,6 +288,14 @@
             state.dailyXpDate = today;
             state.dailyXp = 0;
         }
+
+        /* the weekly bar resets on Monday, not on the 1st of the month */
+        var week = currentWeekStart();
+        if (state.weekStart !== week) {
+            state.weekStart = week;
+            state.weeklyXp = 0;
+        }
+
         if (state.lastStudyDate) {
             var diff = daysBetween(state.lastStudyDate, today);
             if (diff > 1) {
@@ -262,6 +313,11 @@
                     state.lastStudyDate = yesterday.getFullYear() + '-' + (yesterday.getMonth() + 1) + '-' + yesterday.getDate();
                     save();
                 } else {
+                    /* remember what was lost so the calendar can offer one
+                       paid repair. A one-day streak replaces an older, stale
+                       loss instead of resurrecting it later. */
+                    if (state.streak >= 2) state.lastStreak = state.streak;
+                    else if (state.streak > 0) state.lastStreak = 0;
                     state.streak = 0;
                     state.streakFreeze = 0;
                 }
@@ -959,6 +1015,7 @@
             var xp = placement.correct * XP_PER_SENTENCE;
             state.xp += xp;
             state.dailyXp += xp;
+            addWeeklyXp(xp);
             state.gems += 3;
 
             if (state.lastStudyDate !== todayKey()) {
@@ -1039,6 +1096,181 @@
         if (retest) retest.addEventListener('click', openPlacementPrompt);
     }
 
+    /* ================= learner card: skills + focus ================= */
+
+    function weakestSkill() {
+        var p = profile();
+        if (!p || !p.skills) return null;
+        var best = null;
+        p.skills().forEach(function (skill) {
+            if (state.typingFree && skill.id === 'writing') return;
+            var stat = skillStat(skill.id);
+            if (stat.t < 3) return;
+            var rate = stat.c / stat.t;
+            if (!best || rate < best.rate) {
+                best = { skill: skill, stat: stat, rate: rate };
+            }
+        });
+        return best;
+    }
+
+    function focusLessons() {
+        var p = profile();
+        if (!p || !p.focus) return { focus: null, rows: [] };
+        var f = p.focus(state.focusArea);
+        if (!f || f.id === 'general' || !f.lessons.length) return { focus: f, rows: [] };
+
+        var floor = pathFloor();
+        var rows = [];
+        f.lessons.forEach(function (i) {
+            if (i <= floor && !state.completed[i]) rows.push(i);
+        });
+        /* if every relevant lesson is done, offer them as review */
+        if (rows.length < 3) {
+            f.lessons.forEach(function (i) {
+                if (i <= floor && state.completed[i] && rows.indexOf(i) < 0) rows.push(i);
+            });
+        }
+        return { focus: f, rows: rows.slice(0, 3) };
+    }
+
+    /*
+     * A compact profile, not a second dashboard. It answers two questions:
+     * which skill is weakest, and which lessons matter for the chosen goal.
+     */
+    function renderLearnerCard() {
+        var box = $('learner-card');
+        if (!box) return;
+
+        var p = profile();
+        var attempts = 0;
+        if (p && p.skills) {
+            p.skills().forEach(function (s) { attempts += skillStat(s.id).t; });
+        }
+        if (!attempts && state.lessonsDone === 0) {
+            box.hidden = true;
+            return;
+        }
+
+        var weak = weakestSkill();
+        var focusInfo = focusLessons();
+        var rows = [];
+
+        var skillsHtml = '';
+        if (p && p.skills) {
+            p.skills().forEach(function (skill) {
+                var stat = skillStat(skill.id);
+                var pct = stat.t ? Math.round((stat.c / stat.t) * 100) : 0;
+                skillsHtml +=
+                    '<div class="learner-skill">' +
+                    '<span class="learner-skill__name">' + skill.icon + ' ' + escapeHtml(skill.name) + '</span>' +
+                    '<span class="learner-skill__track" role="img" aria-label="' +
+                    escapeHtml(skill.name + ': ' + (stat.t ? pct + '% de acierto' : 'sin datos')) + '">' +
+                    '<span class="learner-skill__fill" style="width:' + pct + '%"></span></span>' +
+                    '<span class="learner-skill__pct">' + (stat.t ? pct + '%' : '—') + '</span>' +
+                    '</div>';
+            });
+        }
+
+        var advice = !attempts
+            ? 'Completa una lección para empezar a medir tus habilidades.'
+            : weak
+                ? 'Tu punto más flojo ahora es <strong>' + escapeHtml(weak.skill.name) +
+                  '</strong> (' + Math.round(weak.rate * 100) + '%). Una sesión corta lo trabaja.'
+                : 'Sigue practicando: necesitamos más respuestas para recomendarte un refuerzo.';
+
+        if (focusInfo.focus && focusInfo.focus.id !== 'general' && focusInfo.rows.length) {
+            rows.push('<div class="learner-focus">');
+            rows.push('<p class="learner-focus__title">Para tu objetivo: <strong>' +
+                focusInfo.focus.icon + ' ' + escapeHtml(focusInfo.focus.name) + '</strong></p>');
+            rows.push('<div class="learner-focus__chips">');
+            focusInfo.rows.forEach(function (i) {
+                var lesson = LESSONS[i];
+                if (!lesson) return;
+                rows.push('<button type="button" class="learner-chip" data-lesson="' + i + '">' +
+                    (i + 1) + '. ' + escapeHtml(lesson.title) + '</button>');
+            });
+            rows.push('</div></div>');
+        } else if (focusInfo.focus && focusInfo.focus.id !== 'general') {
+            rows.push('<p class="learner-focus__empty">Las lecciones de ' +
+                escapeHtml(focusInfo.focus.name) + ' se desbloquean al avanzar en la ruta.</p>');
+        }
+
+        var practice = weak
+            ? '<button type="button" class="btn btn-secondary learner-practice" id="learner-practice">' +
+              'Practicar ' + escapeHtml(weak.skill.name.toLowerCase()) + '</button>'
+            : '';
+
+        box.innerHTML =
+            '<div class="learner-head">' +
+            '<div><p class="learner-eyebrow">Tu perfil</p>' +
+            '<p class="learner-title">' + (weak ? 'Refuerza lo que más cuesta' : 'Así vas aprendiendo') + '</p></div>' +
+            '<button type="button" class="learner-settings" id="learner-settings">Ajustar plan</button>' +
+            '</div>' +
+            (skillsHtml ? '<div class="learner-skills">' + skillsHtml + '</div>' : '') +
+            '<p class="learner-advice">' + advice + '</p>' +
+            practice + rows.join('');
+        box.hidden = false;
+
+        var settingsBtn = $('learner-settings');
+        if (settingsBtn) settingsBtn.addEventListener('click', openSettings);
+
+        var practiceBtn = $('learner-practice');
+        if (practiceBtn && weak) {
+            practiceBtn.addEventListener('click', function () { startSkillPractice(weak.skill.id); });
+        }
+
+        var chips = box.querySelectorAll('.learner-chip');
+        for (var i = 0; i < chips.length; i++) {
+            chips[i].addEventListener('click', function () {
+                var idx = Number(this.getAttribute('data-lesson'));
+                if (isFinite(idx)) startLesson(idx);
+            });
+        }
+    }
+
+    /*
+     * Eight sentences around the learner's current level, in the exercise
+     * types that train the chosen skill. Difficulty moves one band up or down
+     * from real accuracy, so the session is neither a victory lap nor a wall.
+     */
+    function startSkillPractice(skillId) {
+        var p = profile();
+        var def = p && p.skill ? p.skill(skillId) : null;
+        if (!def) return;
+
+        var stat = skillStat(skillId);
+        var level = currentLevel();
+        var target = p.targetLevel ? p.targetLevel(level, stat.c, stat.t) : level;
+        var low = Math.max(1, target - 1);
+        var high = Math.min(5, target + 1);
+
+        var pool = [];
+        LESSONS.forEach(function (lesson) {
+            lesson.sentences.forEach(function (s) {
+                var lv = s.lv || 1;
+                if (lv >= low && lv <= high) pool.push(s);
+            });
+        });
+        if (pool.length < 8) {
+            LESSONS.forEach(function (lesson) {
+                lesson.sentences.forEach(function (s) { pool.push(s); });
+            });
+        }
+
+        var types = def.types.filter(function (type) {
+            return !(state.typingFree && type === 'translate');
+        });
+        if (!types.length) types = ['wordBank'];
+
+        var chosen = shuffle(pool).slice(0, 8);
+        var items = chosen.map(function (s, i) {
+            return { sentence: s, type: types[i % types.length] };
+        });
+
+        startCustomSession({ title: 'Práctica: ' + def.name, items: items });
+    }
+
     function initPlacement() {
         var prompt = $('placement-prompt');
         if (!prompt) return;
@@ -1097,19 +1329,25 @@
         return rows;
     }
 
+    /* Highest lesson index currently reachable. Placement opens the path up to
+       the placed level; earlier lessons stay available as optional review
+       rather than as the "next" step. */
+    function pathFloor() {
+        var focusIndex = Math.min(state.lessonsDone, TOTAL_LESSONS - 1);
+        if (state.placement) {
+            var placed = firstLessonOfLevel(state.placement.level);
+            if (placed > focusIndex) focusIndex = placed;
+        }
+        return focusIndex;
+    }
+
     function renderPath() {
         var list = $('path-list');
         list.innerHTML = '';
         var doneCount = state.lessonsDone;
         var nextIndex = Math.min(doneCount, TOTAL_LESSONS - 1);
 
-        /* placement opens the whole path up to the placed level; earlier lessons
-           stay available as optional review rather than as the "next" step */
-        var focusIndex = nextIndex;
-        if (state.placement) {
-            var placed = firstLessonOfLevel(state.placement.level);
-            if (placed > focusIndex) focusIndex = placed;
-        }
+        var focusIndex = pathFloor();
         var floor = focusIndex;
 
         flatIndex().forEach(function (row) {
@@ -1162,6 +1400,7 @@
         });
 
         renderDiagnostic();
+        renderLearnerCard();
 
         var cur = LESSONS[Math.min(state.currentLesson, TOTAL_LESSONS - 1)] || LESSONS[0];
         var curLv = cur ? cur.sentences[0].lv : 1;
@@ -1200,24 +1439,67 @@
     }
 
     function renderGoal() {
-        var pct = Math.min(1, state.dailyXp / DAILY_GOAL_XP);
+        var goal = dailyGoalXp();
+        var pct = Math.min(1, state.dailyXp / goal);
         var circ = 2 * Math.PI * 18;
         var fill = $('goal-ring-fill');
         fill.style.strokeDasharray = circ;
         fill.style.strokeDashoffset = circ - circ * pct;
         $('goal-count').textContent = state.dailyXp;
 
-        var done = state.dailyXp >= DAILY_GOAL_XP;
+        var total = $('goal-total');
+        if (total) total.textContent = '/' + goal;
+
+        var done = state.dailyXp >= goal;
         $('goal-title').textContent = done ? '¡Meta cumplida!' : 'Meta diaria';
         $('goal-sub').textContent = done
             ? 'Vuelve mañana para mantener la racha.'
-            : 'Te faltan ' + (DAILY_GOAL_XP - state.dailyXp) + ' XP hoy.';
+            : 'Te faltan ' + (goal - state.dailyXp) + ' XP hoy.';
     }
 
     function renderStats() {
         $('streak-value').textContent = state.streak;
         $('gems-value').textContent = state.gems;
         $('hearts-value').textContent = heartsNow();
+    }
+
+    /* ================= learner profile ================= */
+
+    /*
+     * Saved skill stats are a plain map so old backups keep loading. Their
+     * nested values are not validated by state-schema, so read them through
+     * this guard instead of trusting arithmetic on imported JSON.
+     */
+    function skillStat(id) {
+        var raw = state.skillStats && state.skillStats[id];
+        if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return { c: 0, t: 0 };
+        var c = Number(raw.c);
+        var t = Number(raw.t);
+        if (!isFinite(c) || !isFinite(t) || c < 0 || t < 0 || c > t) return { c: 0, t: 0 };
+        return { c: Math.round(c), t: Math.round(t) };
+    }
+
+    function recordSkill(type, ok) {
+        /*
+         * speakBack is self-assessed: the learner reveals the meaning and
+         * clicks Continue, which always resolves true. Counting that as
+         * speaking accuracy would put a permanent 100% on the profile.
+         */
+        if (type === 'speakBack') return;
+        var p = profile();
+        var id = p && p.skillForType ? p.skillForType(type) : null;
+        if (!id) return;
+        var stat = skillStat(id);
+        stat.t++;
+        if (ok) stat.c++;
+        if (!state.skillStats || typeof state.skillStats !== 'object') state.skillStats = {};
+        state.skillStats[id] = stat;
+    }
+
+    function currentLevel() {
+        if (state.placement && state.placement.level) return state.placement.level;
+        var lesson = LESSONS[Math.min(state.currentLesson || 0, TOTAL_LESSONS - 1)];
+        return lesson && lesson.sentences[0] ? lesson.sentences[0].lv : 1;
     }
 
     function renderBadges() {
@@ -1307,9 +1589,13 @@
     }
 
     function normalizeItem(item) {
+        var type = item.type || 'multipleChoice';
+        var p = profile();
         return {
             sentence: item.sentence,
-            type: item.type || 'multipleChoice',
+            /* typing-free mode swaps free text for word tiles, in path
+               lessons and in every optional feature session alike */
+            type: p && p.comfortableType ? p.comfortableType(type, !!state.typingFree) : type,
             graded: item.graded !== false,
             data: item.data || null,
             tag: item.tag || null,
@@ -1447,7 +1733,10 @@
             var u = new SpeechSynthesisUtterance(text);
             u.lang = 'en-US';
             if (speechVoice) u.voice = speechVoice;
-            u.rate = rate || 1;
+            /* the comfort setting slows every utterance, including the
+               automatic playback that passes its own rate */
+            var baseRate = rate || 1;
+            u.rate = state.audioSlow ? baseRate * 0.72 : baseRate;
             synth.speak(u);
         } catch (e) { /* speech unavailable: exercise still solvable by reading */ }
     }
@@ -2001,10 +2290,13 @@
         var item = session.queue[session.step];
         if (item) item.result = ok;
 
+        if (item && item.graded !== false) recordSkill(item.type, ok);
+
         if (ok) {
             session.correct++;
             state.dailyXp += xp;
             state.xp += xp;
+            addWeeklyXp(xp);
         } else {
             session.mistakes++;
             if (session.kind === 'lesson') {
@@ -2366,13 +2658,17 @@
         if (status) status.textContent = message || '';
     }
 
-    function exportProgress() {
-        var payload = {
+    function progressPayload() {
+        return {
             app: '1-oracion-al-dia',
             schema: 1,
             exportedAt: new Date().toISOString(),
             state: state
         };
+    }
+
+    function exportProgress() {
+        var payload = progressPayload();
 
         try {
             var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -2387,6 +2683,82 @@
             setDataStatus('Copia descargada.');
         } catch (e) {
             setDataStatus('No pude crear la copia en este navegador.');
+        }
+    }
+
+    /*
+     * Manual cross-device sync without a server: copy the same JSON the file
+     * export contains, send it to yourself, and paste it on the other device.
+     * The pasted text goes through exactly the same schema validation as a
+     * file, so this is not a second, weaker import path.
+     */
+    function copyProgress() {
+        var text = JSON.stringify(progressPayload());
+
+        function done() { setDataStatus('Copia copiada. Pégala en el otro dispositivo.'); }
+
+        function fallback() {
+            var area = document.createElement('textarea');
+            area.value = text;
+            area.setAttribute('readonly', '');
+            area.style.position = 'fixed';
+            area.style.top = '-1000px';
+            document.body.appendChild(area);
+            area.select();
+            try {
+                if (document.execCommand('copy')) done();
+                else setDataStatus('No pude copiar. Usa "Guardar copia".');
+            } catch (e) {
+                setDataStatus('No pude copiar. Usa "Guardar copia".');
+            }
+            area.remove();
+        }
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done).catch(fallback);
+        } else {
+            fallback();
+        }
+    }
+
+    function applyImported(imported) {
+        if (!window.confirm('Esto reemplazará el progreso guardado en este navegador. ¿Continuar?')) {
+            setDataStatus('Restauración cancelada.');
+            return false;
+        }
+
+        try {
+            localStorage.setItem(STORAGE_KEY + '_pre_import', JSON.stringify(state));
+        } catch (e) { /* keep going: the import itself is more important */ }
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(imported));
+        setDataStatus('Copia restaurada. Recargando…');
+        window.setTimeout(function () { window.location.reload(); }, 600);
+        return true;
+    }
+
+    function pasteProgress() {
+        var wrap = $('paste-progress-wrap');
+        var area = $('paste-progress-text');
+        if (!wrap || !area) return;
+        wrap.hidden = false;
+        area.value = '';
+        area.focus();
+        setDataStatus('Pega el texto de la copia y pulsa restaurar.');
+    }
+
+    function applyPastedProgress() {
+        var area = $('paste-progress-text');
+        if (!area) return;
+        if (area.value.length > 1024 * 1024) {
+            setDataStatus('La copia es demasiado grande.');
+            return;
+        }
+        try {
+            var imported = parseBackup(area.value.trim());
+            applyImported(imported);
+        } catch (e) {
+            setDataStatus(e.message || 'No pude leer esa copia.');
         }
     }
 
@@ -2430,24 +2802,11 @@
         reader.onload = function () {
             try {
                 var imported = parseBackup(String(reader.result || ''));
-
-                if (!window.confirm('Esto reemplazará el progreso guardado en este navegador. ¿Continuar?')) {
-                    setDataStatus('Restauración cancelada.');
-                    input.value = '';
-                    return;
-                }
-
-                try {
-                    localStorage.setItem(STORAGE_KEY + '_pre_import', JSON.stringify(state));
-                } catch (e) { /* keep going: the import itself is more important */ }
-
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(imported));
-                setDataStatus('Copia restaurada. Recargando…');
-                window.setTimeout(function () { window.location.reload(); }, 600);
+                applyImported(imported);
             } catch (e) {
                 setDataStatus(e.message || 'No pude leer esa copia.');
-                input.value = '';
             }
+            input.value = '';
         };
         reader.onerror = function () {
             setDataStatus('No pude leer el archivo.');
@@ -2484,6 +2843,15 @@
         var installBtn = $('install-app-btn');
 
         if (exportBtn) exportBtn.addEventListener('click', exportProgress);
+
+        var copyBtn = $('copy-progress');
+        if (copyBtn) copyBtn.addEventListener('click', copyProgress);
+
+        var pasteBtn = $('paste-progress');
+        if (pasteBtn) pasteBtn.addEventListener('click', pasteProgress);
+
+        var pasteApply = $('paste-progress-apply');
+        if (pasteApply) pasteApply.addEventListener('click', applyPastedProgress);
 
         if (importBtn && fileInput) {
             importBtn.addEventListener('click', function () { fileInput.click(); });
@@ -2641,6 +3009,46 @@
     var MONTH_NAMES_ES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
         'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
+    function repairGapDays() {
+        if (!state.lastStudyDate) return 0;
+        return daysBetween(state.lastStudyDate, todayKey());
+    }
+
+    function canRepairStreak() {
+        var p = profile();
+        if (!p || !p.canRepair) return false;
+        return p.canRepair(state.streak, state.lastStreak, repairGapDays());
+    }
+
+    function repairStreak() {
+        if (!canRepairStreak()) {
+            toast('No hay una racha que reparar ahora mismo.');
+            return;
+        }
+        var p = profile();
+        var cost = p && p.REPAIR_COST ? p.REPAIR_COST : 20;
+        if (state.gems < cost) {
+            toast('Necesitas ' + cost + ' gemas para reparar la racha.');
+            return;
+        }
+
+        state.gems -= cost;
+        state.streak = Math.max(1, state.lastStreak);
+        state.lastStudyDate = yesterdayKey();
+        if (!state.studyHistory) state.studyHistory = {};
+        state.studyHistory[state.lastStudyDate] = 'repair';
+        state.lastStreak = 0;
+        save();
+        renderStats();
+        renderCalendar();
+        renderGoal();
+        renderLearnerCard();
+        toast('Racha recuperada: ' + state.streak + ' días.');
+        /* the repair button just disappeared; do not leave focus on a hidden node */
+        var closeBtn = $('cal-close');
+        if (closeBtn) closeBtn.focus();
+    }
+
     function renderCalendar() {
         var streakCount = $('cal-streak-count');
         if (streakCount) streakCount.textContent = state.streak + (state.streak === 1 ? ' día' : ' días');
@@ -2664,6 +3072,37 @@
         if (freezeCount) {
             var f = state.streakFreeze || 0;
             freezeCount.textContent = f + (f === 1 ? ' activo' : ' activos');
+        }
+
+        var weekGoal = weeklyGoalXp();
+        var weekXp = state.weeklyXp || 0;
+        var weekVal = $('cal-week-val');
+        if (weekVal) weekVal.textContent = weekXp + ' / ' + weekGoal + ' XP';
+        var weekFill = $('cal-week-fill');
+        if (weekFill) {
+            weekFill.style.width = (weekGoal ? Math.min(100, (weekXp / weekGoal) * 100) : 0) + '%';
+        }
+
+        var repairBox = $('cal-repair');
+        if (repairBox) {
+            var canRepairNow = canRepairStreak();
+            repairBox.hidden = !canRepairNow;
+            if (canRepairNow) {
+                var p = profile();
+                var cost = p && p.REPAIR_COST ? p.REPAIR_COST : 20;
+                var repairText = $('cal-repair-text');
+                if (repairText) {
+                    repairText.textContent = 'Perdiste una racha de ' + state.lastStreak +
+                        ' días. Puedes recuperarla antes de volver a practicar.';
+                }
+                var repairBtn = $('repair-streak-btn');
+                if (repairBtn) {
+                    repairBtn.disabled = state.gems < cost;
+                    repairBtn.textContent = state.gems < cost
+                        ? 'Faltan ' + (cost - state.gems) + ' 💎'
+                        : 'Reparar racha (' + cost + ' 💎)';
+                }
+            }
         }
 
         var now = new Date();
@@ -2701,7 +3140,7 @@
                 cell.title = 'Racha protegida con congelador';
             } else if (hist) {
                 cell.classList.add('active');
-                cell.title = 'Día de práctica completado';
+                cell.title = hist === 'repair' ? 'Racha reparada' : 'Día de práctica completado';
             }
 
             if (isToday) {
@@ -2719,6 +3158,10 @@
         }
         lastFocusedModalTrigger = document.activeElement;
         renderCalendar();
+        /* the paste field is opt-in and never left half-filled between visits */
+        var pasteWrap = $('paste-progress-wrap');
+        if (pasteWrap) pasteWrap.hidden = true;
+        setDataStatus('');
         var modal = $('calendar-modal');
         if (modal) {
             trapFocus(modal);
@@ -2743,6 +3186,9 @@
 
         var closeBtn = $('cal-close');
         if (closeBtn) closeBtn.addEventListener('click', closeCalendar);
+
+        var repairBtn = $('repair-streak-btn');
+        if (repairBtn) repairBtn.addEventListener('click', repairStreak);
 
         var modal = $('calendar-modal');
         if (modal) {
@@ -2774,12 +3220,155 @@
                     closeShop();
                     return;
                 }
+                var settings = $('settings-modal');
+                if (settings && !settings.hidden) {
+                    closeSettings();
+                    return;
+                }
                 var cal = $('calendar-modal');
                 if (cal && !cal.hidden) {
                     closeCalendar();
                     return;
                 }
             }
+        });
+    }
+
+    /* ================= settings modal ================= */
+
+    function checkRadio(form, name, value) {
+        if (!form) return;
+        var input = form.querySelector('input[name="' + name + '"][value="' + value + '"]');
+        if (input) input.checked = true;
+    }
+
+    function syncSettings() {
+        var form = $('settings-form');
+
+        checkRadio(form, 'settings-goal', String(dailyGoalXp()));
+
+        var comfort = window.DailyTheme && window.DailyTheme.comfort
+            ? window.DailyTheme.comfort()
+            : { textSize: 'normal', motion: 'auto' };
+        checkRadio(form, 'settings-text', comfort.textSize || 'normal');
+        checkRadio(form, 'settings-motion', comfort.motion || 'auto');
+
+        var theme = window.DailyTheme && window.DailyTheme.preference
+            ? window.DailyTheme.preference()
+            : 'auto';
+        checkRadio(form, 'settings-theme', theme);
+
+        var slow = $('settings-audio-slow');
+        if (slow) slow.checked = !!state.audioSlow;
+        var typing = $('settings-typing-free');
+        if (typing) typing.checked = !!state.typingFree;
+
+        var focusSelect = $('settings-focus');
+        if (focusSelect) {
+            var p = profile();
+            var ids = p && p.focusIds ? p.focusIds() : ['general'];
+            focusSelect.value = ids.indexOf(state.focusArea) >= 0 ? state.focusArea : 'general';
+        }
+    }
+
+    function openSettings() {
+        if (needsNickname()) {
+            showNickModal(false);
+            return;
+        }
+        var modal = $('settings-modal');
+        if (!modal) return;
+        lastFocusedModalTrigger = document.activeElement;
+        syncSettings();
+        trapFocus(modal);
+        modal.hidden = false;
+        var closeBtn = $('settings-close');
+        if (closeBtn) closeBtn.focus();
+    }
+
+    function closeSettings() {
+        var modal = $('settings-modal');
+        if (modal) modal.hidden = true;
+        if (lastFocusedModalTrigger && typeof lastFocusedModalTrigger.focus === 'function') {
+            lastFocusedModalTrigger.focus();
+            lastFocusedModalTrigger = null;
+        }
+    }
+
+    function initSettings() {
+        var btn = $('settings-btn');
+        if (btn) btn.addEventListener('click', openSettings);
+
+        var closeBtn = $('settings-close');
+        if (closeBtn) closeBtn.addEventListener('click', closeSettings);
+
+        var doneBtn = $('settings-done');
+        if (doneBtn) doneBtn.addEventListener('click', closeSettings);
+
+        var modal = $('settings-modal');
+        if (modal) {
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) closeSettings();
+            });
+        }
+
+        var form = $('settings-form');
+        if (form) {
+            form.addEventListener('submit', function (e) { e.preventDefault(); });
+
+            form.addEventListener('change', function (e) {
+                var target = e.target;
+                if (!target) return;
+
+                if (target.name === 'settings-goal') {
+                    var p = profile();
+                    state.goalXp = p && p.goal ? p.goal(Number(target.value)) : 50;
+                    save();
+                    renderGoal();
+                    renderCalendar();
+                    renderLearnerCard();
+                    return;
+                }
+
+                if (target.name === 'settings-text' || target.name === 'settings-motion') {
+                    if (window.DailyTheme && window.DailyTheme.setComfort) {
+                        var patch = {};
+                        if (target.name === 'settings-text') patch.textSize = target.value;
+                        else patch.motion = target.value;
+                        window.DailyTheme.setComfort(patch);
+                    }
+                    return;
+                }
+
+                if (target.name === 'settings-theme') {
+                    if (window.DailyTheme && window.DailyTheme.set) {
+                        window.DailyTheme.set(target.value);
+                    }
+                    return;
+                }
+            });
+        }
+
+        var slow = $('settings-audio-slow');
+        if (slow) slow.addEventListener('change', function () {
+            state.audioSlow = !!slow.checked;
+            save();
+        });
+
+        var typing = $('settings-typing-free');
+        if (typing) typing.addEventListener('change', function () {
+            state.typingFree = !!typing.checked;
+            save();
+            renderLearnerCard();
+        });
+
+        var focusSelect = $('settings-focus');
+        if (focusSelect) focusSelect.addEventListener('change', function () {
+            var p = profile();
+            var ids = p && p.focusIds ? p.focusIds() : ['general'];
+            state.focusArea = ids.indexOf(focusSelect.value) >= 0 ? focusSelect.value : 'general';
+            save();
+            renderLearnerCard();
         });
     }
 
@@ -2795,6 +3384,14 @@
         if (window.DailyMigrations && window.DailyMigrations.run) {
             if (window.DailyMigrations.run(state).length) save();
         }
+
+        /* repair hand-edited or older values before the first render */
+        var p = profile();
+        state.goalXp = p && p.goal ? p.goal(state.goalXp) : 50;
+        if (p && p.focusIds && p.focusIds().indexOf(state.focusArea) < 0) {
+            state.focusArea = 'general';
+        }
+
         applyName();
         rollover();
         ensureRivals();
@@ -2810,6 +3407,7 @@
         initSpeech();
         initShop();
         initCalendar();
+        initSettings();
         initDataBackup();
         registerServiceWorker();
         checkStorage();

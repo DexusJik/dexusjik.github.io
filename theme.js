@@ -40,6 +40,15 @@
     var ORDER = ['auto', 'light', 'dark'];
     var META = { light: '#fbf9f4', dark: '#0f172a' };
 
+    /*
+     * Comfort preferences (text size, reduced motion) live beside the theme,
+     * not inside the learning state. They are display choices: a corrupt save
+     * must not be able to reset them, and they must apply before paint.
+     */
+    var COMFORT_KEY = 'comfort-pref';
+    var TEXT_SIZES = ['normal', 'large', 'xlarge'];
+    var MOTIONS = ['auto', 'reduce'];
+
     function stored() {
         try { return window.localStorage.getItem(KEY); } catch (e) { return null; }
     }
@@ -74,6 +83,31 @@
         var meta = document.querySelector('meta[name="theme-color"]');
         if (meta) meta.setAttribute('content', META[current]);
     }
+
+    function readComfort() {
+        var out = { textSize: 'normal', motion: 'auto' };
+        try {
+            var raw = window.localStorage.getItem(COMFORT_KEY);
+            if (!raw) return out;
+            var parsed = JSON.parse(raw);
+            if (parsed && TEXT_SIZES.indexOf(parsed.textSize) >= 0) out.textSize = parsed.textSize;
+            if (parsed && MOTIONS.indexOf(parsed.motion) >= 0) out.motion = parsed.motion;
+        } catch (e) { /* corrupt or unavailable: defaults */ }
+        return out;
+    }
+
+    function applyComfort(value) {
+        var root = document.documentElement;
+        root.setAttribute('data-text', value.textSize);
+        root.setAttribute('data-motion', value.motion);
+    }
+
+    function writeComfort(value) {
+        try { window.localStorage.setItem(COMFORT_KEY, JSON.stringify(value)); } catch (e) { /* private mode */ }
+    }
+
+    var comfort = readComfort();
+    applyComfort(comfort);
 
     /* before-paint bootstrap: no FOUC, no toggle yet */
     apply(current);
@@ -154,6 +188,16 @@
             if (btn) btn.dispatchEvent(new Event('repaint'));
             return current;
         },
-        cycle: next
+        cycle: next,
+        comfort: function () {
+            return { textSize: comfort.textSize, motion: comfort.motion };
+        },
+        setComfort: function (patch) {
+            if (patch && TEXT_SIZES.indexOf(patch.textSize) >= 0) comfort.textSize = patch.textSize;
+            if (patch && MOTIONS.indexOf(patch.motion) >= 0) comfort.motion = patch.motion;
+            writeComfort(comfort);
+            applyComfort(comfort);
+            return { textSize: comfort.textSize, motion: comfort.motion };
+        }
     };
 })();

@@ -21,9 +21,10 @@ function check(label, actual, expected) {
 
 /* Load theme.js with a fake window/document/localStorage.
    `osDark` drives matchMedia, `storedValue` drives localStorage. */
-function load(storedValue, osDark) {
+function load(storedValue, osDark, comfortValue) {
     const store = {};
     if (storedValue !== undefined) store['theme-pref'] = storedValue;
+    if (comfortValue !== undefined) store['comfort-pref'] = comfortValue;
 
     const listeners = {};
 
@@ -123,6 +124,40 @@ console.log('');
     r.api.set('dark');
     check('set("dark") writes dark', r.store['theme-pref'], 'dark');
     check('set("dark") overrides a light OS', r.root.getAttribute('data-theme'), 'dark');
+}
+
+console.log('');
+
+/* --- comfort preferences: defaults, coercion, before-paint attributes --- */
+{
+    const r = load(undefined, false);
+    check('default text size is normal', r.api.comfort().textSize, 'normal');
+    check('default motion is auto', r.api.comfort().motion, 'auto');
+    check('default text attribute', r.root.getAttribute('data-text'), 'normal');
+    check('default motion attribute', r.root.getAttribute('data-motion'), 'auto');
+
+    r.api.setComfort({ textSize: 'large' });
+    check('setComfort writes text size', JSON.parse(r.store['comfort-pref']).textSize, 'large');
+    check('setComfort applies text size', r.root.getAttribute('data-text'), 'large');
+    check('setComfort keeps motion', r.root.getAttribute('data-motion'), 'auto');
+
+    r.api.setComfort({ motion: 'reduce', textSize: 'nonsense' });
+    check('setComfort ignores an invalid text size', r.root.getAttribute('data-text'), 'large');
+    check('setComfort applies reduced motion', r.root.getAttribute('data-motion'), 'reduce');
+}
+
+/* corrupt comfort JSON falls back instead of throwing */
+{
+    const r = load(undefined, false, '{not json');
+    check('corrupt comfort falls back to normal text', r.root.getAttribute('data-text'), 'normal');
+    check('corrupt comfort falls back to auto motion', r.root.getAttribute('data-motion'), 'auto');
+}
+
+/* a stored comfort value is applied before the first paint */
+{
+    const r = load(undefined, false, JSON.stringify({ textSize: 'xlarge', motion: 'reduce' }));
+    check('stored text size is applied on load', r.root.getAttribute('data-text'), 'xlarge');
+    check('stored motion is applied on load', r.root.getAttribute('data-motion'), 'reduce');
 }
 
 console.log('');

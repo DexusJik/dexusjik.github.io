@@ -196,6 +196,23 @@
                     <strong class="cal-stat-val" id="cal-freeze-count">0 activos</strong>
                 </div>
             </div>
+            <div class="cal-week">
+                <div class="cal-week__head">
+                    <span>Esta semana</span>
+                    <strong id="cal-week-val">0 / 250 XP</strong>
+                </div>
+                <div class="cal-week__track" role="img" aria-label="Progreso semanal">
+                    <span class="cal-week__fill" id="cal-week-fill"></span>
+                </div>
+            </div>
+
+            <div class="cal-repair" id="cal-repair" hidden>
+                <p class="cal-repair__text" id="cal-repair-text"></p>
+                <button type="button" class="btn btn-secondary" id="repair-streak-btn">
+                    Reparar racha (20 💎)
+                </button>
+            </div>
+
             <div class="cal-grid-wrap">
                 <div class="cal-month-header" id="cal-month-header">Octubre 2026</div>
                 <div class="cal-weekdays">
@@ -209,12 +226,132 @@
                 <p class="cal-data__note">Tu progreso vive solo en este navegador. Guarda una copia antes de cambiar de dispositivo o borrar datos.</p>
                 <div class="cal-data__actions">
                     <button type="button" class="btn btn-secondary" id="export-progress">Guardar copia</button>
+                    <button type="button" class="btn btn-secondary" id="copy-progress">Copiar copia</button>
                     <button type="button" class="btn btn-secondary" id="import-progress-btn">Restaurar</button>
+                    <button type="button" class="btn btn-secondary" id="paste-progress">Pegar copia</button>
                     <button type="button" class="btn btn-secondary" id="install-app-btn" hidden>Instalar app</button>
                     <input type="file" id="import-progress-file" accept="application/json,.json" hidden>
                 </div>
+                <div class="cal-data__paste" id="paste-progress-wrap" hidden>
+                    <label class="sr-only" for="paste-progress-text">Texto de la copia de progreso</label>
+                    <textarea class="cal-data__textarea" id="paste-progress-text" rows="3"
+                              placeholder="Pega aquí el texto de la copia"></textarea>
+                    <button type="button" class="btn btn-secondary" id="paste-progress-apply">
+                        Restaurar desde texto
+                    </button>
+                </div>
                 <p class="cal-data__status" id="data-status" role="status"></p>
             </div>
+        </div>
+    </div>
+
+    <!-- ============ SETTINGS / LEARNER PLAN ============ -->
+    <div class="modal" id="settings-modal" role="dialog" aria-modal="true"
+         aria-labelledby="settings-title" hidden>
+        <div class="modal__panel settings-panel">
+            <div class="modal__head">
+                <h2 class="modal__title" id="settings-title">Ajustes</h2>
+                <button type="button" class="modal__close" id="settings-close" aria-label="Cerrar ajustes">✕</button>
+            </div>
+
+            <form id="settings-form">
+                <fieldset class="settings-group">
+                    <legend class="settings-legend">Meta diaria</legend>
+                    <p class="settings-help">Cuánto quieres practicar cada día. La meta semanal son cinco días.</p>
+                    <div class="settings-options">
+                        <label class="settings-option">
+                            <input type="radio" name="settings-goal" value="20">
+                            <span><strong>Relajada</strong><small>20 XP · unos 5 min</small></span>
+                        </label>
+                        <label class="settings-option">
+                            <input type="radio" name="settings-goal" value="50">
+                            <span><strong>Constante</strong><small>50 XP · unos 12 min</small></span>
+                        </label>
+                        <label class="settings-option">
+                            <input type="radio" name="settings-goal" value="100">
+                            <span><strong>Intensa</strong><small>100 XP · unos 25 min</small></span>
+                        </label>
+                    </div>
+                </fieldset>
+
+                <fieldset class="settings-group">
+                    <legend class="settings-legend">Tamaño del texto</legend>
+                    <div class="settings-options settings-options--row">
+                        <label class="settings-option">
+                            <input type="radio" name="settings-text" value="normal">
+                            <span><strong>Normal</strong></span>
+                        </label>
+                        <label class="settings-option">
+                            <input type="radio" name="settings-text" value="large">
+                            <span><strong>Grande</strong></span>
+                        </label>
+                        <label class="settings-option">
+                            <input type="radio" name="settings-text" value="xlarge">
+                            <span><strong>Muy grande</strong></span>
+                        </label>
+                    </div>
+                </fieldset>
+
+                <fieldset class="settings-group">
+                    <legend class="settings-legend">Tema</legend>
+                    <div class="settings-options settings-options--row">
+                        <label class="settings-option">
+                            <input type="radio" name="settings-theme" value="auto">
+                            <span><strong>Auto</strong></span>
+                        </label>
+                        <label class="settings-option">
+                            <input type="radio" name="settings-theme" value="light">
+                            <span><strong>Claro</strong></span>
+                        </label>
+                        <label class="settings-option">
+                            <input type="radio" name="settings-theme" value="dark">
+                            <span><strong>Oscuro</strong></span>
+                        </label>
+                    </div>
+                </fieldset>
+
+                <fieldset class="settings-group">
+                    <legend class="settings-legend">Movimiento</legend>
+                    <div class="settings-options settings-options--row settings-options--two">
+                        <label class="settings-option">
+                            <input type="radio" name="settings-motion" value="auto">
+                            <span><strong>Auto</strong></span>
+                        </label>
+                        <label class="settings-option">
+                            <input type="radio" name="settings-motion" value="reduce">
+                            <span><strong>Reducir</strong></span>
+                        </label>
+                    </div>
+                </fieldset>
+
+                <fieldset class="settings-group">
+                    <legend class="settings-legend">Audio y escritura</legend>
+                    <label class="settings-toggle">
+                        <input type="checkbox" id="settings-audio-slow">
+                        <span><strong>Audio más lento</strong><small>Solo afecta la pronunciación.</small></span>
+                    </label>
+                    <label class="settings-toggle">
+                        <input type="checkbox" id="settings-typing-free">
+                        <span><strong>Practicar sin escribir</strong><small>Las respuestas escritas se convierten en ordenar palabras.</small></span>
+                    </label>
+                </fieldset>
+
+                <fieldset class="settings-group">
+                    <legend class="settings-legend">Tu objetivo</legend>
+                    <p class="settings-help">Orienta las recomendaciones de práctica hacia el vocabulario que más vas a usar.</p>
+                    <label class="settings-select-label" for="settings-focus">Enfoque</label>
+                    <select class="settings-select" id="settings-focus">
+                        <option value="general">General</option>
+                        <option value="work">Trabajo</option>
+                        <option value="travel">Viajes</option>
+                        <option value="daily">Día a día</option>
+                        <option value="study">Estudios</option>
+                    </select>
+                </fieldset>
+
+                <button type="button" class="btn btn-primary modal__submit" id="settings-done">Listo</button>
+            </form>
+            <p class="settings-note">Tus ajustes de comodidad se guardan en este dispositivo.</p>
         </div>
     </div>
 
@@ -231,6 +368,9 @@
 
             <button type="button" class="theme-toggle" id="theme-toggle"
                     aria-label="Cambiar tema"></button>
+
+            <button type="button" class="theme-toggle" id="settings-btn"
+                    aria-label="Abrir ajustes" title="Ajustes">⚙️</button>
 
         <div class="stats" id="stats-bar">
             <button type="button" class="stat stat-streak stat-btn" id="streak-stat" title="Ver calendario de racha" aria-label="Ver calendario de racha">
@@ -257,7 +397,7 @@
                     <circle class="ring-fill" id="goal-ring-fill" cx="22" cy="22" r="18"></circle>
                 </svg>
                 <div class="goal-ring-text">
-                    <span id="goal-count">0</span><span class="goal-total">/50</span>
+                    <span id="goal-count">0</span><span class="goal-total" id="goal-total">/50</span>
                 </div>
             </div>
             <div class="goal-copy">
@@ -268,6 +408,8 @@
         </section>
 
         <section class="diagnostic" id="diagnostic" hidden></section>
+
+        <section class="learner-card" id="learner-card" aria-label="Tu perfil de aprendizaje" hidden></section>
 
         <section class="storage-notice" id="storage-notice" role="note" hidden></section>
 
@@ -436,6 +578,7 @@
     <script src="errors.js"></script>
     <script src="sentences.js"></script>
     <script src="placement.js"></script>
+    <script src="profile.js"></script>
     <!-- state-schema must load before game.js: game.js load() calls it -->
     <script src="state-schema.js"></script>
     <script src="migrations.js"></script>

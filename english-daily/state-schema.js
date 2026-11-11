@@ -61,6 +61,15 @@
         dailyLessonDoneDate: { kind: 'date' },
         storageNoticeDismissed: { kind: 'bool' },
         features: { kind: 'map' },
+        /* learner profile: plan, comfort and adaptive practice */
+        goalXp: { kind: 'number', min: 20, max: 100, int: true },
+        audioSlow: { kind: 'bool' },
+        typingFree: { kind: 'bool' },
+        focusArea: { kind: 'string', maxLen: 12, empty: true },
+        skillStats: { kind: 'map' },
+        weeklyXp: { kind: 'number', min: 0, max: 1000000, int: true },
+        weekStart: { kind: 'date' },
+        lastStreak: { kind: 'number', min: 0, max: 9999, int: true },
     };
 
     function isPlainObject(v) {

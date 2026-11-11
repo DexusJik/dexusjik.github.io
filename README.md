@@ -25,9 +25,9 @@ A server is required rather than `file://` because the app uses
 ## Tests
 
 ```bash
-npm test                    # 22 gates, exits non-zero on failure
+npm test                    # 23 gates, exits non-zero on failure
 npm run test:quiet          # only failures and the summary
-npm run test:browser         # 22 gates plus the measured contrast probe
+npm run test:browser         # 23 gates plus the measured contrast probe
 ```
 
 Runs in CI on every push to `main` and on every pull request.
@@ -47,7 +47,8 @@ Runs in CI on every push to `main` and on every pull request.
 | `check-asset-refs` | a page pointing at an image, icon or stylesheet that is not on disk |
 | `check-tokens` | a `var(--x)` reference to a token nothing defines |
 | `check-light-unchanged` | a colour in the light theme changed without being recorded as intended |
-| `test-theme-resolve` | the theme preference resolving wrongly for any preference × OS combination |
+| `test-theme-resolve` | the theme preference resolving wrongly for any preference × OS combination, including comfort prefs |
+| `test-profile` | a goal, skill mapping, weekly bucket or streak-repair rule drifting from the documented behaviour |
 | `audit-dark-risk` | a light literal used as a background, or a `--navy` used as text colour |
 | `test-migration` | a state migration that loses or corrupts learner progress |
 | `test-state-schema` | a corrupt saved field flowing into logic as the wrong type |
@@ -56,7 +57,7 @@ Runs in CI on every push to `main` and on every pull request.
 | `check-secret-scan` | the CI secret scan quietly ceasing to match real credentials |
 | `check-line-endings` | a file that would commit CRLF and break the CI diff |
 
-Nineteen gates in `npm test`, plus the contrast probe in CI. `audit-dark-risk`
+Twenty-three gates in `npm test`, plus the contrast probe in CI. `audit-dark-risk`
 was a report while dark mode was unbuilt — it listed 73 known sites and was
 deliberately excluded. Now that dark mode ships, those are real defects, so it
 gates like the rest.
@@ -150,9 +151,24 @@ path opens automatically, so onboarding has no quiz gate. Re-testing is
 allowed from the diagnostic strip, but only the first calibration awards XP,
 gems or streak so it cannot be farmed.
 
-The app can also export and restore a JSON copy from the progress calendar.
-Import is an explicit confirmed action, validates through `state-schema.js`, and
-keeps the previous state under `igsg_daily_v1_pre_import`.
+The app can also export and restore a JSON copy from the progress calendar:
+download a file, copy the JSON to the clipboard, or restore from pasted text.
+Every import path is an explicit confirmed action, validates through
+`state-schema.js`, and keeps the previous state under
+`igsg_daily_v1_pre_import`.
+
+**Learner profile.** `profile.js` is pure logic with no DOM or storage: goal
+presets, the Monday-based week key, exercise-type-to-skill mapping, typing-free
+substitution, adaptive level selection and streak-repair eligibility. `game.js`
+owns the state and UI. New fields are additive and defaulted, so old saves and
+old backups keep loading: `goalXp`, `audioSlow`, `typingFree`, `focusArea`,
+`skillStats`, `weeklyXp`, `weekStart` and `lastStreak`. None of them may be
+cleared by a migration.
+
+Comfort choices (text size, reduced motion) live in `localStorage['comfort-pref']`,
+not in the learning state, for the same reason `theme-pref` does: a corrupt save
+must not reset them, and `theme.js` applies them before paint. They are display
+preferences, so they are not part of a progress backup.
 
 **A migration version means "the questions changed", not "the app changed".**
 `game.js` stamps new placements with the current version, and `migrations.js`
@@ -189,7 +205,8 @@ robots.txt  sitemap.xml
 english-daily/
   index.html            app shell, script load order matters
   daily.css             20 tokens in :root
-  game.js               all app logic, one IIFE, ~2900 lines
+  game.js               app state, DOM and session logic, ~3450 lines
+  profile.js            pure goals, skills, weekly buckets and adaptation rules
   sentences.js          365 sentences, 128 KB, the largest file
   placement.js          30 placement items, hand-written distractors, quick subset
   migrations.js         CURRENT_VERSION + state migrations
@@ -206,8 +223,9 @@ tools/                  validators, run-all, icon generator, path helper
 
 ### Load order in the app
 
-`sentences.js` → `placement.js` → `migrations.js` → `game.js`. `migrations.js`
-must run before `game.js` reads state.
+`sentences.js` → `placement.js` → `profile.js` → `migrations.js` → `game.js`.
+`migrations.js` must run before `game.js` reads state; `profile.js` only adds
+pure helpers.
 
 `theme.js` is the exception: it lives at the site root and is loaded from
 `<head>`, **synchronously and before paint**, because a dark-mode visitor must
@@ -259,9 +277,10 @@ cards and the featured card were all the same navy and merged into the page.
 
 ### Known weaknesses
 
-- **`game.js` is one ~2900-line file.** Everything reaches shared state through a
-  global `DailyGame` hook. It works, but it is hard to test and hard to delete
-  features from. Splitting it is the biggest refactor available.
+- **`game.js` is one ~3450-line file.** Everything reaches shared state through a
+  global `DailyGame` hook. The pure profile rules are already split into
+  `profile.js`; splitting sessions and rendering out of `game.js` is still the
+  biggest refactor available.
 - **Errors are captured but not sent anywhere.** `errors.js` buffers the last 20
   in `localStorage`, aged out at 14 days, and shows them on demand behind a
   "Ver detalles" button. That fixes diagnosability without a third party, which
@@ -279,7 +298,13 @@ chooses to report.
   `color: var(--navy-800)` in *text* is caught by the browser probe alone.
 - **`frame-ancestors` is not set**, because it cannot be sent from a `<meta>`
   CSP. Every page is framable. Needs a host in front of Pages.
-- **Spanish strings are hardcoded** in markup and JS. No i18n.
+- **Spanish strings are hardcoded** in markup and JS. No i18n. The Spanish
+  translation is the prompt for most exercises, so supporting learners who do
+  not speak Spanish needs a second corpus, not just translated buttons.
+- **Progress sync is manual.** File export, clipboard copy and pasted restore
+  move a JSON blob between devices; there is no account or server, so there is
+  no automatic sync or cross-device reminder. Both need a backend, which is a
+  hosting decision, not a UI change.
 - **The main site has no offline support**; only the app has a service worker.
 - **The 404 has no saved-theme support.** It ships `script-src 'none'` and
   contains no script at all, so `theme.js` cannot run there. It does honour the

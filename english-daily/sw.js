@@ -19,7 +19,7 @@
  * list changes: install re-runs on a bump, which refreshes the precache and
  * lets activate delete the superseded cache.
  */
-var CACHE_VERSION = 'daily-v10';
+var CACHE_VERSION = 'daily-v11';
 var NETWORK_TIMEOUT_MS = 4000;
 
 var PRECACHE = [
@@ -32,6 +32,7 @@ var PRECACHE = [
     '../theme.js',
     './sentences.js',
     './placement.js',
+    './profile.js',
     './errors.js',
     './errors-ui.js',
     './state-schema.js',

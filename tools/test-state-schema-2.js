@@ -39,6 +39,8 @@ function defaults() {
         badges: {}, nickname: '', nicknameSkipped: false, rivals: [], placement: null,
         placementSkipped: false, placementSkipVersion: 0, dailyLessonDoneDate: null,
         storageNoticeDismissed: false, features: {},
+        goalXp: 50, audioSlow: false, typingFree: false, focusArea: 'general',
+        skillStats: {}, weeklyXp: 0, weekStart: null, lastStreak: 0,
     };
 }
 

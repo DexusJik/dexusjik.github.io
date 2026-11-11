@@ -17,6 +17,7 @@ const TOOLS = __dirname;
 const GATES = [
     ['check-tokens', 'every var() token reference resolves'],
     ['test-theme-resolve', 'theme preference resolution is correct'],
+    ['test-profile', 'goals, skills and streak repair follow the documented rules'],
     ['test-state-schema', 'corrupt saved state is repaired, never lost'],
     ['test-state-schema-2', 'the reviewed schema defects stay fixed'],
     ['test-errors-buffer', 'the error buffer caps, ages out and survives'],

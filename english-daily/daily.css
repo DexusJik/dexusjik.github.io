@@ -271,6 +271,15 @@
 
 * { box-sizing: border-box; }
 
+/*
+ * Comfort preferences, applied by theme.js before paint. Scaling the root font
+ * size moves every rem in the app together, which is safer than overriding
+ * dozens of component sizes. Capped at 125% so the fixed-width lesson footer
+ * still fits a phone.
+ */
+html[data-text="large"] { font-size: 112.5%; }
+html[data-text="xlarge"] { font-size: 125%; }
+
 :focus-visible {
     outline: 3px solid var(--focus-ring-strong);
     outline-offset: 2px;
@@ -702,6 +711,13 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
 .nick-chip__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .nick-chip__pencil { font-size: 0.6875rem; color: var(--muted); flex: 0 0 auto; }
 
+@media (max-width: 30rem) {
+    /* the settings modal carries the theme choice on narrow screens */
+    #theme-toggle { display: none; }
+    /* stats move to their own row instead of being clipped by the gear */
+    .topbar { flex-wrap: wrap; row-gap: 0.4rem; }
+    .stats { flex: 1 0 100%; justify-content: space-between; }
+}
 @media (max-width: 26rem) {
     .brand-name { display: none; }
     .nick-chip { max-width: 6rem; }
@@ -727,7 +743,10 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
 
 .modal__panel {
     width: 100%;
-    max-width: 24rem;
+    max-width: min(24rem, calc(100vw - 2.5rem));
+    /* a grid item's automatic min-width is min-content, which let a wide
+       inner grid push the dialog past the viewport edge on a phone */
+    min-width: 0;
     max-height: calc(100vh - 2.5rem);
     max-height: calc(100dvh - 2.5rem);
     overflow-y: auto;
@@ -806,7 +825,8 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
 
 /* ---------- shop modal ---------- */
 .shop-panel {
-    max-width: 26rem;
+    max-width: min(26rem, calc(100vw - 2.5rem));
+    min-width: 0;
     text-align: left;
     padding: 1.5rem;
 }
@@ -851,7 +871,8 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
 
 /* ---------- calendar / streak modal ---------- */
 .cal-panel {
-    max-width: 26rem;
+    max-width: min(26rem, calc(100vw - 2.5rem));
+    min-width: 0;
     text-align: center;
     padding: 1.5rem;
 }
@@ -881,6 +902,53 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
 .cal-stat-lbl { display: block; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 0.2rem; }
 .cal-stat-val { display: block; font-size: 1.05rem; font-weight: 900; color: var(--heading); }
 
+.cal-week { margin-bottom: 0.85rem; text-align: left; }
+.cal-week__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--muted);
+}
+.cal-week__head strong { color: var(--heading); font-size: 0.8rem; }
+.cal-week__track {
+    height: 0.55rem;
+    overflow: hidden;
+    background: var(--track);
+    border-radius: 999px;
+}
+.cal-week__fill {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--green);
+    border-radius: inherit;
+    transition: width 240ms ease;
+}
+.cal-repair {
+    margin-bottom: 0.85rem;
+    padding: 0.75rem;
+    text-align: left;
+    background: var(--amber-tint);
+    border: 2px solid var(--amber-edge-2);
+    border-radius: 0.8rem;
+}
+.cal-repair[hidden] { display: none; }
+.cal-repair__text {
+    margin: 0 0 0.55rem;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: var(--text);
+}
+.cal-repair .btn {
+    width: 100%;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.75rem;
+}
+
 .cal-grid-wrap {
     background: var(--card);
     border: 2px solid var(--line);
@@ -899,9 +967,10 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
 }
 .cal-days-grid {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 0.35rem;
 }
+.cal-days-grid > * { min-width: 0; }
 .cal-day {
     aspect-ratio: 1;
     display: flex;
@@ -975,6 +1044,27 @@ h1, h2, h3 { font-family: 'Nunito', sans-serif; font-weight: 800; color: var(--h
     flex: 1 1 8rem;
     padding: 0.6rem 0.7rem;
     font-size: 0.72rem;
+}
+.cal-data__paste { margin-top: 0.6rem; }
+.cal-data__paste[hidden] { display: none; }
+.cal-data__textarea {
+    width: 100%;
+    min-height: 4.5rem;
+    padding: 0.55rem 0.65rem;
+    font: inherit;
+    font-size: 0.72rem;
+    line-height: 1.4;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 2px solid var(--line);
+    border-radius: 0.6rem;
+    resize: vertical;
+}
+.cal-data__paste .btn {
+    width: 100%;
+    margin-top: 0.45rem;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.75rem;
 }
 .cal-data__status {
     min-height: 1.1rem;
@@ -1211,6 +1301,137 @@ border-color: var(--wrong-line);
 
 .modal__link:hover { color: var(--heading); }
 
+/* ---------- settings modal ---------- */
+.settings-panel {
+    max-width: min(27rem, calc(100vw - 2.5rem));
+    min-width: 0;
+    max-height: calc(100vh - 2.5rem);
+    max-height: calc(100dvh - 2.5rem);
+    overflow-y: auto;
+    text-align: left;
+    padding: 1.35rem;
+}
+.settings-group {
+    margin: 0 0 1rem;
+    padding: 0;
+    border: 0;
+}
+.settings-legend {
+    margin-bottom: 0.3rem;
+    padding: 0;
+    font-size: 0.8rem;
+    font-weight: 900;
+    color: var(--heading);
+}
+.settings-help {
+    margin: 0 0 0.55rem;
+    font-size: 0.7rem;
+    line-height: 1.45;
+    color: var(--muted);
+}
+.settings-options {
+    display: grid;
+    gap: 0.4rem;
+}
+.settings-options--row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.settings-options--two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+/* 125% text needs more room per choice; three across clips the labels */
+html[data-text="xlarge"] .settings-options--row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.settings-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+    min-height: 44px;
+    padding: 0.45rem 0.55rem;
+    background: var(--surface-2);
+    border: 2px solid var(--line);
+    border-radius: 0.65rem;
+    cursor: pointer;
+}
+.settings-option:has(input:checked) {
+    border-color: var(--blue);
+    background: var(--hover);
+}
+.settings-option input {
+    flex: 0 0 auto;
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--navy);
+}
+.settings-option span { min-width: 0; }
+.settings-option strong {
+    display: block;
+    font-size: 0.74rem;
+    color: var(--heading);
+}
+.settings-option small {
+    display: block;
+    margin-top: 0.1rem;
+    font-size: 0.65rem;
+    line-height: 1.3;
+    color: var(--muted);
+}
+.settings-toggle {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    min-height: 44px;
+    padding: 0.55rem 0;
+    cursor: pointer;
+}
+.settings-toggle input {
+    flex: 0 0 auto;
+    width: 1.05rem;
+    height: 1.05rem;
+    margin-top: 0.15rem;
+    accent-color: var(--navy);
+}
+.settings-toggle strong {
+    display: block;
+    font-size: 0.76rem;
+    color: var(--heading);
+}
+.settings-toggle small {
+    display: block;
+    margin-top: 0.12rem;
+    font-size: 0.66rem;
+    line-height: 1.4;
+    color: var(--muted);
+}
+.settings-select-label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--muted);
+}
+.settings-select {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.55rem 0.7rem;
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text);
+    background: var(--surface-2);
+    border: 2px solid var(--line);
+    border-radius: 0.65rem;
+}
+.settings-note {
+    margin: 0.75rem 0 0;
+    font-size: 0.66rem;
+    line-height: 1.4;
+    color: var(--muted);
+    text-align: center;
+}
+
 .placement-tag {
     flex: 0 0 auto;
     padding: 0.3rem 0.7rem;
@@ -1268,6 +1489,134 @@ border-color: var(--wrong-line);
 }
 
 .diagnostic__btn:hover { background: var(--hover); }
+
+/* ---------- learner profile ---------- */
+.learner-card {
+    margin-bottom: 1.25rem;
+    padding: 1rem 1.1rem;
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-bottom-width: 4px;
+    border-radius: 1rem;
+}
+.learner-card[hidden] { display: none; }
+.learner-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+}
+.learner-eyebrow {
+    margin: 0 0 0.15rem;
+    font-size: 0.65rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.learner-title {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 900;
+    color: var(--heading);
+}
+.learner-settings {
+    flex: 0 0 auto;
+    min-height: 36px;
+    padding: 0.35rem 0.65rem;
+    font: inherit;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--heading);
+    background: var(--surface-2);
+    border: 2px solid var(--line);
+    border-radius: 0.6rem;
+    cursor: pointer;
+}
+.learner-settings:hover { background: var(--hover); }
+
+.learner-skills { display: grid; gap: 0.45rem; }
+.learner-skill {
+    display: grid;
+    grid-template-columns: 6.4rem 1fr 2.4rem;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.75rem;
+}
+.learner-skill__name {
+    font-weight: 800;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.learner-skill__track {
+    display: block;
+    height: 0.55rem;
+    overflow: hidden;
+    background: var(--track);
+    border-radius: 999px;
+}
+.learner-skill__fill {
+    display: block;
+    height: 100%;
+    background: var(--blue);
+    border-radius: inherit;
+}
+.learner-skill__pct {
+    text-align: right;
+    font-weight: 800;
+    color: var(--heading);
+    font-variant-numeric: tabular-nums;
+}
+
+.learner-advice {
+    margin: 0.8rem 0 0;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--muted);
+}
+.learner-advice strong { color: var(--heading); }
+.learner-practice {
+    margin-top: 0.75rem;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.78rem;
+}
+.learner-focus {
+    margin-top: 0.9rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--line);
+}
+.learner-focus__title {
+    margin: 0 0 0.5rem;
+    font-size: 0.78rem;
+    color: var(--muted);
+}
+.learner-focus__title strong { color: var(--heading); }
+.learner-focus__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+.learner-chip {
+    padding: 0.4rem 0.6rem;
+    font: inherit;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--heading);
+    background: var(--surface-2);
+    border: 2px solid var(--line);
+    border-radius: 999px;
+    cursor: pointer;
+}
+.learner-chip:hover { background: var(--hover); }
+.learner-focus__empty {
+    margin: 0.8rem 0 0;
+    font-size: 0.72rem;
+    line-height: 1.45;
+    color: var(--muted);
+}
 
 /* storage warning: shown only when the browser refuses persistent storage */
 .storage-notice {
@@ -1666,3 +2015,18 @@ border-color: var(--wrong-line);
     }
     .confetti-piece { display: none !important; }
 }
+
+/* the in-app override, for learners whose OS setting is not the one they want
+   for this app */
+html[data-motion="reduce"] {
+    scroll-behavior: auto;
+}
+html[data-motion="reduce"] *,
+html[data-motion="reduce"] *::before,
+html[data-motion="reduce"] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+}
+html[data-motion="reduce"] .confetti-piece { display: none !important; }

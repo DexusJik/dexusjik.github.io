@@ -652,6 +652,11 @@ const SCENES = [
         open: 'var b=document.getElementById("streak-stat")||document.querySelector("[data-cal]");' +
             'if(!b)return null;b.click();',
     },
+    {
+        page: 'english-daily/index.html', group: 'app', name: 'app calendar paste', width: 390, height: 844, seed: true,
+        open: '(function(){var b=document.getElementById("streak-stat");if(b)b.click();' +
+            'var p=document.getElementById("paste-progress");if(!p)return null;p.click();return 1;})()',
+    },
 
     /* The prompt is optional now: this scene measures its copy and buttons
        without starting the test. */
@@ -702,21 +707,45 @@ const SCENES = [
         page: 'english-daily/index.html', group: 'app', name: 'app goal button focus', width: 390, height: 844, seed: true,
         focus: '#unit-guide-btn',
     },
+
+    /* learner profile and the settings sheet: both add text and controls that
+       did not exist when the app scenes were first written */
+    {
+        page: 'english-daily/index.html', group: 'app', name: 'app learner profile', width: 390, height: 844, seed: true,
+    },
+    {
+        page: 'english-daily/index.html', group: 'app', name: 'app settings', width: 390, height: 844, seed: true,
+        open: '(function(){var b=document.getElementById("settings-btn");' +
+            'if(!b)return null;b.click();return 1;})()',
+    },
 ];
 
 const SEED = `
 (function () {
+    function key(d) { return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
     try {
+        var now = new Date();
+        var twoAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        twoAgo.setDate(twoAgo.getDate() - 2);
+        var monday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
         localStorage.setItem('igsg_daily_v1', JSON.stringify({
-            nickname: 'Camila', gems: 210, xp: 980, streak: 17, bestStreak: 31,
-            lastStudyDate: '2026-10-7', studyHistory: { '2026-10-7': true },
-            dailyXp: 30, dailyXpDate: '2026-10-7',
+            nickname: 'Camila', gems: 210, xp: 980, streak: 0, bestStreak: 31,
+            lastStreak: 17, lastStudyDate: key(twoAgo), studyHistory: {},
+            dailyXp: 0, dailyXpDate: key(twoAgo),
             lessonsDone: 19, perfectLessons: 7, seenSentences: 95,
             hearts: 5, heartsTs: Date.now(), currentLesson: 19,
             completed: { 0: true, 1: true, 2: true, 3: true, 4: true },
             missed: {}, badges: {}, rivals: [],
             placement: { score: 44, max: 78, total: 30, level: 4, v: 5 },
-            placementSkipped: true, storageNoticeDismissed: true, features: {}
+            placementSkipped: true, storageNoticeDismissed: true, features: {},
+            goalXp: 50, audioSlow: false, typingFree: false, focusArea: 'work',
+            skillStats: {
+                listening: { c: 7, t: 10 }, reading: { c: 9, t: 10 },
+                translation: { c: 6, t: 8 }, writing: { c: 3, t: 8 },
+                grammar: { c: 7, t: 9 }, speaking: { c: 5, t: 7 }
+            },
+            weeklyXp: 80, weekStart: key(monday)
         }));
     } catch (e) {}
 })();
