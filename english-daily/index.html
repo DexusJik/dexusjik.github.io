@@ -87,7 +87,7 @@
 <body>
     <a href="#screen-path" class="sr-only skip-link">Saltar a las lecciones</a>
 
-    <!-- ============ NICKNAME MODAL (MANDATORY ON FIRST JOIN) ============ -->
+    <!-- ============ NICKNAME MODAL (OPTIONAL, ASKED ONCE) ============ -->
     <div class="modal" id="nick-modal" role="dialog" aria-modal="true"
          aria-labelledby="nick-title" hidden>
         <div class="modal__panel">
@@ -106,27 +106,29 @@
         </div>
     </div>
 
-    <!-- ============ PLACEMENT PROMPT ============ -->
+    <!-- ============ OPTIONAL PLACEMENT PROMPT ============ -->
     <div class="modal" id="placement-prompt" role="dialog" aria-modal="true"
          aria-labelledby="pp-title" hidden>
         <div class="modal__panel">
             <div class="modal__emoji" aria-hidden="true">🎯</div>
-            <h2 class="modal__title" id="pp-title">¿Cómo está tu inglés?</h2>
+            <h2 class="modal__title" id="pp-title">Calibra tu nivel</h2>
             <p class="modal__desc">
-                30 preguntas difíciles que van de nivel A2 a C1. Te decimos dónde empezar
-                y desbloqueamos la ruta desde tu nivel.
+                Elige un punto de partida con un test rápido, o usa el test completo
+                si quieres más precisión. También puedes empezar desde la lección 1.
             </p>
-<p class="modal__hint">
-                    El nivel se define una vez: no se puede repetir para subirlo. Si más adelante
-                    corregimos o cambiamos las preguntas, te pediremos hacerlo otra vez para que tu
-                    nivel refleje la versión actual. Contestar mal no es un fracaso: si sale nivel
-                    básico, la ruta empieza desde el principio, que es justo lo que necesitamos saber.
-                </p>
+            <p class="modal__hint">
+                No hay obligación ni penalización. El test rápido es una estimación;
+                si el nivel no te queda bien, puedes empezar desde abajo o repetir el
+                test cuando quieras. Solo la primera calibración da XP.
+            </p>
             <button type="button" class="btn btn-primary modal__submit" id="placement-start">
-                Hacer el test
+                Test rápido
+            </button>
+            <button type="button" class="modal__link" id="placement-full">
+                Test completo
             </button>
             <button type="button" class="modal__link" id="placement-skip">
-                Prefiero empezar desde el principio
+                Ahora no
             </button>
         </div>
     </div>

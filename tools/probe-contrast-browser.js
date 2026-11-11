@@ -653,12 +653,19 @@ const SCENES = [
             'if(!b)return null;b.click();',
     },
 
-    /* the placement test is the app's largest interactive surface and no scene
-       reached it: the blanket #placement-prompt dismissal hid it from all of
-       them. skipPlacement must therefore seed placementSkipped:false. */
+    /* The prompt is optional now: this scene measures its copy and buttons
+       without starting the test. */
     {
         page: 'english-daily/index.html', group: 'app', name: 'app placement prompt', width: 390, height: 844,
-        seed: true, skipPlacement: true,
+        seed: true,
+        open: '(function(){var p=document.getElementById("placement-prompt");' +
+            'if(!p)return null;p.hidden=false;return 1;})()',
+    },
+
+    /* The quick test is the app's largest interactive surface. */
+    {
+        page: 'english-daily/index.html', group: 'app', name: 'app placement quick test', width: 390, height: 844,
+        seed: true,
         open: '(function(){var p=document.getElementById("placement-prompt");' +
             'if(p)p.hidden=false;var b=document.getElementById("placement-start");' +
             'if(!b)return null;b.click();return 1;})()',

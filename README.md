@@ -5,7 +5,7 @@ Three static sites in one repository, deployed to GitHub Pages.
 | Path | What it is |
 |---|---|
 | `/` | Consultancy marketing page. Hero, method, pricing, FAQ, contact. |
-| `/english-daily/` | **1 Oración al Día** — a daily English practice app. 365 sentences, 73 lessons, a 30-question placement test, XP, streaks, gems, and five extra practice modes. |
+| `/english-daily/` | **1 Oración al Día** — a daily English practice app. 365 sentences, 73 lessons, an optional quick/full placement test, XP, streaks, gems, and five extra practice modes. |
 | `/pangal-esports/` | Pangal e-sports roster page. Quiet footer link only, `noindex`, not in the sitemap. |
 
 No build step. No bundler. No framework. Open the HTML and it works.
@@ -25,9 +25,9 @@ A server is required rather than `file://` because the app uses
 ## Tests
 
 ```bash
-npm test                    # 21 gates, exits non-zero on failure
+npm test                    # 22 gates, exits non-zero on failure
 npm run test:quiet          # only failures and the summary
-npm run test:browser         # 21 gates plus the measured contrast probe
+npm run test:browser         # 22 gates plus the measured contrast probe
 ```
 
 Runs in CI on every push to `main` and on every pull request.
@@ -38,6 +38,7 @@ Runs in CI on every push to `main` and on every pull request.
 | `check-options` | the same for the personalised corpus |
 | `validate-placement` | placement items missing an answer, wrong options or an explanation |
 | `test-placement-bands` | a band cutoff that no longer matches the documented points |
+| `test-quick-placement` | the short calibration missing a band, one direction, or placing a guesser too high |
 | `check-cuts-in-sync` | cutoffs disagreeing between `placement.js` and `game.js` |
 | `validate-tip-examples` | a tip whose example gives away a whole answer |
 | `validate-tip-fillblank` | a tip teaching the exact word a blank expects |
@@ -142,6 +143,13 @@ re-sat the test while keeping all progress. A skip is re-offered once and
 stamped with `state.placementSkipVersion`, so declining it is remembered on the
 next boot instead of producing a modal every visit.
 
+The test is optional. A first-time learner lands on the path and can start
+lesson 1 immediately; the diagnostic strip offers an 8-question quick
+calibration, with the full 30-question test behind it for precision. Neither
+path opens automatically, so onboarding has no quiz gate. Re-testing is
+allowed from the diagnostic strip, but only the first calibration awards XP,
+gems or streak so it cannot be farmed.
+
 The app can also export and restore a JSON copy from the progress calendar.
 Import is an explicit confirmed action, validates through `state-schema.js`, and
 keeps the previous state under `igsg_daily_v1_pre_import`.
@@ -183,7 +191,7 @@ english-daily/
   daily.css             20 tokens in :root
   game.js               all app logic, one IIFE, ~2900 lines
   sentences.js          365 sentences, 128 KB, the largest file
-  placement.js          30 placement items, hand-written distractors
+  placement.js          30 placement items, hand-written distractors, quick subset
   migrations.js         CURRENT_VERSION + state migrations
   sw.js                 network-first with a 4s timeout, precache manifest
   manifest.webmanifest

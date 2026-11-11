@@ -623,11 +623,8 @@
         emit('nameChange', { name: '' });
         renderPath();
         renderRivals();
-        maybePromptPlacement();
-        if ($('placement-prompt').hidden) {
-            var cta = $('lesson-cta');
-            if (cta) cta.focus();
-        }
+        var cta = $('lesson-cta');
+        if (cta) cta.focus();
     }
 
     function initNickname() {
@@ -661,11 +658,8 @@
                 renderPath();
             }
             renderRivals();
-            maybePromptPlacement();
-            if ($('placement-prompt').hidden) {
-                var cta = $('lesson-cta');
-                if (cta) cta.focus();
-            }
+            var cta = $('lesson-cta');
+            if (cta) cta.focus();
         });
 
         // Click outside on modal backdrop: if mandatory, do not dismiss!
@@ -697,7 +691,6 @@
             }
         } else {
             $('nick-chip-name').textContent = state.nickname || 'Tú';
-            maybePromptPlacement();
         }
     }
 
@@ -746,6 +739,20 @@
         { min: 0, level: 1 }
     ];
 
+    /*
+     * The quick test has 8 items, two per band, so its maximum is 20 points
+     * (2x1 + 2x2 + 2x3 + 2x4). Cuts are scaled to the same model as the full
+     * test: random guessing floors at max/3, B1/B2/C1 reach their own band,
+     * and level 5 requires both band-5 items rather than one lucky answer.
+     */
+    var PLACEMENT_QUICK_CUTS = [
+        { min: 18, level: 5 },   // 90%: both band-5 items
+        { min: 11, level: 4 },   // 55%
+        { min: 8, level: 3 },    // 40% - above the 33% guessing floor
+        { min: 2, level: 2 },    // 10%
+        { min: 0, level: 1 }
+    ];
+
     function firstLessonOfLevel(lv) {
         for (var i = 0; i < LESSONS.length; i++) {
             if (LESSONS[i].sentences[0].lv === lv) return i;
@@ -753,9 +760,10 @@
         return 0;
     }
 
-    function levelForScore(score) {
-        for (var i = 0; i < PLACEMENT_CUTS.length; i++) {
-            if (score >= PLACEMENT_CUTS[i].min) return PLACEMENT_CUTS[i].level;
+    function levelForScore(score, mode) {
+        var cuts = mode === 'quick' ? PLACEMENT_QUICK_CUTS : PLACEMENT_CUTS;
+        for (var i = 0; i < cuts.length; i++) {
+            if (score >= cuts[i].min) return cuts[i].level;
         }
         return 1;
     }
@@ -765,8 +773,10 @@
      * are real grammar or vocabulary traps. Sampling the 365 at random produced
      * options with no relation to the question, which made the test trivial.
      */
-    function buildPlacementQuestions() {
-        var items = window.PLACEMENT_ITEMS || [];
+    function buildPlacementQuestions(mode) {
+        var items = mode === 'quick'
+            ? (window.PLACEMENT_QUICK_ITEMS || [])
+            : (window.PLACEMENT_ITEMS || []);
         return items.map(function (it, n) {
             /* `q` is the prompt in the language named by `dir` (see placement.js).
                Using `a` here printed the correct answer as the prompt itself for
@@ -788,19 +798,29 @@
         var questions = [];
     var placement = null;
 
-    function startPlacement() {
+    function startPlacement(mode) {
         if (needsNickname()) {
             showNickModal(false);
             return;
         }
+
+        var kind = mode === 'full' ? 'full' : 'quick';
         placement = {
-            questions: buildPlacementQuestions(),
+            mode: kind,
+            isRetest: !!state.placement,
+            questions: buildPlacementQuestions(kind),
             step: 0,
             score: 0,
             correct: 0,
+            max: 0,
             startedAt: Date.now(),
             answered: false
         };
+
+        for (var i = 0; i < placement.questions.length; i++) {
+            placement.max += placement.questions[i].points;
+        }
+
         closePlacementPrompt();
         showScreen('placement');
         renderPlacementStep();
@@ -826,6 +846,7 @@
 
         var prompt = document.createElement('p');
         prompt.className = 'ex-prompt';
+        prompt.setAttribute('tabindex', '-1');
         prompt.textContent = q.showEn ? '¿Qué significa esta oración?' : '¿Cómo se dice esta oración?';
         var sub = document.createElement('span');
         sub.className = 'ex-sub';
@@ -849,6 +870,11 @@
 
         ex.appendChild(choiceList(q.options, check, q.showEn ? 'en' : 'es'));
         enablePlacementCheck(q);
+
+        /* the previous "Continuar" button is replaced on every step; land the
+           focus on the new prompt so keyboard and screen-reader users are not
+           left on a dead control */
+        window.setTimeout(function () { prompt.focus(); }, 20);
     }
 
     function enablePlacementCheck(q) {
@@ -907,32 +933,40 @@
 
     function finishPlacement() {
         var seconds = Math.max(1, Math.round((Date.now() - placement.startedAt) / 1000));
-        var level = levelForScore(placement.score);
+        var level = levelForScore(placement.score, placement.mode);
         var startLesson = firstLessonOfLevel(level);
 
         state.placement = {
             score: placement.score,
-            max: PLACEMENT_MAX,
+            max: placement.max,
             correct: placement.correct,
             total: placement.questions.length,
             level: level,
+            mode: placement.mode,
             date: todayKey(),
             /* stamped so a future migration can tell current results from stale ones */
             v: (window.DailyMigrations && window.DailyMigrations.CURRENT_VERSION) || 2
         };
-        state.seenSentences += placement.correct;
+        /*
+         * Only the first calibration pays XP, gems and streak. Re-testing is
+         * allowed so a learner can correct a bad quick estimate, but it must
+         * not become a way to farm rewards.
+         */
+        if (!placement.isRetest) {
+            state.seenSentences += placement.correct;
 
-        /* counts as a lesson, per the agreed behaviour */
-        var xp = placement.correct * XP_PER_SENTENCE;
-        state.xp += xp;
-        state.dailyXp += xp;
-        state.gems += 3;
+            /* counts as a lesson, per the agreed behaviour */
+            var xp = placement.correct * XP_PER_SENTENCE;
+            state.xp += xp;
+            state.dailyXp += xp;
+            state.gems += 3;
 
-        if (state.lastStudyDate !== todayKey()) {
-            state.streak = (state.lastStudyDate && daysBetween(state.lastStudyDate, todayKey()) === 1)
-                ? state.streak + 1 : 1;
-            state.lastStudyDate = todayKey();
-            state.bestStreak = Math.max(state.bestStreak, state.streak);
+            if (state.lastStudyDate !== todayKey()) {
+                state.streak = (state.lastStudyDate && daysBetween(state.lastStudyDate, todayKey()) === 1)
+                    ? state.streak + 1 : 1;
+                state.lastStudyDate = todayKey();
+                state.bestStreak = Math.max(state.bestStreak, state.streak);
+            }
         }
 
         save();
@@ -941,9 +975,10 @@
         $('placement-result-emoji').textContent = meta.emoji || '🌱';
         $('placement-result-level').textContent = (meta.name || 'Nivel 1') + ' · ' + (meta.label || '');
         $('placement-result-score').textContent =
-            placement.score + ' / ' + PLACEMENT_MAX + ' puntos · ' +
+            placement.score + ' / ' + placement.max + ' puntos · ' +
             placement.correct + ' de ' + placement.questions.length + ' correctas';
         $('placement-result-where').textContent =
+            (placement.isRetest ? 'Nivel actualizado. ' : '') +
             'Empiezas en la lección ' + (startLesson + 1) + ' de ' + TOTAL_LESSONS + '. ' +
             'Las lecciones anteriores quedan desbloqueadas por si quieres repasarlas.';
 
@@ -952,11 +987,18 @@
         $('placement-result-time').textContent = m + ':' + (sec < 10 ? '0' : '') + sec;
 
         showScreen('placement-result');
+        window.setTimeout(function () {
+            var next = $('placement-continue');
+            if (next) next.focus();
+        }, 30);
     }
 
-    function maybePromptPlacement() {
-        if (state.placement || state.placementSkipped) return;
-        if ($('nick-modal').hidden === false) return; // wait for the name first
+    /*
+     * The test is never opened automatically. A first-time learner lands on the
+     * path and can start lesson 1 immediately; calibration is offered from the
+     * diagnostic strip for anyone who wants a better starting point.
+     */
+    function openPlacementPrompt() {
         var prompt = $('placement-prompt');
         if (!prompt) return;
         prompt.hidden = false;
@@ -977,15 +1019,13 @@
         if (!box) return;
 
         if (!state.placement) {
-            /* Non-blocking: a learner who declined the first-time modal can
-               still take the test later without it reappearing on every boot. */
             box.hidden = false;
             box.innerHTML =
                 '<span class="diagnostic__emoji" aria-hidden="true">🎯</span>' +
-                '<span>Nivel de diagnóstico aún sin definir.</span>' +
-                '<button type="button" class="diagnostic__btn" id="diagnostic-start">Hacer test</button>';
+                '<span>Empieza desde la lección 1 o calibra tu nivel.</span>' +
+                '<button type="button" class="diagnostic__btn" id="diagnostic-start">Calibrar</button>';
             var start = $('diagnostic-start');
-            if (start) start.addEventListener('click', startPlacement);
+            if (start) start.addEventListener('click', openPlacementPrompt);
             return;
         }
 
@@ -993,37 +1033,42 @@
         box.hidden = false;
         box.innerHTML = '<span class="diagnostic__emoji" aria-hidden="true">' + (meta.emoji || '') + '</span>' +
             '<span>Nivel de diagnóstico <strong>' + (meta.label || meta.name || '') + '</strong> · ' +
-            state.placement.score + '/' + state.placement.max + ' pts</span>';
+            state.placement.score + '/' + state.placement.max + ' pts</span>' +
+            '<button type="button" class="diagnostic__btn" id="diagnostic-retest">Repetir test</button>';
+        var retest = $('diagnostic-retest');
+        if (retest) retest.addEventListener('click', openPlacementPrompt);
     }
 
     function initPlacement() {
         var prompt = $('placement-prompt');
         if (!prompt) return;
 
+        function focusPathStart() {
+            var target = $('diagnostic-start') || $('lesson-cta');
+            if (target) target.focus();
+        }
+
         $('placement-start').addEventListener('click', function () {
-            startPlacement();
+            startPlacement('quick');
         });
 
-        /*
-         * Skipping is remembered. The diagnostic strip stays available, so the
-         * learner can take the test later without a modal on every visit. A
-         * future content version clears the flag once so everyone is re-offered.
-         */
+        var fullBtn = $('placement-full');
+        if (fullBtn) {
+            fullBtn.addEventListener('click', function () {
+                startPlacement('full');
+            });
+        }
+
         $('placement-skip').addEventListener('click', function () {
-            state.placementSkipped = true;
-            state.placementSkipVersion = (window.DailyMigrations && window.DailyMigrations.CURRENT_VERSION) || 5;
-            save();
             closePlacementPrompt();
-            var cta = $('lesson-cta');
-            if (cta) cta.focus();
+            focusPathStart();
         });
 
         $('placement-quit').addEventListener('click', function () {
             closePlacementPrompt();
             showScreen('path');
             renderPath();
-            var cta = $('lesson-cta');
-            if (cta) cta.focus();
+            focusPathStart();
         });
 
         $('placement-continue').addEventListener('click', function () {

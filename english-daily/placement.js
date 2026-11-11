@@ -1,5 +1,8 @@
 /*
- * placement.js - test de nivel inicial (30 preguntas, un solo intento).
+ * placement.js - banco de nivel (30 items; subconjunto rapido de 8).
+ *
+ * The full test is optional and can be repeated. The quick subset below uses
+ * two items from every band, one in each direction, for onboarding.
  *
  * Load order: sentences.js, placement.js, game.js
  *
@@ -256,3 +259,44 @@ window.PLACEMENT_ITEMS = [
     }
 
 ];
+
+/*
+ * Short calibration subset: two items from every band, one in each direction.
+ *
+ * The full test stays available for precision, but it is no longer the gate.
+ * An eight-item check is enough to choose a sensible starting lesson, and it
+ * still covers every difficulty band, so a strong learner cannot pass by
+ * guessing only the easy half.
+ */
+window.PLACEMENT_QUICK_ITEMS = (function () {
+    var items = window.PLACEMENT_ITEMS || [];
+    var bands = [2, 3, 4, 5];
+    var picked = [];
+
+    for (var b = 0; b < bands.length; b++) {
+        var band = [];
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].lv === bands[b]) band.push(items[i]);
+        }
+
+        var chosen = [];
+        var directions = ['en', 'es'];
+        for (var d = 0; d < directions.length; d++) {
+            for (var j = 0; j < band.length; j++) {
+                if (band[j].dir === directions[d] && chosen.indexOf(band[j]) < 0) {
+                    chosen.push(band[j]);
+                    break;
+                }
+            }
+        }
+
+        /* Defensive: if a band ever has only one direction, still take two. */
+        for (var k = 0; k < band.length && chosen.length < 2; k++) {
+            if (chosen.indexOf(band[k]) < 0) chosen.push(band[k]);
+        }
+
+        picked = picked.concat(chosen.slice(0, 2));
+    }
+
+    return picked;
+})();

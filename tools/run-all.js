@@ -25,6 +25,7 @@ const GATES = [
     ['check-options', 'no answer identical to a distractor'],
     ['validate-placement', 'placement items are structurally sound'],
     ['test-placement-bands', 'band cutoffs match the documented points'],
+    ['test-quick-placement', 'the short calibration covers every band and resists guessing'],
     ['check-cuts-in-sync', 'cuts agree between placement.js and game.js'],
     ['validate-tip-examples', 'tip examples do not leak whole answers'],
     ['validate-tip-fillblank', 'tip words do not collide with blanks'],
