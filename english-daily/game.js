@@ -119,9 +119,11 @@
             missed: {},
             badges: {},
             nickname: '',
+            nicknameSkipped: false,
             rivals: [],
             placement: null,
             placementSkipped: false,
+            placementSkipVersion: 0,
             dailyLessonDoneDate: null,
             storageNoticeDismissed: false,
             features: {}
@@ -384,7 +386,7 @@
             return { name: r.name, face: r.face, xp: r.xp, you: false };
         });
         rows.push({
-            name: state.nickname || 'Tú',
+            name: hasUsableName() ? state.nickname : 'Tú',
             face: '🙂',
             xp: state.xp,
             you: true
@@ -414,7 +416,7 @@
             var name = document.createElement('span');
             name.className = 'rival__name';
             name.textContent = row.name;
-            if (row.you) {
+            if (row.you && hasUsableName()) {
                 var tag = document.createElement('span');
                 tag.className = 'rival__tag';
                 tag.textContent = 'Tú';
@@ -458,7 +460,7 @@
     }
 
     function nicknameProblem(name) {
-        if (!name) return 'Escribe tu primer nombre.';
+        if (!name) return 'Escribe un nombre o elige “Continuar sin nombre”.';
         if (/\s/.test(name)) return 'Solo tu primer nombre, sin apellido ni segundo nombre.';
         if (name.length < 2) return 'Escribe al menos 2 letras.';
         if (name.length > NAME_MAX) return 'Máximo ' + NAME_MAX + ' letras.';
@@ -466,9 +468,21 @@
         return null;
     }
 
+    function hasUsableName() {
+        return !!state.nickname && !nicknameProblem(state.nickname);
+    }
+
+    /*
+     * The name is optional. Once a learner explicitly declines it we must not
+     * block lessons, the placement test, the shop or the calendar behind a
+     * modal they already dismissed; examples fall back to NAME_FALLBACK.
+     */
+    function needsNickname() {
+        return !hasUsableName() && state.nicknameSkipped !== true;
+    }
+
     function learnerName() {
-        var n = state.nickname;
-        return n && !nicknameProblem(n) ? n : NAME_FALLBACK;
+        return hasUsableName() ? state.nickname : NAME_FALLBACK;
     }
 
     function otherName(name) {
@@ -530,14 +544,48 @@
         if (input) input.focus();
     }
 
+    /*
+     * One focus trap for every dialog. The nickname modal had its own; the
+     * placement prompt, shop and calendar did not, so Tab could walk into the
+     * page behind an aria-modal dialog.
+     */
+    function trapFocus(modal) {
+        if (!modal || modal.dataset.focusTrap === 'true') return;
+        modal.dataset.focusTrap = 'true';
+
+        modal.addEventListener('keydown', function (e) {
+            if (e.key !== 'Tab') return;
+
+            var nodes = modal.querySelectorAll(
+                'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), ' +
+                'textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            );
+            var focusables = Array.prototype.filter.call(nodes, function (el) {
+                return el.getClientRects().length > 0;
+            });
+            if (!focusables.length) return;
+
+            var first = focusables[0];
+            var last = focusables[focusables.length - 1];
+
+            if (e.shiftKey && document.activeElement === first) {
+                last.focus();
+                e.preventDefault();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                first.focus();
+                e.preventDefault();
+            }
+        });
+    }
+
     function showNickModal(isEdit) {
         var modal = $('nick-modal');
         var input = $('nick-input');
         var err = $('nick-error');
         var submit = modal.querySelector('.modal__submit');
 
-        var hasValidName = state.nickname && !nicknameProblem(state.nickname);
-        var mandatory = !hasValidName;
+        var hasValidName = hasUsableName();
+        var mandatory = needsNickname();
         modal.dataset.mandatory = mandatory ? 'true' : 'false';
 
         if (isEdit && hasValidName) {
@@ -558,11 +606,28 @@
     }
 
     function closeNickModal(force) {
-        if (!force && (!state.nickname || nicknameProblem(state.nickname))) {
+        if (!force && needsNickname()) {
             shakeNickModal();
             return;
         }
         $('nick-modal').hidden = true;
+    }
+
+    function skipNickname() {
+        state.nickname = '';
+        state.nicknameSkipped = true;
+        save();
+        closeNickModal(true);
+        $('nick-chip-name').textContent = 'Tú';
+        applyName();
+        emit('nameChange', { name: '' });
+        renderPath();
+        renderRivals();
+        maybePromptPlacement();
+        if ($('placement-prompt').hidden) {
+            var cta = $('lesson-cta');
+            if (cta) cta.focus();
+        }
     }
 
     function initNickname() {
@@ -586,6 +651,7 @@
 
             var changed = name !== state.nickname;
             state.nickname = name;
+            state.nicknameSkipped = false;
             save();
             closeNickModal(true);
             $('nick-chip-name').textContent = name;
@@ -596,55 +662,41 @@
             }
             renderRivals();
             maybePromptPlacement();
+            if ($('placement-prompt').hidden) {
+                var cta = $('lesson-cta');
+                if (cta) cta.focus();
+            }
         });
 
         // Click outside on modal backdrop: if mandatory, do not dismiss!
         modal.addEventListener('click', function (e) {
             if (e.target === modal) {
-                if (!state.nickname || nicknameProblem(state.nickname)) {
-                    shakeNickModal();
-                } else {
-                    closeNickModal(true);
-                }
+                if (needsNickname()) shakeNickModal();
+                else closeNickModal(true);
             }
         });
 
-        // Focus trap inside modal: cannot tab out to elements behind
-        modal.addEventListener('keydown', function (e) {
-            if (e.key === 'Tab') {
-                var focusables = modal.querySelectorAll('input:not([disabled]), button:not([disabled])');
-                if (!focusables.length) return;
-                var first = focusables[0];
-                var last = focusables[focusables.length - 1];
-                if (e.shiftKey) {
-                    if (document.activeElement === first) {
-                        last.focus();
-                        e.preventDefault();
-                    }
-                } else {
-                    if (document.activeElement === last) {
-                        first.focus();
-                        e.preventDefault();
-                    }
-                }
-            }
-        });
+        trapFocus(modal);
 
         input.addEventListener('input', function () { err.hidden = true; });
 
         chip.addEventListener('click', function () { showNickModal(true); });
 
+        var skipBtn = $('nick-skip');
+        if (skipBtn) skipBtn.addEventListener('click', skipNickname);
+
         /*
-         * Mandatory first name on join: Block until a valid first name exists.
+         * The name is optional. Ask once; if the learner declines, examples use
+         * the fallback name and every screen stays available.
          */
-        if (!state.nickname || nicknameProblem(state.nickname)) {
+        if (needsNickname()) {
             showNickModal(false);
             if (state.nickname) {
                 err.textContent = 'Ingresa tu primer nombre para continuar.';
                 err.hidden = false;
             }
         } else {
-            $('nick-chip-name').textContent = state.nickname;
+            $('nick-chip-name').textContent = state.nickname || 'Tú';
             maybePromptPlacement();
         }
     }
@@ -737,7 +789,7 @@
     var placement = null;
 
     function startPlacement() {
-        if (!state.nickname || nicknameProblem(state.nickname)) {
+        if (needsNickname()) {
             showNickModal(false);
             return;
         }
@@ -905,7 +957,14 @@
     function maybePromptPlacement() {
         if (state.placement || state.placementSkipped) return;
         if ($('nick-modal').hidden === false) return; // wait for the name first
-        $('placement-prompt').hidden = false;
+        var prompt = $('placement-prompt');
+        if (!prompt) return;
+        prompt.hidden = false;
+        trapFocus(prompt);
+        window.setTimeout(function () {
+            var start = $('placement-start');
+            if (start) start.focus();
+        }, 30);
     }
 
     function closePlacementPrompt() {
@@ -916,13 +975,23 @@
     function renderDiagnostic() {
         var box = $('diagnostic');
         if (!box) return;
+
         if (!state.placement) {
-            box.hidden = true;
+            /* Non-blocking: a learner who declined the first-time modal can
+               still take the test later without it reappearing on every boot. */
+            box.hidden = false;
+            box.innerHTML =
+                '<span class="diagnostic__emoji" aria-hidden="true">🎯</span>' +
+                '<span>Nivel de diagnóstico aún sin definir.</span>' +
+                '<button type="button" class="diagnostic__btn" id="diagnostic-start">Hacer test</button>';
+            var start = $('diagnostic-start');
+            if (start) start.addEventListener('click', startPlacement);
             return;
         }
+
         var meta = LEVEL_META[state.placement.level] || {};
         box.hidden = false;
-        box.innerHTML = '<span class="diagnostic__emoji">' + (meta.emoji || '') + '</span>' +
+        box.innerHTML = '<span class="diagnostic__emoji" aria-hidden="true">' + (meta.emoji || '') + '</span>' +
             '<span>Nivel de diagnóstico <strong>' + (meta.label || meta.name || '') + '</strong> · ' +
             state.placement.score + '/' + state.placement.max + ' pts</span>';
     }
@@ -936,22 +1005,25 @@
         });
 
         /*
-         * Skipping defers the offer, it does not waive it. Historically this
-         * wrote a permanent flag that no migration ever cleared, so a learner
-         * who pressed it once was never asked again and their level stayed
-         * whatever it was. Now the flag is cleared by migrations.js on the
-         * next version bump, and the prompt returns on a later visit.
+         * Skipping is remembered. The diagnostic strip stays available, so the
+         * learner can take the test later without a modal on every visit. A
+         * future content version clears the flag once so everyone is re-offered.
          */
         $('placement-skip').addEventListener('click', function () {
             state.placementSkipped = true;
+            state.placementSkipVersion = (window.DailyMigrations && window.DailyMigrations.CURRENT_VERSION) || 5;
             save();
             closePlacementPrompt();
+            var cta = $('lesson-cta');
+            if (cta) cta.focus();
         });
 
         $('placement-quit').addEventListener('click', function () {
             closePlacementPrompt();
             showScreen('path');
             renderPath();
+            var cta = $('lesson-cta');
+            if (cta) cta.focus();
         });
 
         $('placement-continue').addEventListener('click', function () {
@@ -961,6 +1033,8 @@
             renderRivals();
             renderStats();
             renderGoal();
+            var cta = $('lesson-cta');
+            if (cta) cta.focus();
         });
     }
 
@@ -1124,7 +1198,7 @@
     /* ================= lesson ================= */
 
     function startLesson(index) {
-        if (!state.nickname || nicknameProblem(state.nickname)) {
+        if (needsNickname()) {
             showNickModal(false);
             return;
         }
@@ -1157,7 +1231,7 @@
      *   opts.onFinish  called with { correct, mistakes, total, perfect, session }
      */
     function startCustomSession(opts) {
-        if (!state.nickname || nicknameProblem(state.nickname)) {
+        if (needsNickname()) {
             showNickModal(false);
             return false;
         }
@@ -2164,10 +2238,15 @@
         var host = location.hostname;
         var secure = location.protocol === 'https:' || host === 'localhost' || host === '127.0.0.1';
         if (!secure) return;
-        window.addEventListener('load', function () {
-            navigator.serviceWorker.register('sw.js').catch(function () {
-                /* offline support is optional; the app works without it */
-            });
+
+        /*
+         * Register immediately rather than on window.load. The Google Fonts
+         * stylesheet is third-party and can stall load for seconds on a poor
+         * connection, which used to delay offline support until after the app
+         * had already been used.
+         */
+        navigator.serviceWorker.register('sw.js').catch(function () {
+            /* offline support is optional; the app works without it */
         });
     }
 
@@ -2233,6 +2312,154 @@
         };
     }
 
+    /* ================= progress backup / install ================= */
+
+    var deferredInstallPrompt = null;
+
+    function setDataStatus(message) {
+        var status = $('data-status');
+        if (status) status.textContent = message || '';
+    }
+
+    function exportProgress() {
+        var payload = {
+            app: '1-oracion-al-dia',
+            schema: 1,
+            exportedAt: new Date().toISOString(),
+            state: state
+        };
+
+        try {
+            var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'oracion-al-dia-progreso-' + todayKey() + '.json';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+            setDataStatus('Copia descargada.');
+        } catch (e) {
+            setDataStatus('No pude crear la copia en este navegador.');
+        }
+    }
+
+    function parseBackup(text) {
+        var parsed;
+        try {
+            parsed = JSON.parse(text);
+        } catch (e) {
+            throw new Error('El archivo no es JSON válido.');
+        }
+
+        if (!parsed || parsed.app !== '1-oracion-al-dia' ||
+            !parsed.state || typeof parsed.state !== 'object' || Array.isArray(parsed.state)) {
+            throw new Error('El archivo no parece una copia de 1 Oración al Día.');
+        }
+
+        /* refuse a backup that does not even contain progress, rather than
+           letting the schema fill every field with defaults and wipe the account */
+        var hasProgress = typeof parsed.state.xp === 'number' ||
+            typeof parsed.state.lessonsDone === 'number';
+        if (!hasProgress) throw new Error('La copia no contiene progreso reconocible.');
+
+        if (!window.DailyStateSchema || typeof window.DailyStateSchema.repair !== 'function') {
+            throw new Error('No puedo validar la copia en este momento.');
+        }
+
+        return window.DailyStateSchema.repair(parsed.state, defaultState()).state;
+    }
+
+    function importProgressFile(input) {
+        var file = input && input.files && input.files[0];
+        if (!file) return;
+
+        if (file.size > 1024 * 1024) {
+            setDataStatus('La copia es demasiado grande.');
+            input.value = '';
+            return;
+        }
+
+        var reader = new FileReader();
+        reader.onload = function () {
+            try {
+                var imported = parseBackup(String(reader.result || ''));
+
+                if (!window.confirm('Esto reemplazará el progreso guardado en este navegador. ¿Continuar?')) {
+                    setDataStatus('Restauración cancelada.');
+                    input.value = '';
+                    return;
+                }
+
+                try {
+                    localStorage.setItem(STORAGE_KEY + '_pre_import', JSON.stringify(state));
+                } catch (e) { /* keep going: the import itself is more important */ }
+
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(imported));
+                setDataStatus('Copia restaurada. Recargando…');
+                window.setTimeout(function () { window.location.reload(); }, 600);
+            } catch (e) {
+                setDataStatus(e.message || 'No pude leer esa copia.');
+                input.value = '';
+            }
+        };
+        reader.onerror = function () {
+            setDataStatus('No pude leer el archivo.');
+            input.value = '';
+        };
+        reader.readAsText(file);
+    }
+
+    function installApp() {
+        if (!deferredInstallPrompt) {
+            setDataStatus(isIOS()
+                ? 'En Safari usa Compartir → Agregar a inicio.'
+                : 'Usa el menú del navegador para instalar la app.');
+            return;
+        }
+
+        deferredInstallPrompt.prompt();
+        var prompt = deferredInstallPrompt;
+        deferredInstallPrompt = null;
+        prompt.userChoice.then(function (choice) {
+            if (choice && choice.outcome === 'accepted') setDataStatus('App instalada.');
+            else setDataStatus('Instalación cancelada.');
+            var btn = $('install-app-btn');
+            if (btn) btn.hidden = true;
+        }).catch(function () {
+            setDataStatus('No pude abrir la instalación.');
+        });
+    }
+
+    function initDataBackup() {
+        var exportBtn = $('export-progress');
+        var importBtn = $('import-progress-btn');
+        var fileInput = $('import-progress-file');
+        var installBtn = $('install-app-btn');
+
+        if (exportBtn) exportBtn.addEventListener('click', exportProgress);
+
+        if (importBtn && fileInput) {
+            importBtn.addEventListener('click', function () { fileInput.click(); });
+            fileInput.addEventListener('change', function () { importProgressFile(fileInput); });
+        }
+
+        if (installBtn) installBtn.addEventListener('click', installApp);
+
+        window.addEventListener('beforeinstallprompt', function (e) {
+            e.preventDefault();
+            deferredInstallPrompt = e;
+            if (installBtn) installBtn.hidden = false;
+        });
+
+        window.addEventListener('appinstalled', function () {
+            deferredInstallPrompt = null;
+            if (installBtn) installBtn.hidden = true;
+            setDataStatus('App instalada.');
+        });
+    }
+
     /* ================= shop modal ================= */
 
     function updateShop() {
@@ -2279,7 +2506,7 @@
     var lastFocusedModalTrigger = null;
 
     function openShop() {
-        if (!state.nickname || nicknameProblem(state.nickname)) {
+        if (needsNickname()) {
             showNickModal(false);
             return;
         }
@@ -2287,6 +2514,7 @@
         updateShop();
         var modal = $('shop-modal');
         if (modal) {
+            trapFocus(modal);
             modal.hidden = false;
             var closeBtn = $('shop-close');
             if (closeBtn) closeBtn.focus();
@@ -2440,7 +2668,7 @@
     }
 
     function openCalendar() {
-        if (!state.nickname || nicknameProblem(state.nickname)) {
+        if (needsNickname()) {
             showNickModal(false);
             return;
         }
@@ -2448,6 +2676,7 @@
         renderCalendar();
         var modal = $('calendar-modal');
         if (modal) {
+            trapFocus(modal);
             modal.hidden = false;
             var closeBtn = $('cal-close');
             if (closeBtn) closeBtn.focus();
@@ -2481,11 +2710,18 @@
             if (e.key === 'Escape' || e.key === 'Esc') {
                 var nick = $('nick-modal');
                 if (nick && !nick.hidden) {
-                    if (!state.nickname || nicknameProblem(state.nickname)) {
+                    if (needsNickname()) {
                         shakeNickModal();
                         return;
                     }
                     closeNickModal(true);
+                    return;
+                }
+                var placementPrompt = $('placement-prompt');
+                if (placementPrompt && !placementPrompt.hidden) {
+                    closePlacementPrompt();
+                    var pathCta = $('lesson-cta');
+                    if (pathCta) pathCta.focus();
                     return;
                 }
                 var shop = $('shop-modal');
@@ -2508,8 +2744,8 @@
         /*
          * Upgrade saved state before anything reads it. The migration may
          * clear a stale placement result so the test is offered once more;
-         * it never touches progress, and it never re-offers the test to
-         * someone who deliberately skipped it.
+         * it never touches progress. A deliberate skip is re-offered only once
+         * per test version, not on every boot.
          */
         if (window.DailyMigrations && window.DailyMigrations.run) {
             if (window.DailyMigrations.run(state).length) save();
@@ -2529,6 +2765,7 @@
         initSpeech();
         initShop();
         initCalendar();
+        initDataBackup();
         registerServiceWorker();
         checkStorage();
 

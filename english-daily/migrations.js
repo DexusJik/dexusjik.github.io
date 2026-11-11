@@ -17,14 +17,18 @@
      * Bump when a migration below changes meaning. Each saved record carries
      * the version it was written under; anything older gets upgraded.
      *
-     * v5 also clears `placementSkipped`, which until now was permanent. Two
-     * states were permanently exempt from ever being asked, and both are
+     * v5 also clears `placementSkipped` ONCE, which until now was permanent.
+     * Two states were permanently exempt from ever being asked, and both are
      * wrong for a test whose content had a mistranslation:
      *   - anyone holding a v4 result, because v4 went live BEFORE the item
      *     content was corrected, so that result was earned on the defective
      *     paper, and
      *   - anyone who ever pressed "Prefiero empezar desde el principio",
      *     which set a flag nothing ever cleared.
+     *
+     * `placementSkipVersion` records that the re-offer happened. Without it the
+     * migration cleared the flag on every boot and turned a deliberate choice
+     * into a recurring modal.
      */
     var CURRENT_VERSION = 5;
 
@@ -93,11 +97,19 @@
             state.placement = null;
         }
         /*
-         * v5: a skip is a choice for one sitting, not a permanent exemption.
-         * Clearing it here means everyone is asked at least once more, and the
-         * offer comes back on a later visit if they decline again.
+         * v5 clears a skip ONCE so everyone is asked against the corrected
+         * paper. Stamping the version is what makes that a migration rather
+         * than a nag: without it this ran on every boot, so a learner who
+         * deliberately declined was asked again on every single visit.
+         *
+         * A later version bump re-offers it once more, which is the correct
+         * behaviour when the test content changes again.
          */
-        if (state.placementSkipped === true) state.placementSkipped = false;
+        if (state.placementSkipped === true &&
+            state.placementSkipVersion !== CURRENT_VERSION) {
+            state.placementSkipped = false;
+            state.placementSkipVersion = CURRENT_VERSION;
+        }
     }
 
     function run(state) {

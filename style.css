@@ -365,6 +365,10 @@ p { text-wrap: pretty; }
 
 a { color: inherit; }
 
+/* the skip link targets <main tabindex="-1">; it is a focus landing point,
+   not an interactive control, so it must not draw a focus ring */
+main:focus { outline: none; }
+
 :focus-visible {
     outline: 2px solid var(--gold-ink);
     outline-offset: 3px;
@@ -1090,6 +1094,20 @@ a { color: inherit; }
 }
 
 .quiz-container-relative { position: relative; }
+
+/* announced and visible when "Siguiente" is pressed with no choice */
+.quiz-error {
+    max-width: 46rem;
+    margin: -1.25rem auto 1.25rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--on-gold-surface);
+    background: var(--gold-300);
+    border: 1px solid var(--gold-ink);
+    border-radius: 0.75rem;
+    text-align: center;
+}
 
 .quiz-step { display: none; }
 .quiz-step.active { display: block; animation: quiz-in 0.6s var(--ease-out-expo); }
@@ -1838,8 +1856,12 @@ a { color: inherit; }
 .delay-2 { animation-delay: 0.24s; }
 .delay-3 { animation-delay: 0.36s; }
 
-.line-wrap {
-    display: block;
+/* Visible by default. The to-be-revealed state is gated on <html class="js">,
+   so a failed or blocked site.js leaves the marketing page readable instead of
+   blank. theme.js adds the class before paint and site.js clears the failsafe
+   once every initialiser has run. */
+.line-wrap { display: block; }
+.js .line-wrap {
     transform: translateY(105%);
     opacity: 0;
 }
@@ -1851,13 +1873,15 @@ a { color: inherit; }
     line-height: 1.08;
 }
 
-.reveal {
+.reveal { opacity: 1; transform: none; }
+
+.js .reveal {
     opacity: 0;
     transform: translateY(2rem);
     transition: opacity 0.9s var(--ease-out-expo), transform 0.9s var(--ease-out-expo);
 }
 
-.reveal.active { opacity: 1; transform: translateY(0); }
+.js .reveal.active { opacity: 1; transform: translateY(0); }
 
 /* ============================================================
    a11y + responsive guards
@@ -1874,9 +1898,11 @@ a { color: inherit; }
         transition-duration: 0.001ms !important;
     }
 
-    .line-wrap { transform: none; opacity: 1; }
+    .line-wrap,
+    .js .line-wrap { transform: none; opacity: 1; }
     .fade-up { opacity: 1; }
-    .reveal { opacity: 1; transform: none; }
+    .reveal,
+    .js .reveal { opacity: 1; transform: none; }
 }
 
 .sr-only {

@@ -22,6 +22,8 @@ const PAGES = [
 
 /* these are matched inside markup; CSS url() is handled separately */
 const REF = /(?:src|href)\s*=\s*"([^"]+)"/g;
+/* responsive candidates are bare URLs inside a comma-separated srcset */
+const SRCSET = /srcset\s*=\s*"([^"]+)"/g;
 const CSS_URL = /url\(\s*['"]?([^'")]+)['"]?\s*\)/g;
 
 const SKIP = /^(https?:|mailto:|tel:|data:|blob:|javascript:|#|\/\/)/i;
@@ -80,6 +82,15 @@ PAGES.forEach(function (page) {
     REF.lastIndex = 0;
     while ((m = REF.exec(src)) !== null) {
         check(page, m[1], 'markup');
+    }
+
+    /* a responsive candidate is "url 640w" inside a comma-separated list */
+    SRCSET.lastIndex = 0;
+    while ((m = SRCSET.exec(src)) !== null) {
+        m[1].split(',').forEach(function (candidate) {
+            const url = candidate.trim().split(/\s+/)[0];
+            if (url) check(page, url, 'srcset');
+        });
     }
 
     /* the service worker lists bare paths in its precache array */

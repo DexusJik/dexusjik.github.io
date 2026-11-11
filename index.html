@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self';">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta name="description" content="Consultoría lingüística para el mundo real. Domina el inglés profesional con un enfoque práctico y sin guiones rígidos.">
-    <title>Javier Perez | Inglés Sin Guion</title>
+    <meta name="description" content="Clases de inglés profesional online en Chile. Consultoría lingüística sobre tus correos, reuniones y presentaciones reales. Diagnóstico de nivel sin costo.">
+    <title>Clases de inglés profesional online | Inglés Sin Guion</title>
 
     <link rel="canonical" href="https://dexusjik.github.io/">
 
@@ -20,8 +20,8 @@
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Inglés Sin Guion">
     <meta property="og:locale" content="es_CL">
-    <meta property="og:title" content="Javier Perez | Inglés Sin Guion">
-    <meta property="og:description" content="Consultoría lingüística para el mundo real. Domina el inglés profesional con un enfoque práctico.">
+    <meta property="og:title" content="Clases de inglés profesional online | Inglés Sin Guion">
+    <meta property="og:description" content="Consultoría lingüística online en Chile. Trabajamos con tus correos, reuniones y presentaciones reales. Diagnóstico de nivel sin costo.">
     <meta property="og:url" content="https://dexusjik.github.io/">
     <!-- absolute + explicit dimensions: a relative og:image silently fails to
          resolve in most scrapers, and without width/height feeds crop it -->
@@ -32,8 +32,8 @@
     <meta property="og:image:alt" content="Inglés Sin Guion — consultoría lingüística de Javier Perez">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Javier Perez | Inglés Sin Guion">
-    <meta name="twitter:description" content="Consultoría lingüística para el mundo real. Domina el inglés profesional con un enfoque práctico.">
+    <meta name="twitter:title" content="Clases de inglés profesional online | Inglés Sin Guion">
+    <meta name="twitter:description" content="Consultoría lingüística online en Chile. Trabajamos con tus correos, reuniones y presentaciones reales. Diagnóstico de nivel sin costo.">
     <meta name="twitter:image" content="https://dexusjik.github.io/assets/images/og-card.jpg">
 
     <script type="application/ld+json">
@@ -78,7 +78,7 @@
                 "name": "Plan Consultoría",
                 "price": "90000",
                 "priceCurrency": "CLP",
-                "description": "8 sesiones mensuales con soporte prioritario por WhatsApp para dudas rápidas."
+                "description": "8 sesiones mensuales de 60 minutos con soporte prioritario por WhatsApp para dudas rápidas."
               },
               {
                 "@type": "Offer",
@@ -164,7 +164,7 @@
 <body>
     <div class="grain-overlay" aria-hidden="true"></div>
 
-    <a href="#hero" class="sr-only">Saltar al contenido</a>
+    <a href="#main" class="sr-only">Saltar al contenido</a>
 
     <!-- ================= HEADER ================= -->
     <header class="site-header" id="site-header">
@@ -212,7 +212,7 @@
         </nav>
     </header>
 
-    <main>
+    <main id="main" tabindex="-1">
         <!-- ================= HERO ================= -->
         <section class="hero" id="hero">
             <div class="hero__rule" aria-hidden="true"></div>
@@ -277,7 +277,7 @@
             the method instead, which is checkable.
         -->
         <section class="quote-band">
-            <img src="assets/images/image3.webp" alt="" class="quote-band__bg" loading="lazy" width="2604" height="842">
+            <img src="assets/images/image3.webp" alt="" class="quote-band__bg" loading="lazy" decoding="async" width="2604" height="842">
             <div class="shell">
                 <blockquote class="reveal">
                     Llevo tus propios correos, contratos y presentaciones a cada sesión.
@@ -291,8 +291,11 @@
         <section class="section" id="sobre-mi">
             <div class="shell about__grid">
                 <div class="about__figure reveal">
-                    <img src="assets/images/image2.webp" alt="Javier Perez en el aula"
-                         class="about__img" width="3136" height="4224" loading="lazy">
+                    <img src="assets/images/image2-960.webp"
+                         srcset="assets/images/image2-640.webp 640w, assets/images/image2-960.webp 960w, assets/images/image2-1280.webp 1280w"
+                         sizes="(min-width: 62rem) 38vw, 100vw"
+                         alt="Javier Perez en el aula"
+                         class="about__img" width="960" height="1280" loading="lazy" decoding="async">
                 </div>
 
                 <div class="about__body">
@@ -368,7 +371,7 @@
                         <h3>1 Oración al Día</h3>
                         <p>
                             365 oraciones en inglés ordenadas por dificultad real: de
-                            <strong>Hello, my name is</strong> a construcciones que aparecen
+                            <strong lang="en">Hello, my name is</strong> a construcciones que aparecen
                             en reuniones de dirección. Traducción al español siempre a mano,
                             racha de días, vidas y logros. Nueve minutos al día.
                         </p>
@@ -427,7 +430,7 @@
                         <h3 class="plan__name">Plan Consultoría</h3>
                         <p class="plan__price">$90.000 <span class="plan__currency">CLP</span></p>
                         <ul class="plan__list">
-                            <li>8 sesiones mensuales</li>
+                            <li>8 sesiones mensuales (60 min c/u)</li>
                             <li>Soporte prioritario por WhatsApp para dudas rápidas</li>
                         </ul>
                         <p class="plan__note">Avanza rápido con sesiones enfocadas en tus metas.</p>
@@ -470,8 +473,8 @@
 
                     <div id="quiz-questions-container" class="quiz-container-relative">
                         <div class="quiz-step active" id="quiz-step-1">
-                            <p>¿Cuál es tu objetivo principal?</p>
-                            <div class="quiz-options">
+                            <p id="quiz-q1">¿Cuál es tu objetivo principal?</p>
+                            <div class="quiz-options" role="radiogroup" aria-labelledby="quiz-q1">
                                 <button type="button" class="quiz-option-button" data-question-id="goal" data-value="career">Profesional</button>
                                 <button type="button" class="quiz-option-button" data-question-id="goal" data-value="academic">Académico</button>
                                 <button type="button" class="quiz-option-button" data-question-id="goal" data-value="social">Social o viajes</button>
@@ -479,32 +482,34 @@
                         </div>
 
                         <div class="quiz-step" id="quiz-step-2">
-                            <p>¿Cuál es la forma más profesional de adjuntar un archivo?</p>
-                            <div class="quiz-options">
-                                <button type="button" class="quiz-option-button" data-question-id="grammar" data-value="find-attached">Please find attached...</button>
-                                <button type="button" class="quiz-option-button" data-question-id="grammar" data-value="here-is">Here is the file...</button>
-                                <button type="button" class="quiz-option-button" data-question-id="grammar" data-value="what-is">What is attached...</button>
+                            <p id="quiz-q2">¿Cuál es la forma más profesional de adjuntar un archivo?</p>
+                            <div class="quiz-options" role="radiogroup" aria-labelledby="quiz-q2">
+                                <button type="button" class="quiz-option-button" data-question-id="grammar" data-value="find-attached" lang="en">Please find attached...</button>
+                                <button type="button" class="quiz-option-button" data-question-id="grammar" data-value="here-is" lang="en">Here is the file...</button>
+                                <button type="button" class="quiz-option-button" data-question-id="grammar" data-value="what-is" lang="en">What is attached...</button>
                             </div>
                         </div>
 
                         <div class="quiz-step" id="quiz-step-3">
-                            <p>Completa: "By the time we arrived, the meeting..."</p>
-                            <div class="quiz-options">
-                                <button type="button" class="quiz-option-button" data-question-id="tense" data-value="started">...started.</button>
-                                <button type="button" class="quiz-option-button" data-question-id="tense" data-value="had-started">...had already started.</button>
-                                <button type="button" class="quiz-option-button" data-question-id="tense" data-value="starts">...starts.</button>
+                            <p id="quiz-q3">Completa: <span lang="en">"By the time we arrived, the meeting..."</span></p>
+                            <div class="quiz-options" role="radiogroup" aria-labelledby="quiz-q3">
+                                <button type="button" class="quiz-option-button" data-question-id="tense" data-value="started" lang="en">...started.</button>
+                                <button type="button" class="quiz-option-button" data-question-id="tense" data-value="had-started" lang="en">...had already started.</button>
+                                <button type="button" class="quiz-option-button" data-question-id="tense" data-value="starts" lang="en">...starts.</button>
                             </div>
                         </div>
 
                         <div class="quiz-step" id="quiz-step-4">
-                            <p>¿Qué significa "circle back"?</p>
-                            <div class="quiz-options">
+                            <p id="quiz-q4">¿Qué significa <span lang="en">"circle back"</span>?</p>
+                            <div class="quiz-options" role="radiogroup" aria-labelledby="quiz-q4">
                                 <button type="button" class="quiz-option-button" data-question-id="vocab" data-value="discuss-later">Discutir más tarde</button>
                                 <button type="button" class="quiz-option-button" data-question-id="vocab" data-value="ignore">Ignorar el tema</button>
                                 <button type="button" class="quiz-option-button" data-question-id="vocab" data-value="return">Regresar físicamente</button>
                             </div>
                         </div>
                     </div>
+
+                    <p class="quiz-error" id="quiz-error" role="alert" hidden></p>
 
                     <!-- aria-live so the result is spoken when it appears -->
                     <div id="quiz-result" hidden aria-live="polite">

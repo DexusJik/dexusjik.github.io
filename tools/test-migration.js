@@ -47,13 +47,16 @@ function check(name, cond, detail) {
 }
 
 /* case 3: superseded by v5. A skip used to be permanent and silent; it is now
- * cleared so everyone is asked against the corrected paper. See case 11 for
- * the full statement of this rule. */
+ * cleared ONCE so everyone is asked against the corrected paper. The version
+ * stamp is what keeps the next boot from nagging. See case 11 for the full
+ * statement of this rule. */
 {
     const s = { nickname: 'Sofía', placement: null, placementSkipped: true };
     api.run(s);
     check('a skip is cleared, not preserved', s.placementSkipped === false);
     check('and still leaves no placement behind', s.placement === null);
+    check('and the re-offer is stamped', s.placementSkipVersion === V,
+        'got ' + s.placementSkipVersion);
 }
 
 /* case 4: progress, completed lessons and nickname must survive byte-identical */
@@ -191,6 +194,8 @@ check('PLACEMENT_VERSION alias matches', api.PLACEMENT_VERSION === V);
         'got ' + s.placementSkipped);
     check('the run reports the skip was cleared', changed.indexOf('placementSkipped') >= 0,
         'changed: ' + JSON.stringify(changed));
+    check('the re-offer is stamped with the current version', s.placementSkipVersion === V,
+        'got ' + s.placementSkipVersion);
     check('a former skipper keeps their progress', s.xp === 40 && s.lessonsDone === 2);
 }
 
@@ -206,8 +211,24 @@ check('PLACEMENT_VERSION alias matches', api.PLACEMENT_VERSION === V);
 {
     const s = { nickname: 'Ana', placement: null, placementSkipped: true };
     api.run(s);
-    api.run(s);
+    const second = api.run(s);
     check('a cleared skip does not flip back', s.placementSkipped === false);
+    check('the second boot reports no change', second.length === 0,
+        'changed: ' + JSON.stringify(second));
+}
+
+/* case 14: a skip made AFTER the migration is a choice, not a stale flag. It
+ * must survive every subsequent boot or the app nags the learner forever. */
+{
+    const s = {
+        nickname: 'Ana', placement: null,
+        placementSkipped: true, placementSkipVersion: V
+    };
+    const changed = api.run(s);
+    check('a deliberate skip survives the next boot', s.placementSkipped === true,
+        'got ' + s.placementSkipped);
+    check('and the migration reports no change', changed.length === 0,
+        'changed: ' + JSON.stringify(changed));
 }
 
 console.log('failures: ' + failures);

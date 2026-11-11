@@ -15,9 +15,11 @@
  * users get the last copy they loaded. A slow network falls back to the
  * cache after NETWORK_TIMEOUT_MS instead of hanging the lesson.
  *
- * Bump CACHE_VERSION only when the PRECACHE list changes.
+ * Bump CACHE_VERSION whenever a precached file changes, not only when the
+ * list changes: install re-runs on a bump, which refreshes the precache and
+ * lets activate delete the superseded cache.
  */
-var CACHE_VERSION = 'daily-v8';
+var CACHE_VERSION = 'daily-v9';
 var NETWORK_TIMEOUT_MS = 4000;
 
 var PRECACHE = [
@@ -95,15 +97,24 @@ self.addEventListener('fetch', function (event) {
 
     var isPage = request.mode === 'navigate';
 
+    /*
+     * The cache write must be handed to event.waitUntil SYNCHRONOUSLY. The old
+     * floating `caches.open().then(cache.put)` looked fine online but could be
+     * terminated with the worker before the write landed, leaving a hole in
+     * the offline cache that only appeared later.
+     */
+    var cacheWrite = Promise.resolve();
     var network = fetch(request).then(function (response) {
         if (response && response.ok && response.type === 'basic') {
             var copy = response.clone();
-            caches.open(CACHE_VERSION).then(function (cache) {
-                cache.put(request, copy);
-            });
+            cacheWrite = caches.open(CACHE_VERSION).then(function (cache) {
+                return cache.put(request, copy);
+            }).catch(function () { /* quota or private mode: still serve the response */ });
         }
         return response;
     });
+
+    event.waitUntil(network.then(function () { return cacheWrite; }).catch(function () {}));
 
     function offlineFallback() {
         if (isPage) return caches.match('./index.html');

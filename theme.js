@@ -20,6 +20,22 @@
 (function () {
     'use strict';
 
+    /*
+     * Marketing pages hide their reveal-on-scroll elements only after this
+     * class exists. theme.js runs synchronously before paint, so this avoids a
+     * flash of visible content; the timeout is the failsafe for a site.js that
+     * never loads or throws before it finishes booting.
+     */
+    if (document.documentElement && document.documentElement.classList) {
+        document.documentElement.classList.add('js');
+    }
+    window.__siteRevealReady = false;
+    if (typeof window.setTimeout === 'function') {
+        window.__siteRevealFallback = window.setTimeout(function () {
+            if (!window.__siteRevealReady) document.documentElement.classList.remove('js');
+        }, 4000);
+    }
+
     var KEY = 'theme-pref';
     var ORDER = ['auto', 'light', 'dark'];
     var META = { light: '#fbf9f4', dark: '#0f172a' };

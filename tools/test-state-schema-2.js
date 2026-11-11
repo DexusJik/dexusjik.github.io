@@ -36,8 +36,8 @@ function defaults() {
         streakFreeze: 0, studyHistory: {}, dailyXp: 0, dailyXpDate: null,
         lessonsDone: 0, perfectLessons: 0, seenSentences: 0, hearts: 5,
         heartsTs: 1, currentLesson: 0, completed: {}, missed: {},
-        badges: {}, nickname: '', rivals: [], placement: null,
-        placementSkipped: false, dailyLessonDoneDate: null,
+        badges: {}, nickname: '', nicknameSkipped: false, rivals: [], placement: null,
+        placementSkipped: false, placementSkipVersion: 0, dailyLessonDoneDate: null,
         storageNoticeDismissed: false, features: {},
     };
 }

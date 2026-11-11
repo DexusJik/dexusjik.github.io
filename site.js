@@ -15,14 +15,33 @@
        helpers
        ============================================================ */
 
-    function scrollToId(id) {
+    /*
+     * Move focus to the destination as well as scrolling to it. A keyboard CTA
+     * that only scrolls leaves focus on an off-screen (or now-hidden) button,
+     * so the next Tab starts from the wrong place. The heading is the useful
+     * landing point; tabindex=-1 makes it focusable without adding a tab stop.
+     */
+    function focusLanding(el) {
+        if (!el) return;
+        var target = el.querySelector('h1, h2, h3, h4') || el;
+        if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+        try {
+            target.focus({ preventScroll: true });
+        } catch (e) {
+            target.focus();
+        }
+    }
+
+    function scrollToId(id, moveFocus) {
         var el = document.getElementById(id);
         if (!el) return;
         el.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+        if (moveFocus) focusLanding(el);
     }
 
-    function scrollToTop() {
+    function scrollToTop(moveFocus) {
         window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+        if (moveFocus) focusLanding(document.getElementById('hero'));
     }
 
     /* ============================================================
@@ -59,7 +78,10 @@
             }
 
             links.forEach(function (link) {
-                link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+                var on = link.getAttribute('href') === '#' + current;
+                link.classList.toggle('active', on);
+                if (on) link.setAttribute('aria-current', 'location');
+                else link.removeAttribute('aria-current');
             });
         }
 
@@ -70,11 +92,15 @@
         if (logo) {
             logo.addEventListener('click', function (e) {
                 e.preventDefault();
-                scrollToTop();
+                scrollToTop(true);
             });
         }
 
         $$('a[href^="#"]:not(.nav-link):not(#logo-link)').forEach(function (anchor) {
+            /* The skip link must keep its native behaviour: the browser moves
+               focus to <main tabindex="-1">, which is the whole point. */
+            if (anchor.classList.contains('sr-only')) return;
+
             anchor.addEventListener('click', function (e) {
                 var id = anchor.getAttribute('href');
                 if (!id || id === '#') return;
@@ -97,12 +123,12 @@
                         document.dispatchEvent(new CustomEvent('drawer:close'));
                     }
                     window.setTimeout(function () {
-                        scrollToId(id.slice(1));
+                        scrollToId(id.slice(1), true);
                     }, 0);
                     return;
                 }
 
-                scrollToId(id.slice(1));
+                scrollToId(id.slice(1), true);
             });
         });
     }
@@ -218,6 +244,7 @@
 
     function initAnchorFlash() {
         $$('a[href^="#"]').forEach(function (anchor) {
+            if (anchor.classList.contains('sr-only')) return;
             anchor.addEventListener('click', function () {
                 var id = anchor.getAttribute('href');
                 if (!id || id === '#') return;
@@ -337,12 +364,45 @@
         var levelOut = document.getElementById('cefr-level');
         var descOut = document.getElementById('cefr-description');
         var cta = document.getElementById('whatsapp-redirect-btn');
+        var error = document.getElementById('quiz-error');
 
         if (!container || !nextBtn || !result) return;
 
         var total = $$('.quiz-step', container).length;
         var step = 0;
         var answers = {};
+
+        /* Native radio groups have one tab stop and arrow-key navigation. The
+           buttons carry role=radio, so implement the same contract manually:
+           selected (or first) option is tabindex=0, the rest are -1. */
+        function setRoving(group, active) {
+            if (!group) return;
+            var buttons = $$('.quiz-option-button', group);
+            buttons.forEach(function (b) {
+                b.tabIndex = b === active ? 0 : -1;
+            });
+        }
+
+        function selectOption(btn) {
+            if (!btn) return;
+            var qid = btn.dataset.questionId;
+            var group = btn.closest('.quiz-options');
+
+            $$('.quiz-option-button[data-question-id="' + qid + '"]', container)
+                .forEach(function (b) {
+                    b.classList.remove('selected');
+                    b.setAttribute('aria-checked', 'false');
+                });
+
+            btn.classList.add('selected');
+            btn.setAttribute('aria-checked', 'true');
+            answers[qid] = btn.dataset.value;
+            setRoving(group, btn);
+            if (error) {
+                error.hidden = true;
+                error.textContent = '';
+            }
+        }
 
         function paintProgress() {
             var pct = ((step + 1) / total) * 100;
@@ -367,15 +427,27 @@
 
             /* restore the choice already made for this question, so going back
                and forward does not silently lose the answer */
-            var qid = incoming.querySelector('.quiz-option-button');
-            if (qid) {
-                var already = answers[qid.dataset.questionId];
-                $$('.quiz-option-button[data-question-id="' + qid.dataset.questionId + '"]', container)
+            var group = incoming.querySelector('.quiz-options');
+            if (group) {
+                var first = group.querySelector('.quiz-option-button');
+                var qid = first ? first.dataset.questionId : '';
+                var already = answers[qid];
+                var chosen = null;
+
+                $$('.quiz-option-button[data-question-id="' + qid + '"]', container)
                     .forEach(function (b) {
                         var on = b.dataset.value === already;
                         b.classList.toggle('selected', on);
                         b.setAttribute('aria-checked', on ? 'true' : 'false');
+                        if (on) chosen = b;
                     });
+
+                setRoving(group, chosen || first);
+            }
+
+            if (error) {
+                error.hidden = true;
+                error.textContent = '';
             }
 
             /*
@@ -399,26 +471,44 @@
         container.addEventListener('click', function (e) {
             var btn = e.target.closest('.quiz-option-button');
             if (!btn) return;
-
-            var qid = btn.dataset.questionId;
-            $$('.quiz-option-button[data-question-id="' + qid + '"]', container)
-                .forEach(function (b) {
-                    b.classList.remove('selected');
-                    b.setAttribute('aria-checked', 'false');
-                });
-
-            btn.classList.add('selected');
-            btn.setAttribute('aria-checked', 'true');
-            answers[qid] = btn.dataset.value;
+            selectOption(btn);
         });
 
-        /* expose the option group as a radio group so the choice is announced */
+        /* radio-group keyboard contract: arrows move and select, Home/End jump */
+        container.addEventListener('keydown', function (e) {
+            var btn = e.target.closest('.quiz-option-button');
+            if (!btn) return;
+            var group = btn.closest('.quiz-options');
+            if (!group) return;
+
+            var buttons = $$('.quiz-option-button', group);
+            var index = buttons.indexOf(btn);
+            var next = null;
+
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                next = buttons[(index + 1) % buttons.length];
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                next = buttons[(index - 1 + buttons.length) % buttons.length];
+            } else if (e.key === 'Home') {
+                next = buttons[0];
+            } else if (e.key === 'End') {
+                next = buttons[buttons.length - 1];
+            }
+
+            if (!next) return;
+            e.preventDefault();
+            selectOption(next);
+            next.focus();
+        });
+
+        /* roles are in the markup; this only seeds aria-checked and roving tabindex */
         $$('.quiz-options', container).forEach(function (group) {
-            group.setAttribute('role', 'radiogroup');
+            var selected = group.querySelector('.quiz-option-button.selected');
+            setRoving(group, selected || group.querySelector('.quiz-option-button'));
         });
         $$('.quiz-option-button', container).forEach(function (b) {
             b.setAttribute('role', 'radio');
-            b.setAttribute('aria-checked', 'false');
+            if (!b.hasAttribute('aria-checked')) b.setAttribute('aria-checked', 'false');
         });
 
         function scoreProfile() {
@@ -450,6 +540,12 @@
             var selected = active ? active.querySelector('.quiz-option-button.selected') : null;
 
             if (!selected) {
+                if (error) {
+                    error.textContent = 'Elige una opción para continuar.';
+                    error.hidden = false;
+                }
+                var firstOption = active ? active.querySelector('.quiz-option-button') : null;
+                if (firstOption) firstOption.focus();
                 nextBtn.animate(
                     [{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' },
                      { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }],
@@ -471,6 +567,15 @@
             actions.hidden = true;
             result.hidden = false;
             paintProgress();
+
+            /* the button that had focus is now hidden; land focus on the result
+               so keyboard users do not restart from the top of the document */
+            result.setAttribute('tabindex', '-1');
+            try {
+                result.focus({ preventScroll: true });
+            } catch (e) {
+                result.focus();
+            }
             result.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'center' });
         });
 
@@ -507,6 +612,10 @@
                 result.hidden = true;
                 container.hidden = false;
                 if (actions) actions.hidden = false;
+                if (error) {
+                    error.hidden = true;
+                    error.textContent = '';
+                }
                 gotoStep(0, true);
             });
         }
@@ -527,7 +636,7 @@
 
         Object.keys(pairs).forEach(function (id) {
             var btn = document.getElementById(id);
-            if (btn) btn.addEventListener('click', function () { scrollToId(pairs[id]); });
+            if (btn) btn.addEventListener('click', function () { scrollToId(pairs[id], true); });
         });
     }
 
@@ -545,6 +654,10 @@
         initPlans();
         initQuiz();
         initCtas();
+
+        /* tell theme.js the reveal system booted; cancel its blank-page failsafe */
+        window.__siteRevealReady = true;
+        if (window.__siteRevealFallback) window.clearTimeout(window.__siteRevealFallback);
     }
 
     if (document.readyState === 'loading') {

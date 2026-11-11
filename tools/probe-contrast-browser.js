@@ -614,25 +614,17 @@ const SCENES = [
     },
 
     /*
-     * 404.html loads no theme.js, so DailyTheme is undefined and
-     * set("dark") is a silent no-op. The scene asserts the theme actually
-     * applied and reports a SETUP ERROR if it did not.
-     */
-    /*
-     * 404.html is EXCLUDED, and the reason is printed rather than buried.
+     * 404.html deliberately ships `script-src 'none'` and contains no script at
+     * all, so theme.js cannot run there and it has no SAVED-theme support. It
+     * does honour the OS setting in pure CSS, so these rows are themed by
+     * emulating `prefers-color-scheme` rather than by calling DailyTheme.set().
      *
-     * It deliberately ships `script-src 'none'` and contains no script at all, so
-     * theme.js cannot run there and it has no dark mode. That is a security
-     * decision, not a defect: a static error page has nothing to execute.
-     *
-     * An earlier version of this probe asserted the theme had applied on every
-     * scene, which produced four SETUP ERRORS for the 404 — correct reporting of
-     * a real inconsistency, but one the owner decided to accept. Those rows are
-     * therefore measured in LIGHT ONLY and labelled as such, instead of either
-     * failing CI or being dropped without explanation.
+     * The media assertion below replaces the old noTheme exemption: each row
+     * proves the emulated OS preference reached the page, so the dark row can
+     * never silently measure the light rendering again.
      */
-    { page: '404.html', group: 'site', name: '404 desktop', width: 1280, height: 800, noTheme: true },
-    { page: '404.html', group: 'site', name: '404 mobile', width: 390, height: 844, noTheme: true },
+    { page: '404.html', group: 'site', name: '404 desktop', width: 1280, height: 800, themeMode: 'media' },
+    { page: '404.html', group: 'site', name: '404 mobile', width: 390, height: 844, themeMode: 'media' },
 
     /* ---- app ---- */
     { page: 'english-daily/index.html', group: 'app', name: 'app desktop path', width: 1280, height: 1000, seed: true },
@@ -838,6 +830,7 @@ async function main() {
             const themesFor = function (scene) {
                 return scene.noTheme ? ['light'] : ['light', 'dark'];
             };
+            const mediaThemed = scene.themeMode === 'media';
 
             for (const theme of themesFor(scene)) {
                 /* printed BEFORE the scene runs, so a hang is visible rather
@@ -850,6 +843,17 @@ async function main() {
 
             await cdp.send('Emulation.setDeviceMetricsOverride', {
                 width: scene.width, height: scene.height, deviceScaleFactor: 1, mobile: false,
+            });
+
+            /*
+             * A scriptless page cannot be themed through DailyTheme. Emulate the
+             * OS preference before navigation instead, and clear it for every
+             * other scene so an emulated dark setting cannot leak forward.
+             */
+            await cdp.send('Emulation.setEmulatedMedia', {
+                features: mediaThemed
+                    ? [{ name: 'prefers-color-scheme', value: theme }]
+                    : [],
             });
 
             if (scene.seed && !seeded) {
@@ -905,11 +909,19 @@ async function main() {
              */
             const applied = await evaluate(
                 'document.documentElement.getAttribute("data-theme")', true);
-            /*
-             * A page that has no script cannot have a theme applied, and saying
-             * so is not the same as saying it failed.
-             */
-            if (applied !== theme && !scene.noTheme) {
+
+            if (mediaThemed) {
+                const mediaDark = await evaluate(
+                    'window.matchMedia("(prefers-color-scheme: dark)").matches', true);
+                if (mediaDark !== (theme === 'dark')) {
+                    setupErrors.push('emulated prefers-color-scheme "' + theme +
+                        '" did not reach the page');
+                }
+            } else if (applied !== theme && !scene.noTheme) {
+                /*
+                 * A page that has no script cannot have a theme applied, and
+                 * saying so is not the same as saying it failed.
+                 */
                 setupErrors.push('theme "' + theme + '" was not applied (got ' + applied + ')');
             }
 
@@ -1205,6 +1217,7 @@ async function main() {
                 pixelError: decodeError,
                 setupErrors: setupErrors,
                 noTheme: !!scene.noTheme,
+                mediaTheme: mediaThemed,
                 disabled: b.results.filter(function (x) { return x.ratio < x.need && x.disabled; }),
                 emoji: b.results.filter(function (x) { return x.emoji; }),
             });
@@ -1252,6 +1265,8 @@ async function main() {
         if (r.measured === 0) console.log('  SETUP ERROR: measured nothing at all');
         if (r.noTheme) {
             console.log('  note: light only — this page ships script-src \'none\', so it has no dark mode');
+        } else if (r.mediaTheme) {
+            console.log('  note: themed by the emulated OS prefers-color-scheme; no saved-theme script');
         }
         (r.setupErrors || []).forEach(function (e) {
             console.log('  SETUP ERROR: ' + e);

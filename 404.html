@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fbf9f4" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#04182b" media="(prefers-color-scheme: dark)">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self';">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="robots" content="noindex">
@@ -189,6 +191,10 @@
             .wayback { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
         }
 
+        @media (min-width: 60rem) {
+            .wayback { grid-template-columns: repeat(3, 1fr); }
+        }
+
         .link-card {
             display: block;
             padding: clamp(1.25rem, 3vw, 1.5rem);
@@ -207,6 +213,7 @@
         }
 
         .link-card__name {
+            display: block;
             font-family: var(--serif);
             font-size: 1.25rem;
             font-weight: 700;
@@ -215,6 +222,7 @@
         }
 
         .link-card__path {
+            display: block;
             margin-top: 0.35rem;
             font-size: 0.8125rem;
             color: var(--ink-soft);
@@ -222,6 +230,7 @@
         }
 
         .link-card__note {
+            display: block;
             margin-top: 0.75rem;
             font-size: 0.9375rem;
             color: var(--ink-soft);
@@ -232,6 +241,54 @@
             background: var(--navy-900);
             color: rgba(244, 239, 227, 0.7);
             font-size: 0.8125rem;
+        }
+
+        /*
+         * The 404 ships no JavaScript, so it cannot read the saved theme
+         * preference. It can still honour the OS setting, which is better than
+         * forcing a light page on every dark-mode visitor.
+         */
+        @media (prefers-color-scheme: dark) {
+            /* the light-mode focus ring is a dark bronze; on these surfaces it
+               falls below the 3:1 non-text minimum, so use the bright gold */
+            :root { color-scheme: dark; --gold-ink: #efd582; }
+
+            body {
+                color: #dce7f8;
+                background: #04182b;
+            }
+
+            .site-header {
+                background: rgba(4, 24, 43, 0.82);
+                border-bottom-color: rgba(220, 231, 248, 0.14);
+            }
+
+            .brand__name { color: #dce7f8; }
+
+            .error {
+                background: linear-gradient(135deg, #0d2036, #04182b);
+            }
+
+            .error__body-title,
+            .link-card__path,
+            .link-card__note { color: #9fb3c8; }
+
+            .link-card {
+                background: #12304f;
+                border-color: rgba(220, 231, 248, 0.14);
+            }
+
+            .link-card:hover {
+                border-color: rgba(223, 187, 69, 0.55);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), 0 12px 32px rgba(0, 0, 0, 0.35);
+            }
+
+            .link-card__name { color: #dce7f8; }
+
+            .site-footer {
+                background: #04182b;
+                color: rgba(220, 231, 248, 0.7);
+            }
         }
 
         @media (max-width: 26rem) {
@@ -278,6 +335,12 @@
                         <span class="link-card__name">1 Oración al Día</span>
                         <span class="link-card__path">/english-daily/</span>
                         <span class="link-card__note">365 oraciones en inglés, nueve minutos al día.</span>
+                    </a>
+
+                    <a href="/#reserva" class="link-card">
+                        <span class="link-card__name">Reservar una sesión</span>
+                        <span class="link-card__path">/#reserva</span>
+                        <span class="link-card__note">Cuéntame tu contexto y nivel actual por WhatsApp.</span>
                     </a>
                 </nav>
             </div>

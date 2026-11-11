@@ -134,11 +134,17 @@ learner has done. It is one JSON object. `load()` merges saved values over
 an *unknown* field is ignored. That is what makes adding a field safe and
 removing one destructive.
 
-**Only `state.placement` may be cleared by a migration.** XP, gems, streak,
-completed lessons, badges and the first name are never touched by a migration.
-When the placement test content changed, `migrations.js` moved
-`CURRENT_VERSION` up and every learner re-sat the test while keeping all
-progress. That is the pattern.
+**Only placement fields may be cleared by a migration.** That means
+`state.placement` and `state.placementSkipped`; XP, gems, streak, completed
+lessons, badges and the first name are never touched. When the placement test
+content changed, `migrations.js` moved `CURRENT_VERSION` up and every learner
+re-sat the test while keeping all progress. A skip is re-offered once and
+stamped with `state.placementSkipVersion`, so declining it is remembered on the
+next boot instead of producing a modal every visit.
+
+The app can also export and restore a JSON copy from the progress calendar.
+Import is an explicit confirmed action, validates through `state-schema.js`, and
+keeps the previous state under `igsg_daily_v1_pre_import`.
 
 **A migration version means "the questions changed", not "the app changed".**
 `game.js` stamps new placements with the current version, and `migrations.js`
@@ -175,7 +181,7 @@ robots.txt  sitemap.xml
 english-daily/
   index.html            app shell, script load order matters
   daily.css             20 tokens in :root
-  game.js               all app logic, one IIFE, ~2600 lines
+  game.js               all app logic, one IIFE, ~2900 lines
   sentences.js          365 sentences, 128 KB, the largest file
   placement.js          30 placement items, hand-written distractors
   migrations.js         CURRENT_VERSION + state migrations
@@ -245,7 +251,7 @@ cards and the featured card were all the same navy and merged into the page.
 
 ### Known weaknesses
 
-- **`game.js` is one ~2600-line file.** Everything reaches shared state through a
+- **`game.js` is one ~2900-line file.** Everything reaches shared state through a
   global `DailyGame` hook. It works, but it is hard to test and hard to delete
   features from. Splitting it is the biggest refactor available.
 - **Errors are captured but not sent anywhere.** `errors.js` buffers the last 20
@@ -267,10 +273,10 @@ chooses to report.
   CSP. Every page is framable. Needs a host in front of Pages.
 - **Spanish strings are hardcoded** in markup and JS. No i18n.
 - **The main site has no offline support**; only the app has a service worker.
-- **The 404 has no dark mode.** It ships `script-src 'none'` and contains no
-  script at all, so `theme.js` cannot run there. That is deliberate — a static
-  error page has nothing to execute — but a visitor who chose Dark sees a light
-  404. The contrast probe prints this on every run rather than hiding it.
+- **The 404 has no saved-theme support.** It ships `script-src 'none'` and
+  contains no script at all, so `theme.js` cannot run there. It does honour the
+  OS `prefers-color-scheme` in CSS, which covers most visitors, but a learner who
+  chose Dark in the app while their OS is light still sees the light 404.
 
 ---
 
